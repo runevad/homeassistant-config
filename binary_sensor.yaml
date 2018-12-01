@@ -1,0 +1,27 @@
+#######################################
+## Test
+#######################################
+
+## Workday
+  - platform: workday
+    country: SE
+    name: workday
+
+  - platform: template
+    sensors:
+      house_status_home:
+        value_template: "{{ states.group.household.state == 'home' }}"
+        friendly_name: 'Home'
+        device_class: occupancy
+      house_update:
+        value_template: "{{ states.input_boolean.cottage_update.state == 'off' }}"
+        friendly_name: 'Auto'
+        device_class: safety
+
+  - platform: mqtt
+    name: "ESP Christmas tree water level low"
+    state_topic: "homeassistant/wemos_christmas/water_sensor"
+    payload_on: "1"   #wet
+    payload_off: "0"  #dry
+    qos: 0
+    device_class: moisture

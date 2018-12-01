@@ -1,0 +1,71 @@
+#######################
+## Security Groups
+#######################
+
+security:
+  name: "Security"
+  view: no
+  icon: mdi:security
+  entities:
+    - group.door_sensors
+    - group.motion_sensors
+    - group.smoke_sensors
+
+motion_units:
+  name: "Rörelsesensorer on/off"
+  view: no
+  icon: mdi:security
+  control: hidden
+  entities:
+    - switch.motion_allrum_20
+    - switch.motion_hall_11
+
+door_units:
+  name: "Dörrsensorer on/off"
+  view: no
+  icon: mdi:security
+  control: hidden
+  entities:
+    - switch.door_altan_29
+    - switch.door_forrad_132
+    - switch.door_groventre_137
+    - switch.door_hall_35
+
+smoke_units:
+  name: "Brandvarnare on/off"
+  view: no
+  icon: mdi:fire
+  control: hidden
+  entities:
+    - switch.smokesensor_allrum_18
+    - switch.smokesensor_forrad_126
+    - switch.smokesensor_groventre_124
+    - switch.smokesensor_vardagsrum_133
+
+door_sensors:
+  name: "Dörrsensorer"
+  view: no
+  icon: mdi:glassdoor
+  entities:
+    - binary_sensor.door_altan_29
+    - binary_sensor.door_forrad_132
+    - binary_sensor.door_groventre_137
+    - binary_sensor.door_hall_35
+
+motion_sensors:
+  name: "Rörelsesensorer"
+  view: no
+  icon: mdi:run-fast
+  entities:
+    - binary_sensor.motion_allrum_20
+    - binary_sensor.motion_hall_11
+
+smoke_sensors:
+  name: "Brandsensorer"
+  view: no
+  icon: mdi:fire
+  entities:
+    - binary_sensor.smokesensor_allrum_18
+    - binary_sensor.smokesensor_forrad_126
+    - binary_sensor.smokesensor_groventre_124
+    - binary_sensor.smokesensor_vardagsrum_133

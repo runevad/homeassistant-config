@@ -1,0 +1,236 @@
+homeassistant:
+  name: Slätberget
+  latitude: !secret latitude_home
+  longitude: !secret longitude_home
+  elevation: !secret elevation
+  unit_system: metric
+  time_zone: Europe/Stockholm
+
+  #Customize
+  customize: !include_dir_merge_named customize
+  customize_domain:
+    automation:
+      initial_state: 'on'
+  #Packages
+  packages: !include_dir_named packages
+
+zone:
+  name: 'Home'
+  latitude: !secret latitude_home
+  longitude: !secret longitude_home
+  elevation: 136
+  radius: 125
+#  icon: mdi:account-multiple
+
+zone 2:
+  name: 'FEV'
+  latitude: !secret latitude_l_work
+  longitude: !secret longitude_l_work
+  radius: 700
+#  icon: mdi:worker
+
+http:
+  ssl_certificate: !secret ssl_certificate
+  ssl_key: !secret ssl_key
+  base_url: !secret base_url
+  trusted_networks:
+    - 127.0.0.1
+    - 192.168.1.0/24
+    - 192.168.100.0/24
+  ip_ban_enabled: True
+  login_attempts_threshold: 5
+
+# Enables the frontend
+frontend:
+  javascript_version: latest
+  extra_html_url:
+    - /local/lovelace.html
+
+# Enables configuration UI
+config:
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  include_used_components: True
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+influxdb:
+  host: 192.168.1.4
+  port: 8086
+  database: hass
+  username: !secret influx_username
+  password: !secret influx_password
+  max_retries: 3
+  default_measurement: state
+  exclude:
+    entities:
+      - sun.sun
+      - sensor.time
+      - sensor.last_boot
+      - sensor.date
+  include:
+    domains:
+      - sensor
+      - light
+      - switch
+      - device_tracker
+  tags:
+    source: hass
+
+recorder:
+  db_url: !secret recorder_db_url
+  purge_keep_days: 50
+  purge_interval: 5
+  exclude:
+    domains:
+      - automation
+      - script
+      - weblink
+      - updater
+    entities:
+      - sun.sun
+      - sensor.time
+      - sensor.last_boot
+      - sensor.date
+      - group.security
+      - group.door_sensors
+      - group.motion_sensors
+      - group.smoke_sensors
+
+# View all events in a logbook
+logbook:
+
+# Enables support for tracking state changes over time.
+history:
+
+vera:
+  vera_controller_url: http://192.168.1.5:3480/
+  exclude: [116]
+  lights: [81, 62, 61, 60, 115]
+
+nibe:
+    client_id: !secret nibe_id
+    client_secret: !secret nibe_secret
+    redirect_uri: !secret nibe_url
+    writeaccess: false # set to true to support climate write (needs new tokens) and payment to Nibe
+    systems:
+        - system: '31372'
+          units:
+            - unit: 0
+              categories:
+
+camera:
+  - platform: synology
+    url: https://192.168.1.4:5001
+    username: !secret synology_user
+    password: !secret synology_pass
+    timeout: 30
+    verify_ssl: False
+#  - platform: generic
+#    name: Lars
+#    still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.lars_iphone.attributes.latitude }},{{ states.device_tracker.lars_iphone.attributes.longitude }}&zoom=13&size=500x500&maptype=roadmap&markers=color:red%7Clabel:L%7C{{ states.device_tracker.lars_iphone.attributes.latitude }},{{ states.device_tracker.lars_iphone.attributes.longitude }}
+#    limit_refetch_to_url_change: true
+#  - platform: generic
+#    name: 'Emelie & Lars'
+#    still_image_url: https://maps.googleapis.com/maps/api/staticmap?&size=500x500&maptype=roadmap&markers=color:purple%7Clabel:E%7C{{ states.device_tracker.google_maps_104812533325498334396.attributes.latitude }},{{ states.device_tracker.google_maps_104812533325498334396.attributes.longitude }}&markers=color:red%7Clabel:L%7C{{ states.device_tracker.google_maps_117167038107838554425.attributes.latitude }},{{ states.device_tracker.google_maps_117167038107838554425.attributes.longitude }}
+#    limit_refetch_to_url_change: True
+#  - platform: generic
+#    name: 'Vika'
+#    still_image_url: https://www.yr.no/sted/Sverige/Dalarna/Vika/meteogram.svg
+#    content_type: 'image/svg+xml'
+
+#Används inte ännu, kanske senare med smart hem högtalare eller bättre "Siri"
+#shopping_list:
+
+ios:
+  push:
+    categories:
+      - name: Alarm
+        identifier: 'alarm'
+        actions:
+          - identifier: 'SOUND_ALARM'
+            title: 'Starta larmet!!'
+            activationMode: 'background'
+            authenticationRequired: no
+            destructive: yes
+            behavior: 'default'
+          - identifier: 'SILENCE_ALARM'
+            title: 'Tysta larmet'
+            activationMode: 'background'
+            authenticationRequired: no
+            destructive: no
+            behavior: 'default'
+      - name: Notification
+        identifier: 'notis'
+        actions:
+
+device_tracker: !include device_tracker.yaml
+
+#######################
+## Alarm panel
+########################
+#
+#alarm_control_panel:
+#  - platform: manual
+#    name: Larm
+#    code: !secret alarm_code
+#    pending_time: 120
+#    trigger_time: 180
+#    disarm_after_trigger: 'false'
+
+#weather:
+#  - platform: darksky
+#    api_key: !secret dark_sky_api_key
+#    language: sv
+
+# Track the sun
+sun:
+
+#map
+map:
+
+# Text to speech
+tts:
+  - platform: google
+    language: 'sv'
+    time_memory: 21600
+
+#rest_command:
+#  ss_enable_home:
+#    url: !secret home_mode_on
+#    method: get
+#  ss_disable_home:
+#    url: !secret home_mode_off
+#    method: get
+
+shell_command:
+  restart_hass: 'curl http://127.0.0.1:8126/container/homeassistant/restart'
+
+automation: !include_dir_merge_list automation
+
+group: !include_dir_merge_named group
+
+script: !include scripts.yaml
+
+sensor: !include sensor.yaml
+
+switch: !include switch.yaml
+
+# scene: !include scenes.yaml
+
+binary_sensor: !include binary_sensor.yaml
+
+input_select: !include input_select.yaml
+
+input_number: !include input_number.yaml
+
+input_boolean: !include input_boolean.yaml

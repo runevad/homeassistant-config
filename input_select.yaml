@@ -1,0 +1,13 @@
+#################################################################
+## Input_select
+#################################################################
+
+cottage_status:
+    name: 'Cottage status'
+    options:
+     - Home
+     - Away
+     - Night
+     - Standby
+    initial: Standby
+    icon: mdi:security

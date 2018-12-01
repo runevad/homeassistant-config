@@ -1,0 +1,55 @@
+#Smoke sensors alarm
+#################################################################
+- id: fire_alarm
+  alias: 'Smoke detectors tripped'
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id:
+        - group.smoke_sensors
+      from: 'off'
+      to: 'on'
+  action:
+    - service: light.turn_on
+      data:
+        brightness: 255
+        color_temp: 454
+      entity_id: group.all_lights
+    - service: notify.ios_lars_iphone
+      data_template:
+        title: "BRANDLARM!!"
+        message: “En brandvarnare har löst ut!”
+        data:
+          push:
+            badge: 999
+            category: "alarm"
+    - service: homeassistant.turn_on
+      entity_id: script.sonos_fire_alarm
+
+#Smoke sensors auto reset to on
+#################################################################
+- id: smoke_sensors_auto_on
+  alias: 'Auto Smoke Sensors ON'
+  initial_state: 'on'
+  condition:
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: switch.smokesensor_allrum_18
+          state: 'off'
+        - condition: state
+          entity_id: switch.smokesensor_forrad_126
+          state: 'off'
+        - condition: state
+          entity_id: switch.smokesensor_groventre_124
+          state: 'off'
+        - condition: state
+          entity_id: switch.smokesensor_vardagsrum_133
+          state: 'off'
+  trigger:
+    - platform: time
+      minutes: '/30'
+      seconds: 00
+  action:
+    - service: homeassistant.turn_on
+      entity_id: group.smoke_units

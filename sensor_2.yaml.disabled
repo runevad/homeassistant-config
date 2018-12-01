@@ -1,0 +1,147 @@
+##############
+# Split this in the future??
+
+  - platform: time_date
+    display_options:
+      - 'time'
+
+  - platform: mqtt
+    name: "Outdoor temperature"
+    state_topic: "homeassistant/wemos_weather/temp"
+    qos: 0
+    unit_of_measurement: "°C"
+    #
+  - platform: mqtt
+    name: "Outdoor humidity"
+    state_topic: "homeassistant/wemos_weather/hum"
+    qos: 0
+    unit_of_measurement: "%"
+    #
+  - platform: mqtt
+    name: "Outdoor pressure"
+    state_topic: "homeassistant/wemos_weather/pres"
+    qos: 0
+    unit_of_measurement: "hPa"
+    #
+  - platform: mqtt
+    name: "Outdoor dew point"
+    state_topic: "homeassistant/wemos_weather/dew"
+    qos: 0
+    unit_of_measurement: "°C"
+    #
+  - platform: mqtt
+    name: "Weather station battery level"
+    state_topic: "homeassistant/wemos_weather/battery"
+    qos: 0
+    unit_of_measurement: "%"
+    #
+  - platform: mqtt
+    name: "Weather station signal strength"
+    state_topic: "homeassistant/wemos_weather/wifi_signal"
+    qos: 0
+    unit_of_measurement: "dB"
+    #
+  - platform: mqtt
+    name: "Weather station run time"
+    state_topic: "homeassistant/wemos_weather/run_time"
+    qos: 0
+    unit_of_measurement: "ms"
+
+  - platform: template
+    sensors:
+      cottage_status:
+        friendly_name: "House status"
+        value_template: >-
+          {{ states("input_select.cottage_status") }}
+      energy_month:
+        friendly_name: Elförbrukning månad
+        unit_of_measurement: "kWh"
+        value_template: >-
+          {{ float(states.sensor.energy_tot_128.attributes.current_energy_kwh) | round(1) }}
+
+#      lars_emelie:
+#        friendly_name: ""
+#        value_template: >-
+#          {% if is_state("group.lars", "home") and is_state("group.emelie", "home") -%}
+#            Alla är hemma
+#          {%- else -%}
+#            Emelie är på {{ states("group.emelie") }} och Lars är på {{ states("group.lars") }}
+#          {%- endif %}
+#
+
+#NAS
+  - platform: synologydsm
+    host: 192.168.1.4
+    port: 5000
+    username: !secret synology_user
+    password: !secret synology_pass
+    ssl: false
+    monitored_conditions:
+      - cpu_total_load
+      - memory_real_usage
+      - volume_percentage_used
+      - disk_status
+      - volume_status
+      - disk_temp
+
+  - platform: template
+    sensors:
+      heater_departuretime:
+        friendly_name: 'Departure time'
+        value_template: '{% if states.input_number.heater_hour.state|round(0)|string|length == 1 %}0{% endif %}{{ states.input_number.heater_hour.state|round(0)|string }}:{% if states.input_number.heater_minute.state|round(0)|string|length == 1 %}0{% endif %}{{ states.input_number.heater_minute.state|round(0)|string }}'
+
+      heater_activationtime:
+        friendly_name: 'Calculated activation time'
+        value_template: >-
+          {% set atime = (states.sensor.heater_temptime.state|round(0) * 60) %}
+          {% if states.input_number.heater_hour.state|round(0)|string|length == 1 %} {% set time = 0 %} {% endif %}
+          {% set time = time|string + states.input_number.heater_hour.state|round(0)|string + ':' %}
+          {% if states.input_number.heater_minute.state|round(0)|string|length == 1 %} {% set time = time|string + '0' %} {% endif %}
+          {% set time = time|string + states.input_number.heater_minute.state|round(0)|string %}
+          {{ (as_timestamp(now().strftime("%Y-%m-%d") + ' ' + time) - atime) | timestamp_custom("%H:%M")|string }}
+
+      heater_temptime:
+        friendly_name: 'Temperature adjusted time'
+        value_template: >-
+          {% set temp = states.sensor.heater_forecast.state|int %}
+          {% if temp <= -15 %} {% set t = 1 %}
+          {% elif temp > 5 %} {% set t = 20 %}
+          {% else %} {% set t = (15 + temp) %} {% endif %}
+          {{ (states.input_number.heater_maxmin.state|round(0)/(t**0.3))|int }}
+
+      heater_forecast:
+        friendly_name: 'Temperature forecast'
+        value_template: >-
+          {% if states.sensor.time.state < states.sensor.heater_departuretime.state and states.sensor.time.state > '00:00' %}
+          {% set forecast = states.weather.smhi_home.attributes.forecast[0].templow %}
+          {% else %}
+          {% set forecast = states.weather.smhi_home.attributes.temperature %}
+          {% endif %}
+          {{ forecast }}
+
+#Weether
+  # - platform: yr
+  #   name: yr.no Nu
+  #   monitored_conditions:
+  #     - temperature
+  #     - symbol
+  #     - precipitation
+  #     - windSpeed
+
+   # - platform: yr
+   #   name: yr.no imorgon
+   #   forecast: 24
+   #   monitored_conditions:
+   #     - temperature
+   #     - symbol
+   #     - precipitation
+   #     - windSpeed
+   #     - pressure
+   #     - windDirection
+   #     - humidity
+   #     - fog
+   #     - cloudiness
+   #     - lowClouds
+   #     - mediumClouds
+   #     - highClouds
+   #     - dewpointTemperature

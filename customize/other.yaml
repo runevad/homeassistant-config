@@ -1,0 +1,23 @@
+#Switches Docker icons
+switch.grafana:
+  icon: mdi:chart-bar-stacked
+switch.hass:
+  icon: mdi:home-assistant
+switch.influxdb:
+  icon: mdi:database-import
+switch.mariadb:
+  icon: mdi:database
+switch.mqtt:
+  icon: mdi:message
+
+sensor.heater_forecast:
+  unit_of_measurement: '°C'
+  icon: mdi:temperature-celsius
+sensor.heater_temptime:
+  unit_of_measurement: min
+  icon: mdi:timer
+
+switch.extra_hot_water:
+  icon: mdi:shower
+binary_sensor.esp_christmas_tree_water_level_low:
+  icon: mdi:pine-tree

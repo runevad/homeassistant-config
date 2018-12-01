@@ -1,0 +1,39 @@
+## Home-mode
+#################################
+- id: cottage_home
+  alias: cottage_home
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: group.household
+          state: 'home'
+        - condition: time
+          after: '07:30:00'
+          before: '22:30:00'
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+        - condition: template
+          value_template: >
+            {%- if states.input_select.cottage_status.last_changed -%}
+              {{ (as_timestamp(now()) - as_timestamp(states.input_select.cottage_status.last_changed)) > 300 }}
+            {%- else -%}
+              true
+            {%- endif -%}
+        - condition: or
+          conditions:
+          - condition: state
+            entity_id: input_select.cottage_status
+            state: 'Standby'
+          - condition: state
+            entity_id: input_select.cottage_status
+            state: 'Away'
+  trigger:
+    - platform: time
+      minutes: '/10'
+      seconds: 00
+  action:
+    - service: homeassistant.turn_on
+      entity_id: script.cottage_home
