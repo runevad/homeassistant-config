@@ -46,6 +46,10 @@ frontend:
   extra_html_url:
     - /local/lovelace.html
 
+#lovelace yaml mode
+lovelace:
+  mode: yaml
+
 # Enables configuration UI
 config:
 
@@ -59,6 +63,9 @@ updater:
 
 # Discover some devices automatically
 discovery:
+
+# Activate cloud component
+cloud:
 
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
@@ -92,8 +99,8 @@ recorder:
   purge_interval: 5
   exclude:
     domains:
-      - automation
-      - script
+#      - automation
+#      - script
       - weblink
       - updater
     entities:
@@ -105,6 +112,10 @@ recorder:
       - group.door_sensors
       - group.motion_sensors
       - group.smoke_sensors
+      - automation.battery_notification
+      - automation.battery_notification_clear
+      - automation.battery_sensor_from_attributes
+      - automation.update_battery_status_group_members
 
 # View all events in a logbook
 logbook:
