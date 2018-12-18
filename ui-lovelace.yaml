@@ -201,94 +201,102 @@ views:
           #     top: 80%
           #     left: 58%
           - type: state-icon
-            tap_action:
-              action: more-info
-            hold_action:
-              action: toggle
             entity: light.stora_fonstret_sovrum_vuxna_e14
             style:
               top: 42.5%
               left: 87%
-          - type: state-icon
             tap_action:
               action: more-info
             hold_action:
               action: toggle
+
+          - type: state-icon
             entity: light.stora_fonstret_ingrid_e14
             style:
               top: 66%
               left: 12%
+            tap_action:
+              action: more-info
+            hold_action:
+              action: toggle
           - type: icon
             icon: mdi:weather-night
             title: 'Nattlampa'
-            entity: script.ingrid_night
-            tap_action:
-              action: call-service
-            service: script.turn_on
             style:
               top: 75%
               left: 33%
               color: rgb(68,115,158)
+            tap_action:
+              action: call-service
+              service: script.turn_on
+              service_data:
+                entity_id: script.ingrid_night
+
+
           - type: icon
             icon: mdi:book-open-page-variant
             title: 'Läsljus'
-            entity: script.ingrid_reading
-            tap_action:
-              action: call-service
-            service: script.turn_on
             style:
               top: 70%
               left: 24%
               color: rgb(68,115,158)
-          - type: state-icon
             tap_action:
-              action: more-info
-            hold_action:
-              action: toggle
+              action: call-service
+              service: script.turn_on
+              service_data:
+                entity_id: script.ingrid_reading
+          - type: state-icon
             entity: light.stora_fonstret_kerstin_e14
             style:
               top: 44%
               left: 12%
+            tap_action:
+              action: more-info
+            hold_action:
+              action: toggle
           - type: icon
             icon: mdi:weather-night
             title: 'Nattlampa'
-            entity: script.kerstin_night
-            tap_action:
-              action: call-service
-            service: script.turn_on
             style:
               top: 35%
               left: 33%
               color: rgb(68,115,158)
+            tap_action:
+              action: call-service
+              service: script.turn_on
+              service_data:
+                entity_id: script.kerstin_night
           - type: icon
             icon: mdi:book-open-page-variant
             title: 'Läsljus'
-            entity: script.kerstin_reading
-            tap_action:
-              action: call-service
-            service: script.turn_on
             style:
               top: 40%
               left: 24%
               color: rgb(68,115,158)
-          - type: state-icon
             tap_action:
-              action: more-info
-            hold_action:
-              action: toggle
+              action: call-service
+              service: script.turn_on
+              service_data:
+                entity_id: script.kerstin_reading
+
+          - type: state-icon
             entity: light.tradfri_bulb_e27_cws_opal_600lm
             style:
               top: 30%
               left: 24%
-          - type: state-icon
             tap_action:
               action: more-info
             hold_action:
               action: toggle
+          - type: state-icon
             entity: light.lilla_fonstret_ingrid
             style:
               top: 80%
               left: 24%
+            tap_action:
+              action: more-info
+            hold_action:
+              action: toggle
           - type: state-icon
             entity: binary_sensor.motion_allrum_20
             style:
@@ -315,14 +323,14 @@ views:
           - type: state-icon
             # title: 'Extra varmvatten 2h'
             entity: switch.extra_hot_water
-            tap_action:
-              action: call-service
-            service: script.turn_on
-            service_data:
-              entity_id: script.extra_hot_water
             style:
               top: 76%
               left: 84%
+            tap_action:
+              action: call-service
+              service: script.turn_on
+              service_data:
+                entity_id: script.extra_hot_water
 
       - type: picture-elements
         image: /local/floorplans/carport.png
