@@ -10,19 +10,22 @@ views:
 #       title: 'Bottenvåning'
         elements:
           - type: state-icon
-            tap_action: toggle
+            tap_action:
+              action: toggle
             entity: light.fonsterlampor_vardagsrum_81
             style:
               top: 29%
               left: 19.3%
           - type: state-icon
-            tap_action: toggle
+            tap_action:
+              action: toggle
             entity: light.fonsterlampor_vardagsrum_81
             style:
               top: 15%
               left: 43%
           - type: state-icon
-            tap_action: toggle
+            tap_action:
+              action: toggle
             entity: light.fonsterlampor_vardagsrum_81
             style:
               top: 30%
@@ -156,51 +159,61 @@ views:
               top: 15%
               left: 17%
           # - type: state-icon
-          #   tap_action: toggle
+          #   tap_action:
+          #     action: toggle
           #   entity: light.fonsterlampor_uppe1_115
           #   style:
           #     top: 16%
           #     left: 42%
           - type: state-icon
-            tap_action: toggle
+            tap_action:
+              action: toggle
             entity: light.fonsterlampor_uppe1_115
             style:
               top: 16%
               left: 50%
           # - type: state-icon
-          #   tap_action: toggle
+          #   tap_action:
+          #     action: toggle
           #   entity: light.fonsterlampor_uppe1_115
           #   style:
           #     top: 16%
           #     left: 58%
           # - type: state-icon
-          #   tap_action: toggle
+          #   tap_action:
+          #     action: toggle
           #   entity: light.fonsterlampor_uppe1_115
           #   style:
           #     top: 80%
           #     left: 42%
           - type: state-icon
-            tap_action: toggle
+            tap_action:
+              action: toggle
             entity: light.fonsterlampor_uppe1_115
             style:
               top: 80%
               left: 50%
           # - type: state-icon
-          #   tap_action: toggle
+          #   tap_action:
+          #     action: toggle
           #   entity: light.fonsterlampor_uppe1_115
           #   style:
           #     top: 80%
           #     left: 58%
           - type: state-icon
-            tap_action: more-info
-            hold_action: toggle
+            tap_action:
+              action: more-info
+            hold_action:
+              action: toggle
             entity: light.stora_fonstret_sovrum_vuxna_e14
             style:
               top: 42.5%
               left: 87%
           - type: state-icon
-            tap_action: more-info
-            hold_action: toggle
+            tap_action:
+              action: more-info
+            hold_action:
+              action: toggle
             entity: light.stora_fonstret_ingrid_e14
             style:
               top: 66%
@@ -209,7 +222,8 @@ views:
             icon: mdi:weather-night
             title: 'Nattlampa'
             entity: script.ingrid_night
-            tap_action: call-service
+            tap_action:
+              action: call-service
             service: script.turn_on
             style:
               top: 75%
@@ -219,15 +233,18 @@ views:
             icon: mdi:book-open-page-variant
             title: 'Läsljus'
             entity: script.ingrid_reading
-            tap_action: call-service
+            tap_action:
+              action: call-service
             service: script.turn_on
             style:
               top: 70%
               left: 24%
               color: rgb(68,115,158)
           - type: state-icon
-            tap_action: more-info
-            hold_action: toggle
+            tap_action:
+              action: more-info
+            hold_action:
+              action: toggle
             entity: light.stora_fonstret_kerstin_e14
             style:
               top: 44%
@@ -236,7 +253,8 @@ views:
             icon: mdi:weather-night
             title: 'Nattlampa'
             entity: script.kerstin_night
-            tap_action: call-service
+            tap_action:
+              action: call-service
             service: script.turn_on
             style:
               top: 35%
@@ -246,22 +264,27 @@ views:
             icon: mdi:book-open-page-variant
             title: 'Läsljus'
             entity: script.kerstin_reading
-            tap_action: call-service
+            tap_action:
+              action: call-service
             service: script.turn_on
             style:
               top: 40%
               left: 24%
               color: rgb(68,115,158)
           - type: state-icon
-            tap_action: more-info
-            hold_action: toggle
+            tap_action:
+              action: more-info
+            hold_action:
+              action: toggle
             entity: light.tradfri_bulb_e27_cws_opal_600lm
             style:
               top: 30%
               left: 24%
           - type: state-icon
-            tap_action: more-info
-            hold_action: toggle
+            tap_action:
+              action: more-info
+            hold_action:
+              action: toggle
             entity: light.lilla_fonstret_ingrid
             style:
               top: 80%
@@ -292,7 +315,8 @@ views:
           - type: state-icon
             # title: 'Extra varmvatten 2h'
             entity: switch.extra_hot_water
-            tap_action: call-service
+            tap_action:
+              action: call-service
             service: script.turn_on
             service_data:
               entity_id: script.extra_hot_water
@@ -359,7 +383,8 @@ views:
           - type: state-icon
             title: Extra varmvatten
             entity: switch.extra_hot_water
-            tap_action: toggle
+            tap_action:
+              action: toggle
             style:
               top: 19.5%
               left: 81.5%
@@ -398,13 +423,15 @@ views:
               left: 48%
               width: 58%
           - type: state-icon
-            tap_action: none
+            tap_action:
+              action: none
             entity: switch.car_heater_136
             style:
               top: 75%
               left: 28%
           - type: state-icon
-            tap_action: more-info
+            tap_action:
+              action: more-info
             entity: script.car_heater
             style:
               top: 86%
@@ -790,8 +817,8 @@ views:
     icon: 'mdi:thermostat'
     badges: []
     cards:
-      - title: status
-        type: entities
+      - type: entities
+        title: Status
         entities:
           - sensor.nibe_31372_40067
           - sensor.nibe_31372_40014
@@ -801,8 +828,9 @@ views:
           - sensor.nibe_31372_40081
           - sensor.nibe_31372_40079
           - sensor.nibe_31372_43005
-      - title: 'compressor module '
-        type: entities
+        show_header_toggle: false
+      - type: entities
+        title: 'Compressor Module '
         entities:
           - sensor.nibe_31372_43416
           - sensor.nibe_31372_43439
@@ -820,32 +848,33 @@ views:
           - sensor.nibe_31372_43122
           - sensor.nibe_31372_43136
           - binary_sensor.nibe_31372_10012
-      - title: climate system 1
-        type: entities
+        show_header_toggle: false
+      - type: entities
+        title: Climate System
         entities:
           - sensor.nibe_31372_43009
-          - sensor.nibe_31372_40071
           - sensor.nibe_31372_40008
           - sensor.nibe_31372_40012
           - sensor.nibe_31372_40033
-          - binary_sensor.nibe_31372_43161
-          - binary_sensor.nibe_31372_47276
-      - title: addition
-        type: entities
+        show_header_toggle: false
+      - type: entities
+        title: Addition
         entities:
           - sensor.nibe_31372_47214
           - sensor.nibe_31372_43081
           - sensor.nibe_31372_43084
           - sensor.nibe_31372_47212
           - binary_sensor.nibe_31372_10033
-      - title: smart price adaption
-        type: entities
+        show_header_toggle: false
+      - type: entities
+        title: Smart Price Adaption
         entities:
           - sensor.nibe_31372_44897
           - sensor.nibe_31372_44908
           - sensor.nibe_31372_10069
-      - title: soft in/outputs
-        type: entities
+        show_header_toggle: false
+      - type: entities
+        title: Soft inputs/outputs
         entities:
           - sensor.nibe_31372_47411
           - sensor.nibe_31372_47410
@@ -853,12 +882,7 @@ views:
           - sensor.nibe_31372_47408
           - sensor.nibe_31372_47407
           - sensor.nibe_31372_47412
-      - title: info
-        type: entities
-        entities:
-          - sensor.nibe_31372_48745
-          - sensor.nibe_31372_0
-
+        show_header_toggle: false
 
 
 ###### Old floorplan
@@ -921,19 +945,22 @@ views:
 #                 border-radius: 50%
 #
 #             - type: state-icon
-#               tap_action: toggle
+#               tap_action:
+#                 action: toggle
 #               entity: light.fonsterlampor_vardagsrum_81
 #               style:
 #                 top: 29%
 #                 left: 10.5%
 #             - type: state-icon
-#               tap_action: toggle
+#               tap_action:
+#                 action: toggle
 #               entity: light.fonsterlampor_vardagsrum_81
 #               style:
 #                 top: 15.5%
 #                 left: 18.5%
 #             - type: state-icon
-#               tap_action: toggle
+#               tap_action:
+#                 action: toggle
 #               entity: light.fonsterlampor_vardagsrum_81
 #               style:
 #                 top: 29%
@@ -1017,31 +1044,36 @@ views:
 #
 # ##############Floor2
 #             - type: state-icon
-#               tap_action: toggle
+#               tap_action:
+#                 action: toggle
 #               entity: light.fonsterlampor_uppe1_115
 #               style:
 #                 top: 15.5%
 #                 left: 58.8%
 #             - type: state-icon
-#               tap_action: toggle
+#               tap_action:
+#                 action: toggle
 #               entity: light.fonsterlampor_uppe1_115
 #               style:
 #                 top: 81%
 #                 left: 58.8%
 #             - type: state-icon
-#               tap_action: toggle
+#               tap_action:
+#                 action: toggle
 #               entity: light.fonsteruttag_sovrum1_62
 #               style:
 #                 top: 42.5%
 #                 left: 71.5%
 #             - type: state-icon
-#               tap_action: toggle
+#               tap_action:
+#                 action: toggle
 #               entity: light.fonsteruttag_sovrum2_60
 #               style:
 #                 top: 66%
 #                 left: 46%
 #             - type: state-icon
-#               tap_action: toggle
+#               tap_action:
+#                 action: toggle
 #               entity: light.fonsteruttag_lekrum_61
 #               style:
 #                 top: 44%
