@@ -105,6 +105,9 @@
         - condition: state
           entity_id: group.household
           state: 'home'
+        - condition: state
+          entity_id: light.fonsterlampor_vardagsrum_81
+          state: 'off'
         - condition: time
           after: '05:30:00'
           before: '08:30:00'
@@ -142,6 +145,12 @@
         - condition: state
           entity_id: group.household
           state: 'home'
+        - condition: state
+          entity_id: light.fonsterlampor_uppe1_115
+          state: 'off'
+        - condition: state
+          entity_id: light.fonsterlampor_vardagsrum_81
+          state: 'off'
         - condition: time
           after: '07:30:00'
           before: '09:00:00'
