@@ -59,7 +59,7 @@ switch.vvc_135:
   friendly_name: Varmvattencirk.
   icon: mdi:power
 switch.car_heater_136:
-  friendly_name: Motorvärmare manuell start
+  friendly_name: Motorvärmare
   icon: mdi:power
 
 #Lights
