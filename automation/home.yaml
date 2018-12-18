@@ -32,7 +32,7 @@
             state: 'Away'
   trigger:
     - platform: time
-      minutes: '/10'
+      minutes: '/20'
       seconds: 00
   action:
     - service: homeassistant.turn_on
