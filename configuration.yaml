@@ -226,7 +226,7 @@ tts:
 shell_command:
   restart_hass: 'curl http://127.0.0.1:8126/container/homeassistant/restart'
 
-automation: !include_dir_merge_list automation
+automation: !include automations.yaml
 
 group: !include_dir_merge_named group
 
