@@ -1,0 +1,876 @@
+#Add HA Alarm Panel later for better support of delay etc.
+
+#################################################################
+## Security System
+##################################
+- id: Alarm on from iOS notification
+  alias: Sound the alarm
+  trigger:
+    platform: event
+    event_type: ios.notification_action_fired
+    event_data:
+      actionName: SOUND_ALARM
+  action:
+    - service: homeassistant.turn_on
+      entity_id: script.sonos_alarm
+
+- id: Alarm off from iOS notification
+  alias: Turn alarm off from iOS
+  trigger:
+    platform: event
+    event_type: ios.notification_action_fired
+    event_data:
+      actionName: SILENCE_ALARM
+  action:
+    - service: media_player.turn_off
+
+## Sensor trip
+#################################
+- id: sensors_changed_when_nobody_home
+  alias: 'Sensors tripped when nobody is home'
+  initial_state: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.cottage_update
+        state: 'on'
+      - condition: state
+        entity_id: input_select.cottage_status
+        state: 'Away'
+  trigger:
+    - platform: state
+      entity_id:
+        - group.smoke_sensors
+        - group.motion_sensors
+        - group.door_sensors
+      from: 'off'
+      to: 'on'
+  action:
+    - delay: '00:03:00'
+    - condition: state
+      entity_id: group.houshold
+      state: 'away'
+    - service: light.turn_on
+      data:
+        entity_id: group.all_lights
+    - service: notify.ios_lars_iphone
+      data_template:
+        title: "LARM!"
+        message: "The {{ trigger.to_state.name }} was changed to {{ trigger.to_state.state }} while no one is home - {{ as_timestamp(now()) | timestamp_custom('%Y-%m-%d %H:%M:%S', true) }}"
+        data:
+          push:
+            badge: 666
+            category: "alarm"
+    - service: homeassistant.turn_on
+      entity_id: script.sonos_alarm
+
+- id: door_open
+  alias: 'Door open if night or away'
+  initial_state: 'on'
+  condition:
+    - condition: state
+      entity_id: group.door_sensors
+      state: 'on'
+  trigger:
+    - platform: state
+      entity_id: input_select.cottage_status
+      to: 'Night'
+    - platform: state
+      entity_id: input_select.cottage_status
+      to: 'Away'
+  action:
+    - service: notify.ios_lars_iphone
+      data_template:
+        title: "Dörr öppen!"
+        message: "{{ trigger.to_state.name }} är öppen!"
+        data:
+          push:
+            badge: 555
+            category: "alarm"
+
+
+- id: storage_cold
+  alias: "Kallt i förråd"
+  initial_state: 'on'
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.smoke_temp_forrad_127
+      below: '12'
+  action:
+    - service: notify.ios_lars_iphone
+      data:
+        title: "Larm"
+        message: "Det är under 12°C i förrådet!"
+        data:
+#          subtitle: "Test undertitel"
+          push:
+            badge: 500
+            category: "alarm"
+
+
+
+## Arm Cottage
+################
+- id: arm_cottage
+  alias: arm_cottage
+  initial_state: 'on'
+  condition:
+    - condition: state
+      entity_id: input_boolean.cottage_update
+      state: 'on'
+    - condition: template
+      value_template: >
+        {%- if states.automation.disarm_cottage_from_away.attributes.last_triggered -%}
+          {{ (as_timestamp(now()) - as_timestamp(states.automation.disarm_cottage_from_away.attributes.last_triggered)) > 240 }}
+        {%- else -%}
+          true
+        {%- endif -%}
+    - condition: template
+      value_template: "{{ states.input_select.cottage_status.state != 'Away' }}"
+  trigger:
+    - platform: state
+      entity_id: group.household
+      from: 'home'
+      to: 'not_home'
+    - platform: state
+      entity_id: group.household
+      from: 'home'
+      to: 'not_home'
+      for: '00:05:00'
+  action:
+     service: homeassistant.turn_on
+     entity_id: script.cottage_away
+
+
+#### Disarm
+- id: disarm_cottage_from_away
+  alias: disarm_cottage_from_away
+  initial_state: 'on'
+  condition:
+    - condition: state
+      entity_id: input_select.cottage_status
+      state: 'Away'
+    - condition: state
+      entity_id: input_boolean.cottage_update
+      state: 'on'
+    - condition: template
+      value_template: >
+        {%- if states.automation.arm_cottage.attributes.last_triggered -%}
+          {{ (as_timestamp(now()) - as_timestamp(states.automation.arm_cottage.attributes.last_triggered)) > 240 }}
+        {%- else -%}
+          true
+        {%- endif -%}
+  trigger:
+    - platform: state
+      entity_id: group.household
+      from: 'not_home'
+      to: 'home'
+  action:
+     service: homeassistant.turn_on
+     entity_id: script.cottage_standby
+
+
+
+## Home-mode
+#################################
+- id: cottage_home
+  alias: cottage_home
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: group.household
+          state: 'home'
+        - condition: time
+          after: '07:30:00'
+          before: '22:30:00'
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+        - condition: template
+          value_template: >
+            {%- if states.input_select.cottage_status.last_changed -%}
+              {{ (as_timestamp(now()) - as_timestamp(states.input_select.cottage_status.last_changed)) > 300 }}
+            {%- else -%}
+              true
+            {%- endif -%}
+        - condition: or
+          conditions:
+          - condition: state
+            entity_id: input_select.cottage_status
+            state: 'Standby'
+          - condition: state
+            entity_id: input_select.cottage_status
+            state: 'Away'
+  trigger:
+    - platform: time_pattern
+      minutes: '/20'
+  action:
+    - service: homeassistant.turn_on
+      entity_id: script.cottage_home
+
+
+
+## Standby morning mode
+#################################
+- id: cottage_standby_morning
+  alias: cottage_standby_morning
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+        - condition: state
+          entity_id: group.household
+          state: 'home'
+  trigger:
+    - platform: time
+      at: '05:30:00'
+  action:
+    - service: homeassistant.turn_on
+      entity_id: script.cottage_standby
+
+##Standby in the evening
+###################
+- id: cottage_standby_at_evening
+  alias: cottage_standby_at_evening
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+        - condition: state
+          entity_id: group.household
+          state: 'home'
+  trigger:
+    - platform: time
+      at: '23:00:00'
+  action:
+    - service: homeassistant.turn_on
+      entity_id: script.cottage_standby
+
+
+
+## Night mode
+#################################
+- id: cottage_to_night
+  alias: cottage_to_night
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: group.household
+          state: 'home'
+        - condition: time
+          after: '00:15:00'
+          before: '05:00:00'
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+        - condition: template
+          value_template: >
+            {%- if states.input_select.cottage_status.last_changed -%}
+              {{ (as_timestamp(now()) - as_timestamp(states.input_select.cottage_status.last_changed)) > 900 }}
+            {%- else -%}
+              true
+            {%- endif -%}
+  trigger:
+    - platform: time_pattern
+      minutes: '/20'
+  action:
+    - service: homeassistant.turn_on
+      entity_id: script.cottage_night
+
+#Disarm when someone is coming home during Night mode
+##############
+- id: disarm_cottage_at_night
+  alias: disarm_cottage_at_night
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+        - condition: state
+          entity_id: input_select.cottage_status
+          state: 'Night'
+  trigger:
+   - platform: state
+     entity_id:
+       - group.lars
+       - group.emelie
+     from: 'not_home'
+     to: 'home'
+  action:
+    service: homeassistant.turn_on
+    entity_id: script.cottage_standby
+
+
+
+#------
+# IKEA modes
+#white:
+#245, 250, 246
+#---
+#everyday:
+#241, 224, 181
+#---
+#nightmode:
+#239, 210, 117
+#color_temp: 454
+#---
+
+################################
+## Lights
+################################
+- id: turn_on_lights_when_away
+  alias: turn_on_lights_when_away
+  initial_state: 'on'
+  condition:
+    - condition: state
+      entity_id: input_select.cottage_status
+      state: 'Away'
+  trigger:
+    - platform: sun
+      event: sunset
+  action:
+    - service: light.turn_on
+      data:
+        brightness: 200
+        color_temp: 454
+        transition: 1800
+      entity_id: group.all_lights
+
+- id: turn_off_lights_when_away
+  alias: turn_off_lights_when_away
+  initial_state: 'on'
+  condition:
+    - condition: state
+      entity_id: input_select.cottage_status
+      state: 'Away'
+  trigger:
+    - platform: time
+      at: '00:36'
+  action:
+    - service: light.turn_off
+      entity_id: group.all_lights
+
+- id: lights_on_pre_kids_bedtime
+  alias: lights_on_pre_kids_bedtime
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+        - condition: state
+          entity_id: group.household
+          state: 'home'
+        - condition: time
+          after: '12:00:00'
+          before: '19:30:00'
+  trigger:
+    - platform: sun
+      event: sunset
+    - platform: numeric_state
+      entity_id: sensor.lux_allrum_22
+      below: '30'
+  action:
+    - service: light.turn_on
+      data:
+        brightness: 180
+        color_temp: 454
+        transition: 60
+      entity_id: group.all_lights
+
+- id: lights_on_evening
+  alias: lights_on_evening
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+        - condition: state
+          entity_id: group.household
+          state: 'home'
+        - condition: time
+          after: '19:30:00'
+          before: '22:00:00'
+  trigger:
+    - platform: sun
+      event: sunset
+    - platform: numeric_state
+      entity_id: sensor.lux_allrum_22
+      below: '30'
+  action:
+    - service: light.turn_on
+      data:
+        brightness: 180
+        color_temp: 454
+        transition: 60
+      entity_id:
+        - light.fonsterlampor_vardagsrum_81
+        - light.fonsterlampor_uppe1_115
+        - light.stora_fonstret_sovrum_vuxna_e14
+
+- id: morning_lights_weekday
+  alias: morning_lights_weekday
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+        - condition: state
+          entity_id: group.household
+          state: 'home'
+        - condition: state
+          entity_id: light.fonsterlampor_vardagsrum_81
+          state: 'off'
+        - condition: time
+          after: '05:30:00'
+          before: '08:30:00'
+        - condition: state
+          entity_id: binary_sensor.workday
+          state: 'on'
+        - condition: or
+          conditions:
+            - condition: state
+              entity_id: sun.sun
+              state: 'below_horizon'
+            - condition: numeric_state
+              entity_id: sensor.lux_allrum_22
+              below: '30'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_allrum_20
+      to: 'on'
+  action:
+    - service: light.turn_on
+      data:
+        brightness: 255
+        color_temp: 454
+      entity_id: light.fonsterlampor_vardagsrum_81
+
+- id: morning_lights_weekend
+  alias: morning_lights_weekend
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+        - condition: state
+          entity_id: group.household
+          state: 'home'
+        - condition: state
+          entity_id: light.fonsterlampor_uppe1_115
+          state: 'off'
+        - condition: state
+          entity_id: light.fonsterlampor_vardagsrum_81
+          state: 'off'
+        - condition: time
+          after: '07:30:00'
+          before: '09:00:00'
+        - condition: state
+          entity_id: binary_sensor.workday
+          state: 'off'
+        - condition: or
+          conditions:
+            - condition: state
+              entity_id: sun.sun
+              state: 'below_horizon'
+            - condition: numeric_state
+              entity_id: sensor.lux_allrum_22
+              below: '30'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_allrum_20
+      to: 'on'
+  action:
+    - service: light.turn_on
+      data:
+        brightness: 255
+        color_temp: 454
+      entity_id:
+        - light.fonsterlampor_vardagsrum_81
+        - light.fonsterlampor_uppe1_115
+
+- id: lights_on_up_night_motion
+  alias: lights_on_up_night_motion
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: time
+          after: '23:00:00'
+        - condition: numeric_state
+          entity_id: sensor.lux_allrum_22
+          below: '30'
+        - condition: state
+          entity_id: light.fonsterlampor_uppe1_115
+          state: 'off'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_allrum_20
+      to: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.fonsterlampor_uppe1_115
+    - delay: 00:04:00
+    - service: light.turn_off
+      entity_id: light.fonsterlampor_uppe1_115
+
+- id: lights_on_down_night_motion
+  alias: lights_on_down_night_motion
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: time
+          after: '23:00:00'
+        - condition: numeric_state
+          entity_id: sensor.lux_hall_13
+          below: '30'
+        - condition: state
+          entity_id: light.fonsterlampor_vardagsrum_81
+          state: 'off'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_hall_11
+      to: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.fonsterlampor_vardagsrum_81
+    - delay: 00:04:00
+    - service: light.turn_off
+      entity_id: light.fonsterlampor_vardagsrum_81
+
+- id: lights_off_when_high_lux
+  alias: lights_off_when_high_lux
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.lux_hall_13
+      above: '30'
+    - platform: numeric_state
+      entity_id: sensor.lux_allrum_22
+      above: '30'
+  action:
+    - service: light.turn_off
+      entity_id: group.all_lights
+
+- id: wake_up_lights_weekday
+  alias: Wake up light weekdays
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+        - condition: state
+          entity_id: binary_sensor.workday
+          state: 'on'
+  trigger:
+    - platform: time
+      at: '06:45'
+  action:
+    - service: light.turn_on
+      data:
+        brightness: 255
+        color_temp: 454
+        transition: 18000
+      entity_id:
+        - light.tradfri_bulb_e27_cws_opal_600lm
+        - light.lilla_fonstret_ingrid
+
+
+- id: car_heater_start
+  alias: "Engine heater activate"
+  trigger:
+    platform: template
+    value_template: '{{ states.sensor.heater_activationtime.state == states.sensor.time.state }}'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        # replace entity_id below with your own tracker (group or single)
+        entity_id: group.household
+        # if your home zone is called home
+        state: 'home'
+      - condition: or
+        # Below checks if it's a workday or not
+        conditions:
+          - condition: state
+            entity_id: input_boolean.workdays_only
+            state: 'off'
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.workday
+                state: 'on'
+              - condition: state
+                entity_id: input_boolean.workdays_only
+                state: 'on'
+  # If the above conditions are fulfilled, ie. you are home and it's a workday
+  # then activate the heater on your selected time
+  action:
+    - service: switch.turn_on
+      entity_id: switch.car_heater_136
+
+# Automation 2 turns off the car heater at the set delay.
+- id: car_heater_shut_down
+  alias: "Engine heater deactivate"
+  trigger:
+    platform: template
+    value_template: '{{ states.sensor.heater_departuretime.state == states.sensor.time.state }}'
+  action:
+    - delay:
+        minutes: "{{ states('input_number.heater_delay') | int }}"
+    - service: switch.turn_off
+      entity_id: switch.car_heater_136
+
+
+
+#################################################################
+#Test area
+#### ------ Fixa senare...
+#Typ platta med Floor Plan inkl. kalender m t.ex. Fotboll Ingrid osv. osv.
+#Sedan TTS med dessa vid entré på morgonen eller liknanade
+#
+#Fixa så att en typ boolean m en "Alarm panel" kan avgöra om huset är avlarmet eller inte
+#
+- id: ifttt_automation
+  alias: 'IFTTT automation'
+  trigger:
+    platform: event
+    event_type: ifttt_webhook_received
+    event_data:
+      action: call_service
+  action:
+    service_template: '{{ trigger.event.data.service }}'
+    data_template:
+      entity_id: '{{ trigger.event.data.entity_id }}'
+
+- id: extra_vvc_weekend
+  alias: 'VVC on weekend earlier'
+  condition:
+    - condition: state
+      entity_id: binary_sensor.workday
+      state: 'off'
+    - condition: state
+      entity_id: group.household
+      state: 'home'
+  trigger:
+    - platform: time
+      at: '07:00'
+  action:
+    - service: homeassistant.turn_on
+      data:
+        entity_id: switch.vvc_135
+
+- id: high_electric_price
+  alias: 'Högt elpris'
+  condition:
+    - condition: time
+      after: '08:00:00'
+      before: '21:00:00'
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.nibe_31372_10069
+      above: 80
+  action:
+    - service: notify.ios_lars_iphone
+      data:
+        title: "Elpris!"
+        message: "Spot-pris över 80 öre!"
+        data:
+          push:
+            category: "alarm"
+    - service: script.sonos_say
+      data_template:
+        sonos_entity: media_player.kokvardagsrum
+        volume: 0.45
+        delay: '00:00:15'
+        message: 'Hej, tänk på att det just nu är högt elpris. Det ligger just nu på {{ states.sensor.nibe_31372_10069.state }} öre per kWh!'
+
+- id: low_electric_price
+  alias: 'Lågt elpris'
+  condition:
+    - condition: time
+      after: '08:00:00'
+      before: '21:00:00'
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.nibe_31372_10069
+      below: 20
+  action:
+    - service: notify.ios_lars_iphone
+      data:
+        title: "Elpris!"
+        message: "Spot-pris under 20 öre!"
+        data:
+          push:
+            category: "alarm"
+    - service: script.sonos_say
+      data_template:
+        sonos_entity: media_player.kokvardagsrum
+        volume: 0.45
+        delay: '00:00:15'
+        message: 'Hej, just nu är det lågt elpris, {{ states.sensor.nibe_31372_10069.state }} öre per kWh närmaste timen'
+
+#################################
+###### Other
+#################################
+# - id: theme_night
+#   alias: 'Set dark theme for the night'
+#   initial_state: 'on'
+#   trigger:
+#     - platform: time
+#       at: '23:00'
+#   action:
+#     - service: frontend.set_theme
+#       data:
+#         name: night
+
+# - id: theme_morning
+#   alias: 'Set lighter theme for the morning'
+#   initial_state: 'on'
+#   trigger:
+#     - platform: time
+#       at: '08:00'
+#   action:
+#     - service: frontend.set_theme
+#       data:
+#         name: default
+
+- id: esp_christmas_tree_water_level_low
+  alias: 'Larm låg vattennivå granen'
+  condition:
+    - condition: time
+      after: '08:00:00'
+      before: '21:00:00'
+    - condition: state
+      entity_id: group.household
+      state: 'home'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.esp_christmas_tree_water_level_low
+      to: 'off'
+  action:
+    - service: notify.ios_lars_iphone
+      data:
+        title: "Granen!"
+        message: "Vattna granen, det är nästan slut på vatten!"
+        data:
+          push:
+            category: "alarm"
+    - service: script.sonos_say
+      data_template:
+        sonos_entity: media_player.kokvardagsrum
+        volume: 0.45
+        delay: '00:00:15'
+        message: 'Hej, det är dags att vattna granen. Det börjar ta slut på vatten!'
+
+- id: update_of_hass
+  alias: 'Notification Update Hass Available'
+  condition:
+    - condition: time
+      after: '08:00:00'
+      before: '20:00:00'
+  trigger:
+    - platform: state
+      entity_id: updater.updater
+  action:
+    - service: notify.ios_lars_iphone
+      data:
+        title: "Uppdatering!"
+        message: "Ny version av Home Assistant tillgänglig!"
+        data:
+          push:
+            badge: 10
+            category: "alarm"
+    - service: script.sonos_say
+      data_template:
+        sonos_entity: media_player.kokvardagsrum
+        volume: 0.45
+        delay: '00:00:15'
+        message: 'Hej, det finns en ny uppdatering av Home Assistant'
+
+
+
+
+#Smoke sensors alarm
+#################################################################
+- id: fire_alarm
+  alias: 'Smoke detectors tripped'
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id:
+        - group.smoke_sensors
+      from: 'off'
+      to: 'on'
+  action:
+    - service: light.turn_on
+      data:
+        brightness: 255
+        color_temp: 454
+      entity_id: group.all_lights
+    - service: notify.ios_lars_iphone
+      data_template:
+        title: "BRANDLARM!!"
+        message: “En brandvarnare har löst ut!”
+        data:
+          push:
+            badge: 999
+            category: "alarm"
+    - service: homeassistant.turn_on
+      entity_id: script.sonos_fire_alarm
+
+#Smoke sensors auto reset to on
+#################################################################
+- id: smoke_sensors_auto_on
+  alias: 'Auto Smoke Sensors ON'
+  initial_state: 'on'
+  condition:
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: switch.smokesensor_allrum_18
+          state: 'off'
+        - condition: state
+          entity_id: switch.smokesensor_forrad_126
+          state: 'off'
+        - condition: state
+          entity_id: switch.smokesensor_groventre_124
+          state: 'off'
+        - condition: state
+          entity_id: switch.smokesensor_vardagsrum_133
+          state: 'off'
+  trigger:
+    - platform: time_pattern
+      minutes: '/30'
+  action:
+    - service: homeassistant.turn_on
+      entity_id: group.smoke_units
