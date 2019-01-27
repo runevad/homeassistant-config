@@ -95,13 +95,13 @@ views:
             service_data:
               entity_id: group.all_lights
 
-          #Christmas tree
-          - type: state-icon
-            title: Vatten till granen
-            entity: binary_sensor.esp_christmas_tree_water_level_low
-            style:
-              top: 35%
-              left: 30%
+          # #Christmas tree
+          # - type: state-icon
+          #   title: Vatten till granen
+          #   entity: binary_sensor.esp_christmas_tree_water_level_low
+          #   style:
+          #     top: 35%
+          #     left: 30%
 
 ## Devices
           - type: image
@@ -219,6 +219,15 @@ views:
               action: more-info
             hold_action:
               action: toggle
+          - type: state-icon
+            entity: light.stora_fonstret_ingrid
+            style:
+              top: 72%
+              left: 12%
+            tap_action:
+              action: more-info
+            hold_action:
+              action: toggle
           - type: icon
             icon: mdi:weather-night
             title: 'Nattlampa'
@@ -249,6 +258,15 @@ views:
             entity: light.stora_fonstret_kerstin_e14
             style:
               top: 44%
+              left: 12%
+            tap_action:
+              action: more-info
+            hold_action:
+              action: toggle
+          - type: state-icon
+            entity: light.stora_fonstret_kerstin
+            style:
+              top: 38%
               left: 12%
             tap_action:
               action: more-info
@@ -479,21 +497,22 @@ views:
       - type: picture-glance
         title: Ute
         image: null
-        camera_image: camera.dlink__dcs4602ev
+        camera_image: camera.d_link_dcs_4602ev
         entities:
-          - camera.dlink__dcs4602ev
+          - camera.d_link_dcs_4602ev
+          - camera.d_link_dcs_4622
           - binary_sensor.house_update
 
       # Weather
       - type: weather-forecast
         entity: weather.smhi_home
 
-      - type: history-graph
-        title: Innomhus & Utomhus (48h)
-        hours_to_show: 48
-        entities:
-          - sensor.nibe_31372_40033
-          - sensor.outdoor_temperature
+#      - type: history-graph
+#        title: Innomhus & Utomhus (48h)
+#        hours_to_show: 48
+#        entities:
+#          - sensor.nibe_31372_40033
+#          - sensor.outdoor_temperature
 
       # Media
       - type: media-control
@@ -792,19 +811,21 @@ views:
           - light.stora_fonstret_kerstin_e14
 
 
-  - icon: mdi:cctv
-    id: cameras
+  - path: cameras
     title: Cameras
+    icon: mdi:cctv
+    badges: []
     cards:
       - type: picture-entity
-        entity: camera.dlink__dcs4602ev
+        entity: camera.d_link_dcs_4602ev
         show_info: false
       - type: picture-entity
-        entity: camera.dlink__dcs4622
+        entity: camera.d_link_dcs_4622
         show_info: false
       # - type: picture-entity
       #   entity: camera.vika
       #   show_info: false
+
 
   - path: neato
     title: StädStina

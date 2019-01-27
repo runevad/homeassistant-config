@@ -71,40 +71,42 @@ cottage_home:
         entity_id:
           - group.door_units
           - group.motion_units
-    - condition: time
-      after: '07:00:00'
-      before: '21:00:00'
-    - condition: template
-      value_template: >
-        {%- if states.group.household.last_changed -%}
-          {{ (as_timestamp(now()) - as_timestamp(states.group.household.last_changed)) > 1800 }}
-        {%- else -%}
-          true
-        {%- endif -%}
-    - wait_template: "{{ is_state('switch.motion_hall_11', 'on') }}"
-      timeout: '00:05:00'
-      continue_on_timeout: 'true'
-    - service: media_player.volume_set
-      data_template:
-        entity_id: media_player.kokvardagsrum
-        volume_level: .45
-    - service: tts.google_say
-      data_template:
-        entity_id: media_player.kokvardagsrum
-        message: "Välkommen hem, jag startar lite musik åt dig"
-    - delay: '00:00:10'
-    - service: media_player.select_source
-      data:
-        entity_id: media_player.kokvardagsrum
-        source: 'The Most Beautiful Songs in the World'
-    - service: media_player.volume_set
-      data:
-        entity_id: media_player.kokvardagsrum
-        volume_level: .06
-    - service: media_player.play_media
-      data:
-        entity_id: media_player.kokvardagsrum
-        media_content_type: music
+
+# // Extra for another time when house "state" is set to "just arrived"
+    # - condition: time
+    #   after: '07:00:00'
+    #   before: '21:00:00'
+    # - condition: template
+    #   value_template: >
+    #     {%- if states.group.household.last_changed -%}
+    #       {{ (as_timestamp(now()) - as_timestamp(states.group.household.last_changed)) > 1800 }}
+    #     {%- else -%}
+    #       true
+    #     {%- endif -%}
+    # - wait_template: "{{ is_state('switch.motion_hall_11', 'on') }}"
+    #   timeout: '00:05:00'
+    #   continue_on_timeout: 'true'
+    # - service: media_player.volume_set
+    #   data_template:
+    #     entity_id: media_player.kokvardagsrum
+    #     volume_level: .45
+    # - service: tts.google_say
+    #   data_template:
+    #     entity_id: media_player.kokvardagsrum
+    #     message: "Välkommen hem, jag startar lite musik åt dig"
+    # - delay: '00:00:10'
+    # - service: media_player.select_source
+    #   data:
+    #     entity_id: media_player.kokvardagsrum
+    #     source: 'The Most Beautiful Songs in the World'
+    # - service: media_player.volume_set
+    #   data:
+    #     entity_id: media_player.kokvardagsrum
+    #     volume_level: .06
+    # - service: media_player.play_media
+    #   data:
+    #     entity_id: media_player.kokvardagsrum
+    #     media_content_type: music
 
 cottage_away:
   alias: Cottage Away
@@ -225,10 +227,37 @@ sonos_say:
 #         media_content_id: https://content.viaplay.se/{deviceKey}/barn/shimmer-och-shine/sasong-2/avsnitt-1
 #         media_content_type: movie
 
+
+dishwasher_done:
+  alias: "Diskmaskinen klar"
+  sequence:
+    - condition: time
+      after: '08:00:00'
+      before: '21:00:00'
+    - service: notify.ios_lars_iphone
+      data:
+        title: "Diskmaskinen klar!"
+        message: "..."
+        data:
+          push:
+            badge:
+            category: "alarm"
+    - service: script.sonos_say
+      data_template:
+        sonos_entity: media_player.kokvardagsrum
+        volume: 0.55
+        delay: '00:00:15'
+        message: 'Hej Hej Hej, diskmaskinen har körts klart och är redo för utplockning'
+
 ###  "light-scenes"
 kerstin_night:
   alias: 'Kerstins sovrum night mode'
   sequence:
+    - service: light.turn_off
+      entity_id:
+        - light.stora_fonstret_kerstin_e14
+        - light.stora_fonstret_kerstin
+    - delay: 00:00:01
     - service: light.turn_on
       data:
         brightness: 1
@@ -236,12 +265,15 @@ kerstin_night:
         # transition: 2
       entity_id:
         - light.tradfri_bulb_e27_cws_opal_600lm
-    - service: light.turn_off
-      entity_id: light.stora_fonstret_kerstin_e14
 
 ingrid_night:
   alias: 'Ingrid sovrum night mode'
   sequence:
+    - service: light.turn_off
+      entity_id:
+        - light.stora_fonstret_ingrid_e14
+        - light.stora_fonstret_ingrid
+    - delay: 00:00:01
     - service: light.turn_on
       data:
         brightness: 1
@@ -249,8 +281,6 @@ ingrid_night:
         # transition: 2
       entity_id:
         - light.lilla_fonstret_ingrid
-    - service: light.turn_off
-      entity_id: light.stora_fonstret_ingrid_e14
 
 kerstin_reading:
   alias: 'Läslampa Kerstin'
@@ -263,6 +293,7 @@ kerstin_reading:
       entity_id:
         - light.tradfri_bulb_e27_cws_opal_600lm
         - light.stora_fonstret_kerstin_e14
+        - light.stora_fonstret_kerstin
 
 ingrid_reading:
   alias: 'Läslampa Ingrid'
@@ -275,3 +306,4 @@ ingrid_reading:
       entity_id:
         - light.lilla_fonstret_ingrid
         - light.stora_fonstret_ingrid_e14
+        - light.stora_fonstret_ingrid
