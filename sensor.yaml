@@ -119,24 +119,23 @@
           {% endif %}
           {{ forecast }}
 
-
-  - platform: mqtt
-    name: "ESP Christmas tree battery level"
-    state_topic: "homeassistant/wemos_christmas/battery"
-    qos: 0
-    unit_of_measurement: "%"
-    #
-  - platform: mqtt
-    name: "ESP Christmas tree signal strength"
-    state_topic: "homeassistant/wemos_christmas/wifi_signal"
-    qos: 0
-    unit_of_measurement: "dB"
-    #
-  - platform: mqtt
-    name: "ESP Christmas tree run time"
-    state_topic: "homeassistant/wemos_christmas/run_time"
-    qos: 0
-    unit_of_measurement: "ms"
+  # - platform: mqtt
+  #   name: "ESP Christmas tree battery level"
+  #   state_topic: "homeassistant/wemos_christmas/battery"
+  #   qos: 0
+  #   unit_of_measurement: "%"
+  #   #
+  # - platform: mqtt
+  #   name: "ESP Christmas tree signal strength"
+  #   state_topic: "homeassistant/wemos_christmas/wifi_signal"
+  #   qos: 0
+  #   unit_of_measurement: "dB"
+  #   #
+  # - platform: mqtt
+  #   name: "ESP Christmas tree run time"
+  #   state_topic: "homeassistant/wemos_christmas/run_time"
+  #   qos: 0
+  #   unit_of_measurement: "ms"
 
 #Weether
   # - platform: yr
