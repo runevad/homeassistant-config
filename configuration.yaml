@@ -43,12 +43,6 @@ http:
 # Enables the frontend
 frontend:
   javascript_version: latest
-  extra_html_url:
-    - /local/lovelace.html
-
-#lovelace yaml mode
-lovelace:
-  mode: yaml
 
 # Enables configuration UI
 config:
@@ -146,21 +140,6 @@ camera:
     password: !secret synology_pass
     timeout: 30
     verify_ssl: False
-#  - platform: generic
-#    name: Lars
-#    still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.lars_iphone.attributes.latitude }},{{ states.device_tracker.lars_iphone.attributes.longitude }}&zoom=13&size=500x500&maptype=roadmap&markers=color:red%7Clabel:L%7C{{ states.device_tracker.lars_iphone.attributes.latitude }},{{ states.device_tracker.lars_iphone.attributes.longitude }}
-#    limit_refetch_to_url_change: true
-#  - platform: generic
-#    name: 'Emelie & Lars'
-#    still_image_url: https://maps.googleapis.com/maps/api/staticmap?&size=500x500&maptype=roadmap&markers=color:purple%7Clabel:E%7C{{ states.device_tracker.google_maps_104812533325498334396.attributes.latitude }},{{ states.device_tracker.google_maps_104812533325498334396.attributes.longitude }}&markers=color:red%7Clabel:L%7C{{ states.device_tracker.google_maps_117167038107838554425.attributes.latitude }},{{ states.device_tracker.google_maps_117167038107838554425.attributes.longitude }}
-#    limit_refetch_to_url_change: True
-#  - platform: generic
-#    name: 'Vika'
-#    still_image_url: https://www.yr.no/sted/Sverige/Dalarna/Vika/meteogram.svg
-#    content_type: 'image/svg+xml'
-
-#Används inte ännu, kanske senare med smart hem högtalare eller bättre "Siri"
-#shopping_list:
 
 ios:
   push:
@@ -186,45 +165,27 @@ ios:
 
 device_tracker: !include device_tracker.yaml
 
-#######################
-## Alarm panel
-########################
-#
-#alarm_control_panel:
-#  - platform: manual
-#    name: Larm
-#    code: !secret alarm_code
-#    pending_time: 120
-#    trigger_time: 180
-#    disarm_after_trigger: 'false'
-
-#weather:
-#  - platform: darksky
-#    api_key: !secret dark_sky_api_key
-#    language: sv
-
-# Track the sun
 sun:
 
-#map
 map:
 
-# Text to speech
 tts:
   - platform: google
     language: 'sv'
     time_memory: 21600
 
-#rest_command:
-#  ss_enable_home:
-#    url: !secret home_mode_on
-#    method: get
-#  ss_disable_home:
-#    url: !secret home_mode_off
-#    method: get
+system_health:
 
 shell_command:
   restart_hass: 'curl http://127.0.0.1:8126/container/homeassistant/restart'
+
+utility_meter:
+  daily_energy:
+    source: sensor.energy_month
+    cycle: daily
+  monthly_energy:
+    source: sensor.energy_month
+    cycle: monthly
 
 automation: !include automations.yaml
 
