@@ -96,12 +96,12 @@
   trigger:
     - platform: numeric_state
       entity_id: sensor.smoke_temp_forrad_127
-      below: '12'
+      below: '10'
   action:
     - service: notify.ios_lars_iphone
       data:
         title: "Larm"
-        message: "Det är under 12°C i förrådet!"
+        message: "Det är under 10°C i förrådet!"
         data:
 #          subtitle: "Test undertitel"
           push:
