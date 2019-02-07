@@ -8,6 +8,10 @@ __pycache__
 #Cert
 *.pem
 
+#Special .storage
+.storage/*
+!/.storage/lovelace
+
 # Other
 *.uuid
 *.conf
@@ -24,7 +28,6 @@ __pycache__
 .google_maps*
 .ring_cache.pickle
 .spotify-token-cache
-.storage
 .work_progress
 nibe.json
 abodepy_cache.pickle
