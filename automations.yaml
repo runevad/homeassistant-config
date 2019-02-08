@@ -636,7 +636,7 @@
   # then activate the heater on your selected time
   action:
     - service: switch.turn_on
-      entity_id: switch.car_heater_136
+      entity_id: switch.car_heater_149
 
 # Automation 2 turns off the car heater at the set delay.
 - id: car_heater_shut_down
@@ -648,7 +648,7 @@
     - delay:
         minutes: "{{ states('input_number.heater_delay') | int }}"
     - service: switch.turn_off
-      entity_id: switch.car_heater_136
+      entity_id: switch.car_heater_149
 
 
 

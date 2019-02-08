@@ -58,6 +58,11 @@
         unit_of_measurement: "kWh"
         value_template: >-
           {{ float(states.sensor.energy_tot_128.attributes.current_energy_kwh) | round(1) }}
+      energy_car_heater:
+        friendly_name: Elförbrukning motorvärmare
+        unit_of_measurement: "kWh"
+        value_template: >-
+          {{ float(states.switch.car_heater_149.attributes.current_energy_kwh) | round(1) }}
 
 #      lars_emelie:
 #        friendly_name: ""

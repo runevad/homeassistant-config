@@ -7,20 +7,6 @@
                     "badges": null,
                     "cards": [
                         {
-                            "entity": "weather.smhi_home",
-                            "type": "weather-forecast"
-                        },
-                        {
-                            "camera_image": "camera.d_link_dcs_4602ev",
-                            "entities": [
-                                "camera.dlink__dcs4602ev",
-                                "binary_sensor.house_update"
-                            ],
-                            "image": null,
-                            "title": "Ute",
-                            "type": "picture-glance"
-                        },
-                        {
                             "elements": [
                                 {
                                     "entity": "light.fonsterlampor_vardagsrum_81",
@@ -28,7 +14,17 @@
                                         "left": "19.3%",
                                         "top": "29%"
                                     },
-                                    "tap_action": "toggle",
+                                    "tap_action": {
+                                        "action": "toggle"
+                                    },
+                                    "type": "state-icon"
+                                },
+                                {
+                                    "entity": "switch.light_window_2",
+                                    "style": {
+                                        "left": "11%",
+                                        "top": "67%"
+                                    },
                                     "type": "state-icon"
                                 },
                                 {
@@ -37,7 +33,9 @@
                                         "left": "43%",
                                         "top": "15%"
                                     },
-                                    "tap_action": "toggle",
+                                    "tap_action": {
+                                        "action": "toggle"
+                                    },
                                     "type": "state-icon"
                                 },
                                 {
@@ -46,7 +44,9 @@
                                         "left": "68%",
                                         "top": "30%"
                                     },
-                                    "tap_action": "toggle",
+                                    "tap_action": {
+                                        "action": "toggle"
+                                    },
                                     "type": "state-icon"
                                 },
                                 {
@@ -595,7 +595,7 @@
                                     "type": "image"
                                 },
                                 {
-                                    "entity": "switch.car_heater_136",
+                                    "entity": "switch.car_heater_149",
                                     "style": {
                                         "left": "28%",
                                         "top": "75%"
@@ -617,6 +617,20 @@
                             "type": "picture-elements"
                         },
                         {
+                            "entity": "weather.smhi_home",
+                            "type": "weather-forecast"
+                        },
+                        {
+                            "camera_image": "camera.d_link_dcs_4602ev",
+                            "entities": [
+                                "camera.dlink__dcs4602ev",
+                                "binary_sensor.house_update"
+                            ],
+                            "image": null,
+                            "title": "Ute",
+                            "type": "picture-glance"
+                        },
+                        {
                             "cards": [
                                 {
                                     "content": "### Energif\u00f6rbrukning\n",
@@ -626,12 +640,12 @@
                                     "cards": [
                                         {
                                             "entity": "sensor.daily_energy",
-                                            "max": 50,
+                                            "max": 40,
                                             "min": 0,
                                             "name": "Dygn",
                                             "severity": {
                                                 "green": 0,
-                                                "red": 40,
+                                                "red": 30,
                                                 "yellow": 20
                                             },
                                             "theme": "default",
@@ -639,12 +653,25 @@
                                         },
                                         {
                                             "entity": "sensor.monthly_energy",
-                                            "max": 50,
+                                            "max": 800,
                                             "min": 0,
                                             "name": "M\u00e5nad",
                                             "severity": {
                                                 "green": 0,
-                                                "red": 40,
+                                                "red": 600,
+                                                "yellow": 400
+                                            },
+                                            "theme": "default",
+                                            "type": "gauge"
+                                        },
+                                        {
+                                            "entity": "sensor.monthly_car_heater_energy",
+                                            "max": 100,
+                                            "min": 0,
+                                            "name": "Motorv\u00e4rmare",
+                                            "severity": {
+                                                "green": 0,
+                                                "red": 60,
                                                 "yellow": 20
                                             },
                                             "theme": "default",
