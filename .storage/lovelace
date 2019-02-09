@@ -1,11 +1,31 @@
 {
     "data": {
         "config": {
+            "resources": [
+                {
+                    "type": "js",
+                    "url": "/local/custom-lovelace/monster-card.js?v=1.1"
+                },
+                {
+                    "type": "js",
+                    "url": "/local/custom-lovelace/group-card.js?v=1.1"
+                },
+                {
+                    "type": "module",
+                    "url": "/local/custom-lovelace/weather-card/weather-card.js"
+                }
+            ],
             "title": "Sl\u00e4tberget",
             "views": [
                 {
                     "badges": null,
                     "cards": [
+                        {
+                            "entity": "weather.smhi_home",
+                            "icons": "/local/custom-lovelace/weather-card/icons/",
+                            "name": "Vika",
+                            "type": "custom:weather-card"
+                        },
                         {
                             "elements": [
                                 {
@@ -20,10 +40,13 @@
                                     "type": "state-icon"
                                 },
                                 {
-                                    "entity": "switch.light_window_2",
+                                    "entity": "light.lampor_vardagsrum_2_136",
                                     "style": {
                                         "left": "11%",
                                         "top": "67%"
+                                    },
+                                    "tap_action": {
+                                        "action": "toggle"
                                     },
                                     "type": "state-icon"
                                 },
@@ -587,10 +610,6 @@
                             ],
                             "image": "/local/floorplans/carport.png",
                             "type": "picture-elements"
-                        },
-                        {
-                            "entity": "weather.smhi_home",
-                            "type": "weather-forecast"
                         },
                         {
                             "camera_image": "camera.d_link_dcs_4602ev",
