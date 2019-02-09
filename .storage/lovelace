@@ -250,20 +250,6 @@
                                     "type": "state-icon"
                                 },
                                 {
-                                    "entity": "light.stora_fonstret_ingrid_e14",
-                                    "hold_action": {
-                                        "action": "toggle"
-                                    },
-                                    "style": {
-                                        "left": "12%",
-                                        "top": "66%"
-                                    },
-                                    "tap_action": {
-                                        "action": "more-info"
-                                    },
-                                    "type": "state-icon"
-                                },
-                                {
                                     "entity": "light.stora_fonstret_ingrid",
                                     "hold_action": {
                                         "action": "toggle"
@@ -310,20 +296,6 @@
                                     },
                                     "title": "L\u00e4sljus",
                                     "type": "icon"
-                                },
-                                {
-                                    "entity": "light.stora_fonstret_kerstin_e14",
-                                    "hold_action": {
-                                        "action": "toggle"
-                                    },
-                                    "style": {
-                                        "left": "12%",
-                                        "top": "44%"
-                                    },
-                                    "tap_action": {
-                                        "action": "more-info"
-                                    },
-                                    "type": "state-icon"
                                 },
                                 {
                                     "entity": "light.stora_fonstret_kerstin",
@@ -924,16 +896,36 @@
                         },
                         {
                             "entities": [
-                                "sensor.heater_departuretime",
-                                "sensor.heater_activationtime",
-                                "sensor.heater_temptime",
-                                "sensor.heater_forecast",
-                                "input_number.heater_hour",
-                                "input_number.heater_minute",
-                                "input_number.heater_delay",
-                                "input_number.heater_maxmin",
-                                "input_boolean.workdays_only",
-                                "switch.car_heater_136"
+                                {
+                                    "entity": "sensor.heater_departuretime"
+                                },
+                                {
+                                    "entity": "sensor.heater_activationtime"
+                                },
+                                {
+                                    "entity": "sensor.heater_temptime"
+                                },
+                                {
+                                    "entity": "sensor.heater_forecast"
+                                },
+                                {
+                                    "entity": "input_number.heater_hour"
+                                },
+                                {
+                                    "entity": "input_number.heater_minute"
+                                },
+                                {
+                                    "entity": "input_number.heater_delay"
+                                },
+                                {
+                                    "entity": "input_number.heater_maxmin"
+                                },
+                                {
+                                    "entity": "input_boolean.workdays_only"
+                                },
+                                {
+                                    "entity": "switch.car_heater_149"
+                                }
                             ],
                             "title": "Car heater",
                             "type": "glance"
