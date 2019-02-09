@@ -53,6 +53,12 @@
         friendly_name: "House status"
         value_template: >-
           {{ states("input_select.cottage_status") }}
+      delta_t:
+        friendly_name: Delta T värmesystem
+        unit_of_measurement: "°C"
+        value_template: >-
+          {{ (float(states.sensor.nibe_31372_40008.attributes.raw_value) - float(states.sensor.nibe_31372_40012.attributes.raw_value)) /10 | round(2) }}
+
       energy_month:
         friendly_name: Elförbrukning månad
         unit_of_measurement: "kWh"
