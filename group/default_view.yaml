@@ -16,3 +16,12 @@ default_view:
     - light.stora_fonstret_ingrid
     - light.stora_fonstret_kerstin_e14
     - light.stora_fonstret_kerstin
+
+neato:
+  name: "StädStina"
+  view: yes
+  icon: mdi:robot-vacuum-variant
+  entities:
+    - vacuum.stadstina
+    - switch.stadstina_schedule
+    - camera.stadstina_cleaning_map
