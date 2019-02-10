@@ -310,10 +310,10 @@ homeassistant:
       friendly_name: "Battery Notification Default Format"
       icon: mdi:comment-alert-outline
 
-    automation.battery_notification_slack:
-      <<: *customize
-      friendly_name: "Battery Notification Slack Format"
-      icon: mdi:comment-alert-outline
+    # automation.battery_notification_slack:
+    #   <<: *customize
+    #   friendly_name: "Battery Notification Slack Format"
+    #   icon: mdi:comment-alert-outline
 
     automation.battery_sensor_from_attributes:
       <<: *customize
@@ -352,7 +352,7 @@ group:
       - automation.battery_persistent_notification
       - automation.battery_persistent_notification_clear
       - automation.battery_notification_default
-      - automation.battery_notification_slack
+      # - automation.battery_notification_slack
       - automation.battery_sensor_from_attributes
       - automation.update_battery_status_group_members
       - automation.delete_battery_sensor
@@ -393,7 +393,7 @@ input_select:
     name: Notifier Format
     options:
      - Default
-     - Slack
+#     - Slack
     icon: mdi:comment-question-outline
 
 ################################################
@@ -550,35 +550,35 @@ automation:
         title: "Low Battery Levels"
         message: *message
 
-- alias: battery_notification_slack
-  initial_state: 'on'
-  trigger:
-    - platform: time
-      at: '10:00:00'
-    - platform: time
-      at: '18:00:00'
-    - platform: state
-      entity_id:
-        - input_number.battery_alert_threshold_min
-        - input_number.battery_alert_threshold_max
-  action:
-    - condition: template
-      value_template: *low_battery_check
-    - condition: template
-      value_template: "{{ states.input_select.notifier_format.state == 'Slack' }}"
-    - service_template: >
-        {% if states.input_text.notifier_name.state != "" %}
-          {{ states.input_text.notifier_name.state }}
-        {% else %}
-          notify.notify
-        {% endif %}
-      data_template:
-        message: "Low Battery Levels"
-        data:
-          attachments:
-          - color: '#52c0f2'
-            title: "These devices have low battery levels"
-            text: *message
+# - alias: battery_notification_slack
+#   initial_state: 'on'
+#   trigger:
+#     - platform: time
+#       at: '10:00:00'
+#     - platform: time
+#       at: '18:00:00'
+#     - platform: state
+#       entity_id:
+#         - input_number.battery_alert_threshold_min
+#         - input_number.battery_alert_threshold_max
+#   action:
+#     - condition: template
+#       value_template: *low_battery_check
+#     - condition: template
+#       value_template: "{{ states.input_select.notifier_format.state == 'Slack' }}"
+#     - service_template: >
+#         {% if states.input_text.notifier_name.state != "" %}
+#           {{ states.input_text.notifier_name.state }}
+#         {% else %}
+#           notify.notify
+#         {% endif %}
+#       data_template:
+#         message: "Low Battery Levels"
+#         data:
+#           attachments:
+#           - color: '#52c0f2'
+#             title: "These devices have low battery levels"
+#             text: *message
 
 - alias: battery_sensor_from_attributes
   initial_state: 'on'
