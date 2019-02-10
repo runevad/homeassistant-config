@@ -52,18 +52,23 @@ sonos_alarm:
 cottage_home:
   alias: Cottage Home
   sequence:
-  - service: input_select.select_option
-    data:
+  - data:
       entity_id: input_select.cottage_status
       option: Home
-  - service: switch.turn_on
-    data:
+    service: input_select.select_option
+  - data:
       entity_id: switch.vvc_135
-  - service: homeassistant.turn_off
-    data:
+    service: switch.turn_on
+  - data:
       entity_id:
       - group.door_units
       - group.motion_units
+    service: homeassistant.turn_off
+  - after: sunset
+    condition: sun
+  - data:
+      entity_id: group.all_lights
+    service: light.turn_on
 cottage_away:
   alias: Cottage Away
   sequence:
@@ -199,8 +204,7 @@ kerstin_night:
       - 255
       - 0
       - 0
-    entity_id:
-    - light.tradfri_bulb_e27_cws_opal_600lm
+    entity_id: light.tradfri_bulb_e27_cws_opal_600lm
 ingrid_night:
   alias: Ingrid sovrum night mode
   sequence:
@@ -216,8 +220,7 @@ ingrid_night:
       - 255
       - 0
       - 0
-    entity_id:
-    - light.lilla_fonstret_ingrid
+    entity_id: light.lilla_fonstret_ingrid
 kerstin_reading:
   alias: Läslampa Kerstin
   sequence:
