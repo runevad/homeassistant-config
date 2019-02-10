@@ -1,245 +1,311 @@
+#Alarm
+#####
 sonos_doorbell:
-  alias: Sonos doorbell
+  alias: "Sonos doorbell"
   sequence:
-  - service: media_player.sonos_snapshot
-    entity_id: media_player.kokvardagsrum
-  - service: media_player.volume_set
-    entity_id: media_player.kokvardagsrum
-    data:
-      volume_level: 0.6
-  - service: media_player.play_media
-    entity_id: media_player.kokvardagsrum
-    data:
-      media_content_id: https://runevad.synology.me:8123/local/doorbell.mp3
-      media_content_type: music
-  - delay: 00:00:15
-  - service: media_player.sonos_restore
-    entity_id: media_player.kokvardagsrum
-sonos_fire_alarm:
-  alias: Sonos fire alarm
-  sequence:
-  - service: media_player.sonos_snapshot
-    entity_id: media_player.kokvardagsrum
-  - service: media_player.volume_set
-    entity_id: media_player.kokvardagsrum
-    data:
-      volume_level: 0.8
-  - service: media_player.play_media
-    entity_id: media_player.kokvardagsrum
-    data:
-      media_content_id: https://runevad.synology.me:8123/local/fire_alarm.mp3
-      media_content_type: music
-  - delay: 00:00:40
-  - service: media_player.sonos_restore
-    entity_id: media_player.kokvardagsrum
-sonos_alarm:
-  alias: Sonos alarm
-  sequence:
-  - service: media_player.sonos_snapshot
-    entity_id: media_player.kokvardagsrum
-  - service: media_player.volume_set
-    entity_id: media_player.kokvardagsrum
-    data:
-      volume_level: 0.8
-  - service: media_player.play_media
-    entity_id: media_player.kokvardagsrum
-    data:
-      media_content_id: https://runevad.synology.me:8123/local/alarm.mp3
-      media_content_type: music
-  - delay: 00:03:00
-  - service: media_player.sonos_restore
-    entity_id: media_player.kokvardagsrum
-cottage_home:
-  alias: Cottage Home
-  sequence:
-  - data:
-      entity_id: input_select.cottage_status
-      option: Home
-    service: input_select.select_option
-  - data:
-      entity_id: switch.vvc_135
-    service: switch.turn_on
-  - data:
-      entity_id:
-      - group.door_units
-      - group.motion_units
-    service: homeassistant.turn_off
-  - after: sunset
-    condition: sun
-  - data:
-      entity_id: group.all_lights
-    service: light.turn_on
-cottage_away:
-  alias: Cottage Away
-  sequence:
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.cottage_status
-      option: Away
-  - service: switch.turn_off
-    data:
-      entity_id: switch.vvc_135
-  - service: homeassistant.turn_on
-    data:
-      entity_id:
-      - group.door_units
-      - group.motion_units
-  - service: light.turn_off
-    data:
-      entity_id: group.all_lights
-  - service: media_player.turn_off
-cottage_standby:
-  alias: Cottage Standby
-  sequence:
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.cottage_status
-      option: Standby
-  - service: switch.turn_off
-    data:
-      entity_id: switch.vvc_135
-  - service: homeassistant.turn_off
-    data:
-      entity_id:
-      - group.motion_units
-      - group.door_units
-cottage_night:
-  alias: Cottage Night
-  sequence:
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.cottage_status
-      option: Night
-  - service: switch.turn_off
-    data:
-      entity_id:
-      - switch.vvc_135
-      - switch.extra_hot_water
-  - service: light.turn_off
-    data:
-      entity_id: group.window_lights
-  - service: homeassistant.turn_on
-    data:
-      entity_id: group.door_units
-restart_hass:
-  alias: Restart Home Assistant
-  sequence:
-  - service: shell_command.restart_hass
-extra_hot_water:
-  alias: Extra varmvatten 2h
-  sequence:
-  - service: switch.turn_on
-    data:
-      entity_id: switch.extra_hot_water
-  - delay: 02:00:00
-  - service: switch.turn_off
-    data:
-      entity_id: switch.extra_hot_water
-car_heater:
-  alias: Motorvärmare start 2h
-  sequence:
-  - data:
-      entity_id: switch.car_heater_149
-    service: switch.turn_on
-  - delay: 02:30:00
-  - data:
-      entity_id: switch.car_heater_149
-    service: switch.turn_off
-sonos_say:
-  alias: Sonos TTS script
-  sequence:
-  - service: media_player.sonos_snapshot
-    data_template:
-      entity_id: '{{ sonos_entity|default(''media_player.kokvardagsrum'') }}'
-  - service: media_player.sonos_unjoin
-    data_template:
-      entity_id: '{{ sonos_entity|default(''media_player.kokvardagsrum'') }}'
-  - service: media_player.volume_set
-    data_template:
-      entity_id: '{{ sonos_entity|default(''media_player.kokvardagsrum'') }}'
-      volume_level: '{{ volume|default(0.4) }}'
-  - service: tts.google_say
-    data_template:
-      entity_id: '{{ sonos_entity|default(''media_player.kokvardagsrum'') }}'
-      message: '{{ message }}'
-  - delay: '{{ delay|default(''00:00:00'') }}'
-  - wait_template: '{{ is_state(sonos_entity|default(''media_player.kokvardagsrum''),
-      ''playing'') }}'
-    timeout: 00:00:10
-  - service: media_player.sonos_restore
-    data_template:
-      entity_id: '{{ sonos_entity|default(''media_player.kokvardagsrum'') }}'
-dishwasher_done:
-  alias: Diskmaskinen klar
-  sequence:
-  - condition: time
-    after: 08:00:00
-    before: '21:00:00'
-  - service: notify.ios_lars_iphone
-    data:
-      title: Diskmaskinen klar!
-      message: '...'
+    - service: media_player.sonos_snapshot
+      entity_id: media_player.kokvardagsrum
+    - service: media_player.volume_set
+      entity_id: media_player.kokvardagsrum
       data:
-        push:
-          badge:
-          category: alarm
-  - service: script.sonos_say
-    data_template:
-      sonos_entity: media_player.kokvardagsrum
-      volume: 0.55
-      delay: 00:00:15
-      message: Hej Hej Hej, diskmaskinen har körts klart och är redo för utplockning
+        volume_level: 0.6
+    - service: media_player.play_media
+      entity_id: media_player.kokvardagsrum
+      data:
+        media_content_id: !secret mp3_doorbell
+        media_content_type: 'music'
+    - delay: '00:00:15'
+    - service: media_player.sonos_restore
+      entity_id: media_player.kokvardagsrum
+
+sonos_fire_alarm:
+  alias: "Sonos fire alarm"
+  sequence:
+    - service: media_player.sonos_snapshot
+      entity_id: media_player.kokvardagsrum
+    - service: media_player.volume_set
+      entity_id: media_player.kokvardagsrum
+      data:
+        volume_level: 0.8
+    - service: media_player.play_media
+      entity_id: media_player.kokvardagsrum
+      data:
+        media_content_id: !secret mp3_fire_alarm
+        media_content_type: 'music'
+    - delay: '00:00:40'
+    - service: media_player.sonos_restore
+      entity_id: media_player.kokvardagsrum
+
+sonos_alarm:
+  alias: "Sonos alarm"
+  sequence:
+    - service: media_player.sonos_snapshot
+      entity_id: media_player.kokvardagsrum
+    - service: media_player.volume_set
+      entity_id: media_player.kokvardagsrum
+      data:
+        volume_level: 0.8
+    - service: media_player.play_media
+      entity_id: media_player.kokvardagsrum
+      data:
+        media_content_id: !secret mp3_alarm
+        media_content_type: 'music'
+    - delay: '00:03:00'
+    - service: media_player.sonos_restore
+      entity_id: media_player.kokvardagsrum
+
+### Setting home modes
+#####################
+cottage_home:
+  alias: "Cottage Home"
+  sequence:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.cottage_status
+        option: 'Home'
+    - service: switch.turn_on
+      data:
+        entity_id: switch.vvc_135
+    - service: homeassistant.turn_off
+      data:
+        entity_id:
+          - group.door_units
+          - group.motion_units
+
+# // Extra for another time when house "state" is set to "just arrived"
+    # - condition: time
+    #   after: '07:00:00'
+    #   before: '21:00:00'
+    # - condition: template
+    #   value_template: >
+    #     {%- if states.group.household.last_changed -%}
+    #       {{ (as_timestamp(now()) - as_timestamp(states.group.household.last_changed)) > 1800 }}
+    #     {%- else -%}
+    #       true
+    #     {%- endif -%}
+    # - wait_template: "{{ is_state('switch.motion_hall_11', 'on') }}"
+    #   timeout: '00:05:00'
+    #   continue_on_timeout: 'true'
+    # - service: media_player.volume_set
+    #   data_template:
+    #     entity_id: media_player.kokvardagsrum
+    #     volume_level: .45
+    # - service: tts.google_say
+    #   data_template:
+    #     entity_id: media_player.kokvardagsrum
+    #     message: "Välkommen hem, jag startar lite musik åt dig"
+    # - delay: '00:00:10'
+    # - service: media_player.select_source
+    #   data:
+    #     entity_id: media_player.kokvardagsrum
+    #     source: 'The Most Beautiful Songs in the World'
+    # - service: media_player.volume_set
+    #   data:
+    #     entity_id: media_player.kokvardagsrum
+    #     volume_level: .06
+    # - service: media_player.play_media
+    #   data:
+    #     entity_id: media_player.kokvardagsrum
+    #     media_content_type: music
+
+cottage_away:
+  alias: "Cottage Away"
+  sequence:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.cottage_status
+        option: 'Away'
+    - service: switch.turn_off
+      data:
+        entity_id: switch.vvc_135
+    - service: homeassistant.turn_on
+      data:
+        entity_id:
+          - group.door_units
+          - group.motion_units
+    - service: light.turn_off
+      data:
+        entity_id: group.all_lights
+    - service: media_player.turn_off
+
+cottage_standby:
+  alias: "Cottage Standby"
+  sequence:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.cottage_status
+        option: 'Standby'
+    - service: switch.turn_off
+      data:
+        entity_id: switch.vvc_135
+    - service: homeassistant.turn_off
+      data:
+        entity_id:
+          - group.motion_units
+          - group.door_units
+
+cottage_night:
+  alias: "Cottage Night"
+  sequence:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.cottage_status
+        option: 'Night'
+    - service: switch.turn_off
+      data:
+        entity_id:
+          - switch.vvc_135
+          - switch.extra_hot_water
+    - service: light.turn_off
+      data:
+        entity_id: group.window_lights
+    - service: homeassistant.turn_on
+      data:
+        entity_id: group.door_units
+
+restart_hass:
+  alias: "Restart Home Assistant"
+  sequence:
+    - service: shell_command.restart_hass
+
+
+## Other
+########################
+extra_hot_water:
+  alias: "Extra varmvatten 2h"
+  sequence:
+    - service: switch.turn_on
+      data:
+        entity_id: switch.extra_hot_water
+    - delay: '02:00:00'
+    - service: switch.turn_off
+      data:
+        entity_id: switch.extra_hot_water
+
+car_heater:
+  alias: "Motorvärmare start 2h"
+  sequence:
+    - service: switch.turn_on
+      data:
+        entity_id: switch.car_heater_149
+    - delay: '02:30:00' #30 min "overrun time"
+    - service: switch.turn_off
+      data:
+        entity_id: switch.car_heater_149
+
+#Sonos
+sonos_say:
+  alias: "Sonos TTS script"
+  sequence:
+    - service: media_player.sonos_snapshot
+      data_template:
+        entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
+    - service: media_player.sonos_unjoin
+      data_template:
+        entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
+    - service: media_player.volume_set
+      data_template:
+        entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
+        volume_level: "{{ volume|default(0.4) }}"
+    - service: tts.google_say
+      data_template:
+        entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
+        message: "{{ message }}"
+    - delay: "{{ delay|default('00:00:00') }}"
+    - wait_template: "{{ is_state(sonos_entity|default('media_player.kokvardagsrum'), 'playing') }}"
+      timeout: '00:00:10'
+    - service: media_player.sonos_restore
+      data_template:
+        entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
+
+# shimmer:
+#   alias: 'Play Shimmer'
+#   sequence:
+#     - service: media_player.play_media
+#       data:
+#         entity_id: media_player.allrum
+#         media_content_id: https://content.viaplay.se/{deviceKey}/barn/shimmer-och-shine/sasong-2/avsnitt-1
+#         media_content_type: movie
+
+
+
+#### Triggered from IFTTT automation
+dishwasher_done:
+  alias: "Diskmaskinen klar"
+  sequence:
+    - condition: time
+      after: '08:00:00'
+      before: '21:00:00'
+    - service: notify.ios_lars_iphone
+      data:
+        title: "Diskmaskinen klar!"
+        message: "..."
+        data:
+          push:
+            badge:
+            category: "notis"
+    - service: script.sonos_say
+      data_template:
+        sonos_entity: media_player.kokvardagsrum
+        volume: 0.55
+        delay: '00:00:15'
+        message: 'Hej Hej Hej, diskmaskinen har körts klart och är redo för utplockning'
+
+###  "light-scenes"
 kerstin_night:
-  alias: Kerstins sovrum night mode
+  alias: "Kerstins sovrum night mode"
   sequence:
-  - service: light.turn_off
-    entity_id:
-    - light.stora_fonstret_kerstin_e14
-    - light.stora_fonstret_kerstin
-  - delay: 00:00:01
-  - service: light.turn_on
-    data:
-      brightness: 1
-      rgb_color:
-      - 255
-      - 0
-      - 0
-    entity_id: light.tradfri_bulb_e27_cws_opal_600lm
+    - service: light.turn_off
+      entity_id:
+        - light.stora_fonstret_kerstin_e14
+        - light.stora_fonstret_kerstin
+    - delay: '00:00:01'
+    - service: light.turn_on
+      data:
+        brightness: 1
+        rgb_color: [255, 0, 0]
+        # transition: 2
+      entity_id:
+        - light.tradfri_bulb_e27_cws_opal_600lm
+
 ingrid_night:
-  alias: Ingrid sovrum night mode
+  alias: "Ingrid sovrum night mode"
   sequence:
-  - service: light.turn_off
-    entity_id:
-    - light.stora_fonstret_ingrid_e14
-    - light.stora_fonstret_ingrid
-  - delay: 00:00:01
-  - service: light.turn_on
-    data:
-      brightness: 1
-      rgb_color:
-      - 255
-      - 0
-      - 0
-    entity_id: light.lilla_fonstret_ingrid
+    - service: light.turn_off
+      entity_id:
+        - light.stora_fonstret_ingrid_e14
+        - light.stora_fonstret_ingrid
+    - delay: '00:00:01'
+    - service: light.turn_on
+      data:
+        brightness: 1
+        rgb_color: [255,0,0]
+        # transition: 2
+      entity_id:
+        - light.lilla_fonstret_ingrid
+
 kerstin_reading:
-  alias: Läslampa Kerstin
+  alias: "Läslampa Kerstin"
   sequence:
-  - service: light.turn_on
-    data:
-      brightness: 255
-      color_temp: 454
-    entity_id:
-    - light.tradfri_bulb_e27_cws_opal_600lm
-    - light.stora_fonstret_kerstin_e14
-    - light.stora_fonstret_kerstin
+    - service: light.turn_on
+      data:
+        brightness: 255
+        color_temp: 454
+        # transition: 2
+      entity_id:
+        - light.tradfri_bulb_e27_cws_opal_600lm
+        - light.stora_fonstret_kerstin_e14
+        - light.stora_fonstret_kerstin
+
 ingrid_reading:
-  alias: Läslampa Ingrid
+  alias: "Läslampa Ingrid"
   sequence:
-  - service: light.turn_on
-    data:
-      brightness: 255
-      color_temp: 454
-    entity_id:
-    - light.lilla_fonstret_ingrid
-    - light.stora_fonstret_ingrid_e14
-    - light.stora_fonstret_ingrid
+    - service: light.turn_on
+      data:
+        brightness: 255
+        color_temp: 454
+        # transition: 2
+      entity_id:
+        - light.lilla_fonstret_ingrid
+        - light.stora_fonstret_ingrid_e14
+        - light.stora_fonstret_ingrid
