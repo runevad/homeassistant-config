@@ -95,7 +95,6 @@
             badge: 100
             category: "notis"
 
-
 - id: storage_cold
   alias: "Kallt i förråd"
   initial_state: 'on'
@@ -109,12 +108,9 @@
         title: "Larm"
         message: "Det är under 10°C i förrådet!"
         data:
-#          subtitle: "Test undertitel"
           push:
             badge: 500
             category: "notis"
-
-
 
 ## Arm Cottage
 ################
@@ -148,7 +144,6 @@
   action:
      service: homeassistant.turn_on
      entity_id: script.cottage_away
-
 
 #### Disarm
 - id: disarm_cottage_from_away
@@ -213,8 +208,6 @@
     - service: homeassistant.turn_on
       entity_id: script.cottage_home
 
-
-
 ## Standby morning mode
 #################################
 - id: cottage_standby_morning
@@ -256,7 +249,6 @@
   action:
     - service: homeassistant.turn_on
       entity_id: script.cottage_standby
-
 
 ## Night mode
 #################################
@@ -314,8 +306,7 @@
     service: homeassistant.turn_on
     entity_id: script.cottage_standby
 
-#------
-# IKEA modes
+#IKEA Modes
 #white:
 #245, 250, 246
 #---
@@ -422,6 +413,7 @@
         - light.fonsterlampor_vardagsrum_81
         - light.fonsterlampor_uppe1_115
         - light.stora_fonstret_sovrum_vuxna_e14
+        - light.lampor_vardagsrum_2_136
 
 - id: morning_lights_weekday
   alias: "Morning lights weekday"
@@ -461,7 +453,9 @@
       data:
         brightness: 255
         color_temp: 454
-      entity_id: light.fonsterlampor_vardagsrum_81
+      entity_id:
+        - light.fonsterlampor_vardagsrum_81
+        - light.lampor_vardagsrum_2_136
 
 - id: morning_lights_weekend
   alias: "Morning lights weekend"
@@ -507,6 +501,7 @@
       entity_id:
         - light.fonsterlampor_vardagsrum_81
         - light.fonsterlampor_uppe1_115
+        - light.lampor_vardagsrum_2_136
 
 - id: lights_on_up_night_motion
   alias: "Lights upstairs night motion"
@@ -603,7 +598,7 @@
         - light.tradfri_bulb_e27_cws_opal_600lm
         - light.lilla_fonstret_ingrid
 
-
+#### Car heater
 - id: car_heater_start
   alias: "Engine heater activate"
   trigger:
@@ -637,7 +632,6 @@
     - service: switch.turn_on
       entity_id: switch.car_heater_149
 
-# Automation 2 turns off the car heater at the set delay.
 - id: car_heater_shut_down
   alias: "Engine heater deactivate"
   trigger:
@@ -690,7 +684,6 @@
 
 #### Monnitor the price of electricity
 #### getting billed by the hourly price
-
 - id: high_electric_price
   alias: "Högt elpris"
   condition:
@@ -715,7 +708,6 @@
         volume: 0.45
         delay: '00:00:15'
         message: 'Hej, tänk på att det just nu är högt elpris. Det ligger just nu på {{ states.sensor.nibe_31372_10069.state }} öre per kWh!'
-
 - id: low_electric_price
   alias: "Lågt elpris"
   condition:
@@ -741,9 +733,6 @@
         delay: '00:00:15'
         message: 'Hej, just nu är det lågt elpris, {{ states.sensor.nibe_31372_10069.state }} öre per kWh närmaste timen'
 
-#################################
-###### Other
-#################################
 
 ### water the christmas tree, sensor was mounted to low, better luck next year
 # - id: esp_christmas_tree_water_level_low
@@ -799,7 +788,7 @@
         delay: '00:00:15'
         message: 'Hej, det finns en ny uppdatering av Home Assistant'
 
-#Smoke sensors alarm
+#Smoke sensors
 #################################################################
 - id: fire_alarm
   alias: "Smoke detectors tripped"
@@ -827,8 +816,6 @@
     - service: homeassistant.turn_on
       entity_id: script.sonos_fire_alarm
 
-#Smoke sensors auto reset to on
-#################################################################
 - id: smoke_sensors_auto_on
   alias: "Auto Smoke Sensors ON"
   initial_state: 'on'
@@ -854,7 +841,7 @@
     - service: homeassistant.turn_on
       entity_id: group.smoke_units
 
-#### neato
+#### neato vaccum robot
 - id: cleaning_robot_running
   alias: "Neato running take down sensors"
   initial_state: 'on'
@@ -889,7 +876,6 @@
 
 ##### Sonos Beam set to night mode
 ## From https://github.com/arsaboo/homeassistant-config/
-
 - id: sonos_enable_speech_enhance_and_night_sound
   alias: "Sonos Enable speech enhance and night sound"
   initial_state: 'on'

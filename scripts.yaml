@@ -218,17 +218,6 @@ sonos_say:
       data_template:
         entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
 
-# shimmer:
-#   alias: 'Play Shimmer'
-#   sequence:
-#     - service: media_player.play_media
-#       data:
-#         entity_id: media_player.allrum
-#         media_content_id: https://content.viaplay.se/{deviceKey}/barn/shimmer-och-shine/sasong-2/avsnitt-1
-#         media_content_type: movie
-
-
-
 #### Triggered from IFTTT automation
 dishwasher_done:
   alias: "Diskmaskinen klar"
