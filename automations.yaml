@@ -42,8 +42,8 @@
       - condition: state
         entity_id: input_select.cottage_status
         state: 'Away'
-        for:
-          minutes: 10
+        # for:
+        #   minutes: 10
   trigger:
     - platform: state
       entity_id:
@@ -53,10 +53,20 @@
       from: 'off'
       to: 'on'
   action:
+    # Wait 3 min for wifi to grab if GPS and/or BT failed
     - delay: '00:03:00'
     - condition: state
-      entity_id: group.houshold
-      state: 'away'
+      entity_id: input_boolean.lars_home
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.emelie_home
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.kerstin_home
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.ingrid_home
+      state: 'off'
     - service: light.turn_on
       data:
         entity_id: group.all_lights
@@ -112,42 +122,212 @@
             badge: 500
             category: "notis"
 
-## Arm Cottage
+
+## Presence
 ################
-- id: arm_cottage
-  alias: "Arm the house"
+- id: lars_home
+  alias: 'Lars home'
   initial_state: 'on'
-  condition:
-    - condition: state
-      entity_id: input_boolean.cottage_update
-      state: 'on'
-    - condition: template
-      value_template: >
-        {%- if states.automation.disarm_cottage_from_away.attributes.last_triggered -%}
-          {{ (as_timestamp(now()) - as_timestamp(states.automation.disarm_cottage_from_away.attributes.last_triggered)) > 240 }}
-        {%- else -%}
-          true
-        {%- endif -%}
-    - condition: template
-      value_template: "{{ states.input_select.cottage_status.state != 'Away' }}"
   trigger:
     - platform: state
-      entity_id: group.household
-      from: 'home'
+      entity_id:
+        - device_tracker.lars_iphone
+        - device_tracker.lars_wifi
+        - device_tracker.lars_bt
+      to: 'home'
+    - platform: homeassistant
+      event: start
+  condition:
+    - condition: numeric_state
+      entity_id: group.lars
+      above: 1
+      value_template: "{{ dict((states|selectattr('entity_id', 'in', state_attr('group.lars', 'entity_id'))|list)|groupby('state'))['home']|count }}"
+  action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.lars_home
+
+- id: emelie_home
+  alias: 'Emelie home'
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id:
+        - device_tracker.em_p10
+        - device_tracker.emelie_wifi
+        - device_tracker.emelie_bt
+      to: 'home'
+    - platform: homeassistant
+      event: start
+  condition:
+    - condition: numeric_state
+      entity_id: group.emelie
+      above: 1
+      value_template: "{{ dict((states|selectattr('entity_id', 'in', state_attr('group.emelie', 'entity_id'))|list)|groupby('state'))['home']|count }}"
+  action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.emelie_home
+
+- id: lars_away
+  alias: 'Lars away'
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id:
+        - device_tracker.lars_iphone
+        - device_tracker.lars_wifi
+        - device_tracker.lars_bt
       to: 'not_home'
     - platform: state
-      entity_id: group.household
-      from: 'home'
+      entity_id:
+        - device_tracker.lars_iphone
+        - device_tracker.lars_wifi
+        - device_tracker.lars_bt
       to: 'not_home'
       for:
         minutes: 5
+    - platform: homeassistant
+      event: start
+  condition:
+    # - condition: state
+    #   entity_id: input_boolean.lars_home
+    #   state: 'on'
+    - condition: numeric_state
+      entity_id: group.lars
+      below: 2
+      value_template: "{{ dict((states|selectattr('entity_id', 'in', state_attr('group.lars', 'entity_id'))|list)|groupby('state'))['home']|count }}"
+    - condition: or
+      conditions:
+      # Front door was opened in the last 15 minutes
+      - condition: template
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.door_groventre_137.attributes.last_tripped_time)) | int < 900 }}"
+      # All away for at least 4 minutes
+      - condition: state
+        entity_id: group.lars
+        state: 'not_home'
+        for:
+          minutes: 4
+  action:
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.lars_home
+
+- id: emelie_away
+  alias: 'Emelie away'
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id:
+        - device_tracker.em_p10
+        - device_tracker.emelie_wifi
+        - device_tracker.emelie_bt
+      to: 'not_home'
+    - platform: state
+      entity_id:
+        - device_tracker.em_p10
+        - device_tracker.emelie_wifi
+        - device_tracker.emelie_bt
+      to: 'not_home'
+      for:
+        minutes: 5
+    - platform: homeassistant
+      event: start
+  condition:
+    # - condition: state
+    #   entity_id: input_boolean.lars_home
+    #   state: 'on'
+    - condition: numeric_state
+      entity_id: group.emelie
+      below: 2
+      value_template: "{{ dict((states|selectattr('entity_id', 'in', state_attr('group.emelie', 'entity_id'))|list)|groupby('state'))['home']|count }}"
+    - condition: or
+      conditions:
+      # Front door was opened in the last 15 minutes
+      - condition: template
+        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.door_groventre_137.attributes.last_tripped_time)) | int < 900 }}"
+      # All away for at least 4 minutes
+      - condition: state
+        entity_id: group.emelie
+        state: 'not_home'
+        for:
+          minutes: 4
+  action:
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.emelie_home
+
+
+#### Arm cottage - all away
+########################
+- id: all_away
+  alias: 'All away'
+  initial_state: 'on'
+  trigger:
+    - platform: state
+      entity_id: input_boolean.lars_home
+      to: 'off'
+    - platform: state
+      entity_id: input_boolean.emelie_home
+      to: 'off'
+    - platform: state
+      entity_id: input_boolean.kerstin_home
+      to: 'off'
+    - platform: state
+      entity_id: input_boolean.ingrid_home
+      to: 'off'
+  condition:
+    condition: and
+    conditions:
+      # We're all away
+      - condition: state
+        entity_id: input_boolean.lars_home
+        state: 'off'
+      - condition: state
+        entity_id: input_boolean.emelie_home
+        state: 'off'
+      - condition: state
+        entity_id: input_boolean.kerstin_home
+        state: 'off'
+      - condition: state
+        entity_id: input_boolean.ingrid_home
+        state: 'off'
   action:
      service: homeassistant.turn_on
      entity_id: script.cottage_away
 
-#### Disarm
-- id: disarm_cottage_from_away
-  alias: "Disarm house to Standby"
+
+
+## Arm Cottage
+################
+# - id: arm_cottage
+#   alias: "Arm the house"
+#   initial_state: 'on'
+#   condition:
+#     - condition: state
+#       entity_id: input_boolean.cottage_update
+#       state: 'on'
+#     - condition: template
+#       value_template: >
+#         {%- if states.automation.disarm_cottage_from_away.attributes.last_triggered -%}
+#           {{ (as_timestamp(now()) - as_timestamp(states.automation.disarm_cottage_from_away.attributes.last_triggered)) > 240 }}
+#         {%- else -%}
+#           true
+#         {%- endif -%}
+#     - condition: template
+#       value_template: "{{ states.input_select.cottage_status.state != 'Away' }}"
+#   trigger:
+#     - platform: state
+#       entity_id: group.household
+#       from: 'home'
+#       to: 'not_home'
+#     - platform: state
+#       entity_id: group.household
+#       from: 'home'
+#       to: 'not_home'
+#       for: '00:10:00'
+#   action:
+#      service: homeassistant.turn_on
+#      entity_id: script.cottage_away
+
+- id: disarm_cottage
+  alias: 'Disarm house to Standby'
   initial_state: 'on'
   condition:
     - condition: state
@@ -156,18 +336,50 @@
     - condition: template
       value_template: >
         {%- if states.automation.arm_cottage.attributes.last_triggered -%}
-          {{ (as_timestamp(now()) - as_timestamp(states.automation.arm_cottage.attributes.last_triggered)) > 240 }}
+          {{ (as_timestamp(now()) - as_timestamp(states.automation.arm_cottage.attributes.last_triggered)) > 120 }}
         {%- else -%}
           true
         {%- endif -%}
   trigger:
     - platform: state
-      entity_id: group.household
-      from: 'not_home'
-      to: 'home'
+      entity_id: input_boolean.lars_home
+      to: 'on'
+    - platform: state
+      entity_id: input_boolean.emelie_home
+      to: 'on'
+    - platform: state
+      entity_id: input_boolean.kerstin_home
+      to: 'on'
+    - platform: state
+      entity_id: input_boolean.ingrid_home
+      to: 'on'
   action:
      service: homeassistant.turn_on
      entity_id: script.cottage_standby
+
+# #### Disarm
+# - id: disarm_cottage_from_away
+#   alias: "Disarm house to Standby"
+#   initial_state: 'on'
+#   condition:
+#     - condition: state
+#       entity_id: input_boolean.cottage_update
+#       state: 'on'
+#     - condition: template
+#       value_template: >
+#         {%- if states.automation.arm_cottage.attributes.last_triggered -%}
+#           {{ (as_timestamp(now()) - as_timestamp(states.automation.arm_cottage.attributes.last_triggered)) > 240 }}
+#         {%- else -%}
+#           true
+#         {%- endif -%}
+#   trigger:
+#     - platform: state
+#       entity_id: group.household
+#       from: 'not_home'
+#       to: 'home'
+#   action:
+#      service: homeassistant.turn_on
+#      entity_id: script.cottage_standby
 
 ## Home-mode
 #################################
@@ -177,9 +389,8 @@
   condition:
     - condition: and
       conditions:
-        - condition: state
-          entity_id: group.household
-          state: 'home'
+        - condition: template
+          value_template: "{{ states.input_select.cottage_status.state != 'Home' }}"
         - condition: time
           after: '07:30:00'
           before: '22:30:00'
@@ -187,26 +398,67 @@
           entity_id: input_boolean.cottage_update
           state: 'on'
         - condition: template
-          value_template: >
-            {%- if states.input_select.cottage_status.last_changed -%}
-              {{ (as_timestamp(now()) - as_timestamp(states.input_select.cottage_status.last_changed)) > 300 }}
-            {%- else -%}
-              true
-            {%- endif -%}
+          value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_select.cottage_status.last_changed)) > 300 }}"
         - condition: or
           conditions:
-          - condition: state
-            entity_id: input_select.cottage_status
-            state: 'Standby'
-          - condition: state
-            entity_id: input_select.cottage_status
-            state: 'Away'
+            - condition: state
+              entity_id: input_boolean.lars_home
+              state: 'on'
+            - condition: state
+              entity_id: input_boolean.emelie_home
+              state: 'on'
+            - condition: state
+              entity_id: input_boolean.kerstin_home
+              state: 'on'
+            - condition: state
+              entity_id: input_boolean.ingrid_home
+              state: 'on'
   trigger:
     - platform: time_pattern
       minutes: '/20'
   action:
     - service: homeassistant.turn_on
       entity_id: script.cottage_home
+
+
+# ## Home-mode
+# #################################
+# - id: cottage_home
+#   alias: "House home mode"
+#   initial_state: 'on'
+#   condition:
+#     - condition: and
+#       conditions:
+#         - condition: state
+#           entity_id: group.household
+#           state: 'home'
+#         - condition: time
+#           after: '07:30:00'
+#           before: '22:30:00'
+#         - condition: state
+#           entity_id: input_boolean.cottage_update
+#           state: 'on'
+#         - condition: template
+#           value_template: >
+#             {%- if states.input_select.cottage_status.last_changed -%}
+#               {{ (as_timestamp(now()) - as_timestamp(states.input_select.cottage_status.last_changed)) > 300 }}
+#             {%- else -%}
+#               true
+#             {%- endif -%}
+#         - condition: or
+#           conditions:
+#           - condition: state
+#             entity_id: input_select.cottage_status
+#             state: 'Standby'
+#           - condition: state
+#             entity_id: input_select.cottage_status
+#             state: 'Away'
+#   trigger:
+#     - platform: time_pattern
+#       minutes: '/20'
+#   action:
+#     - service: homeassistant.turn_on
+#       entity_id: script.cottage_home
 
 ## Standby morning mode
 #################################
@@ -281,31 +533,31 @@
     - service: homeassistant.turn_on
       entity_id: script.cottage_night
 
-#Disarm when someone is coming home during Night mode
-##############
-- id: disarm_cottage_at_night
-  alias: "Disarm house at night"
-  initial_state: 'on'
-  condition:
-    - condition: and
-      conditions:
-        - condition: state
-          entity_id: input_boolean.cottage_update
-          state: 'on'
-        - condition: state
-          entity_id: input_select.cottage_status
-          state: 'Night'
-  trigger:
-   - platform: state
-     entity_id:
-       - group.lars
-       - group.emelie
-     from: 'not_home'
-     to: 'home'
-  action:
-    service: homeassistant.turn_on
-    entity_id: script.cottage_standby
-
+# #Disarm when someone is coming home during Night mode
+# ##############
+# - id: disarm_cottage_at_night
+#   alias: "Disarm house at night"
+#   initial_state: 'on'
+#   condition:
+#     - condition: and
+#       conditions:
+#         - condition: state
+#           entity_id: input_boolean.cottage_update
+#           state: 'on'
+#         - condition: state
+#           entity_id: input_select.cottage_status
+#           state: 'Night'
+#   trigger:
+#    - platform: state
+#      entity_id:
+#        - group.lars
+#        - group.emelie
+#      from: 'not_home'
+#      to: 'home'
+#   action:
+#     service: homeassistant.turn_on
+#     entity_id: script.cottage_standby
+#
 #IKEA Modes
 #white:
 #245, 250, 246

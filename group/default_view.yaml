@@ -10,6 +10,7 @@ default_view:
     - group.lena_bernt
     - device_tracker.frida_wifi
     - light.fonsterlampor_vardagsrum_81
+    - light.lampor_vardagsrum_2_136
     - light.fonsterlampor_uppe1_115
     - light.stora_fonstret_sovrum_vuxna_e14
     - light.stora_fonstret_ingrid_e14

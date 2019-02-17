@@ -167,6 +167,9 @@ ios:
         identifier: 'notis'
         actions:
 
+owntracks:
+  max_gps_accuracy: 200
+
 device_tracker: !include device_tracker.yaml
 
 sun:

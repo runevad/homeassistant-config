@@ -4,15 +4,15 @@
     username: !secret unifi_username
     password: !secret unifi_password
     verify_ssl: false
-    detection_time: 180
+    detection_time: 60
+    monitored_conditions:
+      - ip
+      - radio
+      - _is_guest_by_uap
+      - _last_seen_by_uap
+      - _uptime_by_uap
     new_device_defaults:
       track_new_devices: false
       hide_if_away: false
 
-  - platform: google_maps
-    username: !secret google_maps_tracker_user
-    password: !secret google_maps_tracker_password
-    max_gps_accuracy: 150
-    consider_home: 180
-  
   - platform: bluetooth_tracker

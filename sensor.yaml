@@ -1,5 +1,6 @@
 ##############
-# Split this in the future??
+### Sensors
+##############
 
   - platform: time_date
     display_options:

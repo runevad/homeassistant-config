@@ -1,25 +1,32 @@
-Lars:
+test_group_home:
+  - input_boolean.lars_home
+  - input_boolean.emelie_home
+
+lars:
 #  - !secret google_maps_tracker_lars
   - device_tracker.lars_iphone
   - device_tracker.lars_wifi
   - device_tracker.lars_bt
 
-Emelie:
-  - !secret google_maps_tracker_emelie
+emelie:
+  - device_tracker.em_p10
   - device_tracker.emelie_wifi
   - device_tracker.emelie_bt
 
-Christina_Anders:
-  - device_tracker.anders_wifi
+other:
   - device_tracker.christina_wifi
-
-Lena_Bernt:
-  - device_tracker.lena_wifi
+  - device_tracker.anders_wifi
   - device_tracker.bernt_wifi
+  - device_tracker.lena_wifi
+  - device_tracker.frida_wifi
+
+kerstin:
+
+ingrid:
 
 household:
   - group.lars
   - group.emelie
-  - group.christina_anders
-  - group.lena_bernt
-  - device_tracker.frida_wifi
+  - group.other
+  - group.kerstin
+  - group.ingrid

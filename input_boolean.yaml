@@ -19,3 +19,23 @@
   trigger_first_morning:
     name: 'Waiting for first morning motion'
     icon: mdi:kettle
+
+  lars_home:
+    name: 'Lars hemma'
+    initial: 'off'
+    icon: mdi:home-account
+
+  emelie_home:
+    name: 'Emelie hemma'
+    initial: 'off'
+    icon: mdi:home-account
+
+  kerstin_home:
+    name: 'Kerstin hemma'
+    initial: 'off'
+    icon: mdi:home-account
+
+  ingrid_home:
+    name: 'Ingrid hemma'
+    initial: 'off'
+    icon: mdi:home-account
