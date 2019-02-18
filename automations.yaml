@@ -40,10 +40,13 @@
         entity_id: input_boolean.cottage_update
         state: 'on'
       - condition: state
+        entity_id: input_boolean.cottage_guest_mode
+        state: 'off'
+      - condition: state
         entity_id: input_select.cottage_status
         state: 'Away'
-        # for:
-        #   minutes: 10
+        for:
+          minutes: 10
   trigger:
     - platform: state
       entity_id:
@@ -56,17 +59,8 @@
     # Wait 3 min for wifi to grab if GPS and/or BT failed
     - delay: '00:03:00'
     - condition: state
-      entity_id: input_boolean.lars_home
-      state: 'off'
-    - condition: state
-      entity_id: input_boolean.emelie_home
-      state: 'off'
-    - condition: state
-      entity_id: input_boolean.kerstin_home
-      state: 'off'
-    - condition: state
-      entity_id: input_boolean.ingrid_home
-      state: 'off'
+      entity_id: group.family
+      state: 'not_home'
     - service: light.turn_on
       data:
         entity_id: group.all_lights
@@ -125,209 +119,42 @@
 
 ## Presence
 ################
-- id: lars_home
-  alias: 'Lars home'
-  initial_state: 'on'
-  trigger:
-    - platform: state
-      entity_id:
-        - device_tracker.lars_iphone
-        - device_tracker.lars_wifi
-        - device_tracker.lars_bt
-      to: 'home'
-    - platform: homeassistant
-      event: start
-  condition:
-    - condition: numeric_state
-      entity_id: group.lars
-      above: 1
-      value_template: "{{ dict((states|selectattr('entity_id', 'in', state_attr('group.lars', 'entity_id'))|list)|groupby('state'))['home']|count }}"
-  action:
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.lars_home
-
-- id: emelie_home
-  alias: 'Emelie home'
-  initial_state: 'on'
-  trigger:
-    - platform: state
-      entity_id:
-        - device_tracker.em_p10
-        - device_tracker.emelie_wifi
-        - device_tracker.emelie_bt
-      to: 'home'
-    - platform: homeassistant
-      event: start
-  condition:
-    - condition: numeric_state
-      entity_id: group.emelie
-      above: 1
-      value_template: "{{ dict((states|selectattr('entity_id', 'in', state_attr('group.emelie', 'entity_id'))|list)|groupby('state'))['home']|count }}"
-  action:
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.emelie_home
-
-- id: lars_away
-  alias: 'Lars away'
-  initial_state: 'on'
-  trigger:
-    - platform: state
-      entity_id:
-        - device_tracker.lars_iphone
-        - device_tracker.lars_wifi
-        - device_tracker.lars_bt
-      to: 'not_home'
-    - platform: state
-      entity_id:
-        - device_tracker.lars_iphone
-        - device_tracker.lars_wifi
-        - device_tracker.lars_bt
-      to: 'not_home'
-      for:
-        minutes: 5
-    - platform: homeassistant
-      event: start
-  condition:
-    # - condition: state
-    #   entity_id: input_boolean.lars_home
-    #   state: 'on'
-    - condition: numeric_state
-      entity_id: group.lars
-      below: 2
-      value_template: "{{ dict((states|selectattr('entity_id', 'in', state_attr('group.lars', 'entity_id'))|list)|groupby('state'))['home']|count }}"
-    - condition: or
-      conditions:
-      # Front door was opened in the last 15 minutes
-      - condition: template
-        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.door_groventre_137.attributes.last_tripped_time)) | int < 900 }}"
-      # All away for at least 4 minutes
-      - condition: state
-        entity_id: group.lars
-        state: 'not_home'
-        for:
-          minutes: 4
-  action:
-    - service: input_boolean.turn_off
-      entity_id: input_boolean.lars_home
-
-- id: emelie_away
-  alias: 'Emelie away'
-  initial_state: 'on'
-  trigger:
-    - platform: state
-      entity_id:
-        - device_tracker.em_p10
-        - device_tracker.emelie_wifi
-        - device_tracker.emelie_bt
-      to: 'not_home'
-    - platform: state
-      entity_id:
-        - device_tracker.em_p10
-        - device_tracker.emelie_wifi
-        - device_tracker.emelie_bt
-      to: 'not_home'
-      for:
-        minutes: 5
-    - platform: homeassistant
-      event: start
-  condition:
-    # - condition: state
-    #   entity_id: input_boolean.lars_home
-    #   state: 'on'
-    - condition: numeric_state
-      entity_id: group.emelie
-      below: 2
-      value_template: "{{ dict((states|selectattr('entity_id', 'in', state_attr('group.emelie', 'entity_id'))|list)|groupby('state'))['home']|count }}"
-    - condition: or
-      conditions:
-      # Front door was opened in the last 15 minutes
-      - condition: template
-        value_template: "{{ (as_timestamp(now()) - as_timestamp(states.binary_sensor.door_groventre_137.attributes.last_tripped_time)) | int < 900 }}"
-      # All away for at least 4 minutes
-      - condition: state
-        entity_id: group.emelie
-        state: 'not_home'
-        for:
-          minutes: 4
-  action:
-    - service: input_boolean.turn_off
-      entity_id: input_boolean.emelie_home
-
 
 #### Arm cottage - all away
 ########################
-- id: all_away
-  alias: 'All away'
+- id: arm_cottage
+  alias: "Arm the house"
   initial_state: 'on'
+  condition:
+    - condition: state
+      entity_id: input_boolean.cottage_update
+      state: 'on'
+    - condition: template
+      value_template: >
+        {%- if states.automation.disarm_cottage_from_away.attributes.last_triggered -%}
+          {{ (as_timestamp(now()) - as_timestamp(states.automation.disarm_cottage_from_away.attributes.last_triggered)) > 240 }}
+        {%- else -%}
+          true
+        {%- endif -%}
+    - condition: template
+      value_template: "{{ states.input_select.cottage_status.state != 'Away' }}"
   trigger:
     - platform: state
-      entity_id: input_boolean.lars_home
-      to: 'off'
+      entity_id: group.family
+      from: 'home'
+      to: 'not_home'
     - platform: state
-      entity_id: input_boolean.emelie_home
-      to: 'off'
-    - platform: state
-      entity_id: input_boolean.kerstin_home
-      to: 'off'
-    - platform: state
-      entity_id: input_boolean.ingrid_home
-      to: 'off'
-  condition:
-    condition: and
-    conditions:
-      # We're all away
-      - condition: state
-        entity_id: input_boolean.lars_home
-        state: 'off'
-      - condition: state
-        entity_id: input_boolean.emelie_home
-        state: 'off'
-      - condition: state
-        entity_id: input_boolean.kerstin_home
-        state: 'off'
-      - condition: state
-        entity_id: input_boolean.ingrid_home
-        state: 'off'
+      entity_id: group.family
+      from: 'home'
+      to: 'not_home'
+      for: '00:10:00'
   action:
      service: homeassistant.turn_on
      entity_id: script.cottage_away
 
-
-
-## Arm Cottage
-################
-# - id: arm_cottage
-#   alias: "Arm the house"
-#   initial_state: 'on'
-#   condition:
-#     - condition: state
-#       entity_id: input_boolean.cottage_update
-#       state: 'on'
-#     - condition: template
-#       value_template: >
-#         {%- if states.automation.disarm_cottage_from_away.attributes.last_triggered -%}
-#           {{ (as_timestamp(now()) - as_timestamp(states.automation.disarm_cottage_from_away.attributes.last_triggered)) > 240 }}
-#         {%- else -%}
-#           true
-#         {%- endif -%}
-#     - condition: template
-#       value_template: "{{ states.input_select.cottage_status.state != 'Away' }}"
-#   trigger:
-#     - platform: state
-#       entity_id: group.household
-#       from: 'home'
-#       to: 'not_home'
-#     - platform: state
-#       entity_id: group.household
-#       from: 'home'
-#       to: 'not_home'
-#       for: '00:10:00'
-#   action:
-#      service: homeassistant.turn_on
-#      entity_id: script.cottage_away
-
-- id: disarm_cottage
-  alias: 'Disarm house to Standby'
+# #### Disarm
+- id: disarm_cottage_from_away
+  alias: "Disarm house to Standby"
   initial_state: 'on'
   condition:
     - condition: state
@@ -336,53 +163,21 @@
     - condition: template
       value_template: >
         {%- if states.automation.arm_cottage.attributes.last_triggered -%}
-          {{ (as_timestamp(now()) - as_timestamp(states.automation.arm_cottage.attributes.last_triggered)) > 120 }}
+          {{ (as_timestamp(now()) - as_timestamp(states.automation.arm_cottage.attributes.last_triggered)) > 240 }}
         {%- else -%}
           true
         {%- endif -%}
   trigger:
     - platform: state
-      entity_id: input_boolean.lars_home
-      to: 'on'
-    - platform: state
-      entity_id: input_boolean.emelie_home
-      to: 'on'
-    - platform: state
-      entity_id: input_boolean.kerstin_home
-      to: 'on'
-    - platform: state
-      entity_id: input_boolean.ingrid_home
-      to: 'on'
+      entity_id: group.family
+      from: 'not_home'
+      to: 'home'
   action:
      service: homeassistant.turn_on
      entity_id: script.cottage_standby
 
-# #### Disarm
-# - id: disarm_cottage_from_away
-#   alias: "Disarm house to Standby"
-#   initial_state: 'on'
-#   condition:
-#     - condition: state
-#       entity_id: input_boolean.cottage_update
-#       state: 'on'
-#     - condition: template
-#       value_template: >
-#         {%- if states.automation.arm_cottage.attributes.last_triggered -%}
-#           {{ (as_timestamp(now()) - as_timestamp(states.automation.arm_cottage.attributes.last_triggered)) > 240 }}
-#         {%- else -%}
-#           true
-#         {%- endif -%}
-#   trigger:
-#     - platform: state
-#       entity_id: group.household
-#       from: 'not_home'
-#       to: 'home'
-#   action:
-#      service: homeassistant.turn_on
-#      entity_id: script.cottage_standby
-
-## Home-mode
-#################################
+# ## Home-mode
+# #################################
 - id: cottage_home
   alias: "House home mode"
   initial_state: 'on'
@@ -398,67 +193,26 @@
           entity_id: input_boolean.cottage_update
           state: 'on'
         - condition: template
-          value_template: "{{ (as_timestamp(now()) - as_timestamp(states.input_select.cottage_status.last_changed)) > 300 }}"
+          value_template: >
+            {%- if states.input_select.cottage_status.last_changed -%}
+              {{ (as_timestamp(now()) - as_timestamp(states.input_select.cottage_status.last_changed)) > 300 }}
+            {%- else -%}
+              true
+            {%- endif -%}
         - condition: or
           conditions:
             - condition: state
-              entity_id: input_boolean.lars_home
-              state: 'on'
+              entity_id: group.family
+              state: 'home'
             - condition: state
-              entity_id: input_boolean.emelie_home
-              state: 'on'
-            - condition: state
-              entity_id: input_boolean.kerstin_home
-              state: 'on'
-            - condition: state
-              entity_id: input_boolean.ingrid_home
+              entity_id: input_boolean.cottage_guest_mode
               state: 'on'
   trigger:
     - platform: time_pattern
-      minutes: '/20'
+      minutes: '/10'
   action:
     - service: homeassistant.turn_on
       entity_id: script.cottage_home
-
-
-# ## Home-mode
-# #################################
-# - id: cottage_home
-#   alias: "House home mode"
-#   initial_state: 'on'
-#   condition:
-#     - condition: and
-#       conditions:
-#         - condition: state
-#           entity_id: group.household
-#           state: 'home'
-#         - condition: time
-#           after: '07:30:00'
-#           before: '22:30:00'
-#         - condition: state
-#           entity_id: input_boolean.cottage_update
-#           state: 'on'
-#         - condition: template
-#           value_template: >
-#             {%- if states.input_select.cottage_status.last_changed -%}
-#               {{ (as_timestamp(now()) - as_timestamp(states.input_select.cottage_status.last_changed)) > 300 }}
-#             {%- else -%}
-#               true
-#             {%- endif -%}
-#         - condition: or
-#           conditions:
-#           - condition: state
-#             entity_id: input_select.cottage_status
-#             state: 'Standby'
-#           - condition: state
-#             entity_id: input_select.cottage_status
-#             state: 'Away'
-#   trigger:
-#     - platform: time_pattern
-#       minutes: '/20'
-#   action:
-#     - service: homeassistant.turn_on
-#       entity_id: script.cottage_home
 
 ## Standby morning mode
 #################################
@@ -471,9 +225,14 @@
         - condition: state
           entity_id: input_boolean.cottage_update
           state: 'on'
-        - condition: state
-          entity_id: group.household
-          state: 'home'
+        - condition: or
+          conditions:
+            - condition: state
+              entity_id: input_boolean.cottage_guest_mode
+              state: 'on'
+            - condition: state
+              entity_id: group.family
+              state: 'home'
   trigger:
     - platform: time
       at: '05:30:00'
@@ -492,9 +251,14 @@
         - condition: state
           entity_id: input_boolean.cottage_update
           state: 'on'
-        - condition: state
-          entity_id: group.household
-          state: 'home'
+        - condition: or
+          conditions:
+            - condition: state
+              entity_id: input_boolean.cottage_guest_mode
+              state: 'on'
+            - condition: state
+              entity_id: group.family
+              state: 'home'
   trigger:
     - platform: time
       at: '23:00:00'
@@ -511,14 +275,11 @@
     - condition: and
       conditions:
         - condition: state
-          entity_id: group.household
-          state: 'home'
+          entity_id: input_boolean.cottage_update
+          state: 'on'
         - condition: time
           after: '00:15:00'
           before: '05:00:00'
-        - condition: state
-          entity_id: input_boolean.cottage_update
-          state: 'on'
         - condition: template
           value_template: >
             {%- if states.input_select.cottage_status.last_changed -%}
@@ -526,38 +287,48 @@
             {%- else -%}
               true
             {%- endif -%}
+        - condition: or
+          conditions:
+            - condition: state
+              entity_id: input_boolean.cottage_guest_mode
+              state: 'on'
+            - condition: state
+              entity_id: group.family
+              state: 'home'
   trigger:
     - platform: time_pattern
-      minutes: '/20'
+      minutes: '/10'
   action:
     - service: homeassistant.turn_on
       entity_id: script.cottage_night
 
-# #Disarm when someone is coming home during Night mode
-# ##############
-# - id: disarm_cottage_at_night
-#   alias: "Disarm house at night"
-#   initial_state: 'on'
-#   condition:
-#     - condition: and
-#       conditions:
-#         - condition: state
-#           entity_id: input_boolean.cottage_update
-#           state: 'on'
-#         - condition: state
-#           entity_id: input_select.cottage_status
-#           state: 'Night'
-#   trigger:
-#    - platform: state
-#      entity_id:
-#        - group.lars
-#        - group.emelie
-#      from: 'not_home'
-#      to: 'home'
-#   action:
-#     service: homeassistant.turn_on
-#     entity_id: script.cottage_standby
-#
+##Disarm when someone is coming home during Night mode
+###############
+- id: disarm_cottage_at_night
+  alias: "Disarm house at night"
+  initial_state: 'on'
+  condition:
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.cottage_update
+          state: 'on'
+        - condition: state
+          entity_id: input_select.cottage_status
+          state: 'Night'
+  trigger:
+   - platform: state
+     entity_id:
+       - group.lars
+       - group.emelie
+       - group.kerstin
+       - group.ingrid
+     from: 'not_home'
+     to: 'home'
+  action:
+    service: homeassistant.turn_on
+    entity_id: script.cottage_standby
+
 #IKEA Modes
 #white:
 #245, 250, 246
@@ -570,27 +341,8 @@
 #color_temp: 454
 #---
 
-################################
 ## Lights
 ################################
-- id: turn_on_lights_when_away
-  alias: "Lights on when away"
-  initial_state: 'on'
-  condition:
-    - condition: state
-      entity_id: input_select.cottage_status
-      state: 'Away'
-  trigger:
-    - platform: sun
-      event: sunset
-  action:
-    - service: light.turn_on
-      data:
-        brightness: 200
-        color_temp: 454
-        transition: 1800
-      entity_id: group.all_lights
-
 - id: turn_off_lights_when_away
   alias: "Lights off when Away"
   initial_state: 'on'
@@ -605,6 +357,8 @@
     - service: light.turn_off
       entity_id: group.all_lights
 
+### Lights
+###############
 - id: lights_on_pre_kids_bedtime
   alias: "Lights on pre kids bedtime"
   initial_state: 'on'
@@ -614,15 +368,14 @@
         - condition: state
           entity_id: input_boolean.cottage_update
           state: 'on'
-        - condition: state
-          entity_id: group.household
-          state: 'home'
         - condition: time
           after: '12:00:00'
           before: '19:30:00'
   trigger:
-    - platform: sun
-      event: sunset
+    - platform: numeric_state
+      entity_id: sun.sun
+      value_template: "{{ state.attributes.elevation }}"
+      below: -4.0
     - platform: numeric_state
       entity_id: sensor.lux_allrum_22
       below: '30'
@@ -643,15 +396,14 @@
         - condition: state
           entity_id: input_boolean.cottage_update
           state: 'on'
-        - condition: state
-          entity_id: group.household
-          state: 'home'
         - condition: time
           after: '19:30:00'
           before: '22:00:00'
   trigger:
-    - platform: sun
-      event: sunset
+    - platform: numeric_state
+      entity_id: sun.sun
+      value_template: "{{ state.attributes.elevation }}"
+      below: -4.0
     - platform: numeric_state
       entity_id: sensor.lux_allrum_22
       below: '30'
@@ -662,10 +414,8 @@
         color_temp: 454
         transition: 60
       entity_id:
-        - light.fonsterlampor_vardagsrum_81
-        - light.fonsterlampor_uppe1_115
+        - group.window_lights
         - light.stora_fonstret_sovrum_vuxna_e14
-        - light.lampor_vardagsrum_2_136
 
 - id: morning_lights_weekday
   alias: "Morning lights weekday"
@@ -677,14 +427,14 @@
           entity_id: input_boolean.cottage_update
           state: 'on'
         - condition: state
-          entity_id: group.household
+          entity_id: group.family
           state: 'home'
         - condition: state
           entity_id: light.fonsterlampor_vardagsrum_81
           state: 'off'
         - condition: time
           after: '05:30:00'
-          before: '08:30:00'
+          before: '09:30:00'
         - condition: state
           entity_id: binary_sensor.workday
           state: 'on'
@@ -706,55 +456,10 @@
         brightness: 255
         color_temp: 454
       entity_id:
-        - light.fonsterlampor_vardagsrum_81
-        - light.lampor_vardagsrum_2_136
+        - group.window_lights
 
-- id: morning_lights_weekend
-  alias: "Morning lights weekend"
-  initial_state: 'on'
-  condition:
-    - condition: and
-      conditions:
-        - condition: state
-          entity_id: input_boolean.cottage_update
-          state: 'on'
-        - condition: state
-          entity_id: group.household
-          state: 'home'
-        - condition: state
-          entity_id: light.fonsterlampor_uppe1_115
-          state: 'off'
-        - condition: state
-          entity_id: light.fonsterlampor_vardagsrum_81
-          state: 'off'
-        - condition: time
-          after: '07:30:00'
-          before: '09:00:00'
-        - condition: state
-          entity_id: binary_sensor.workday
-          state: 'off'
-        - condition: or
-          conditions:
-            - condition: state
-              entity_id: sun.sun
-              state: 'below_horizon'
-            - condition: numeric_state
-              entity_id: sensor.lux_allrum_22
-              below: '30'
-  trigger:
-    - platform: state
-      entity_id: binary_sensor.motion_allrum_20
-      to: 'on'
-  action:
-    - service: light.turn_on
-      data:
-        brightness: 255
-        color_temp: 454
-      entity_id:
-        - light.fonsterlampor_vardagsrum_81
-        - light.fonsterlampor_uppe1_115
-        - light.lampor_vardagsrum_2_136
-
+### Light triggers during nightmode
+#######################
 - id: lights_on_up_night_motion
   alias: "Lights upstairs night motion"
   initial_state: 'on'
@@ -837,9 +542,12 @@
         - condition: state
           entity_id: binary_sensor.workday
           state: 'on'
+        - condition: state
+          entity_id: group.family
+          state: 'home'
   trigger:
     - platform: time
-      at: '06:00'
+      at: '05:50'
   action:
     - service: light.turn_on
       data:
@@ -847,37 +555,33 @@
         color_temp: 454
         transition: 18000
       entity_id:
-        - light.tradfri_bulb_e27_cws_opal_600lm
-        - light.lilla_fonstret_ingrid
+        - group.bedroom_lights
 
 #### Car heater
 - id: car_heater_start
   alias: "Engine heater activate"
   trigger:
-    platform: template
-    value_template: '{{ states.sensor.heater_activationtime.state == states.sensor.time.state }}'
+    - platform: template
+      value_template: '{{ states.sensor.heater_activationtime.state == states.sensor.time.state }}'
   condition:
-    condition: and
-    conditions:
-      - condition: state
-        # replace entity_id below with your own tracker (group or single)
-        entity_id: group.household
-        # if your home zone is called home
-        state: 'home'
-      - condition: or
-        # Below checks if it's a workday or not
-        conditions:
-          - condition: state
-            entity_id: input_boolean.workdays_only
-            state: 'off'
-          - condition: and
-            conditions:
-              - condition: state
-                entity_id: binary_sensor.workday
-                state: 'on'
-              - condition: state
-                entity_id: input_boolean.workdays_only
-                state: 'on'
+    - condition: and
+      conditions:
+        - condition: state
+          entity_id: group.family
+          state: 'home'
+        - condition: or
+          conditions:
+            - condition: state
+              entity_id: input_boolean.workdays_only
+              state: 'off'
+            - condition: and
+              conditions:
+                - condition: state
+                  entity_id: binary_sensor.workday
+                  state: 'on'
+                - condition: state
+                  entity_id: input_boolean.workdays_only
+                  state: 'on'
   # If the above conditions are fulfilled, ie. you are home and it's a workday
   # then activate the heater on your selected time
   action:
@@ -887,8 +591,8 @@
 - id: car_heater_shut_down
   alias: "Engine heater deactivate"
   trigger:
-    platform: template
-    value_template: '{{ states.sensor.heater_departuretime.state == states.sensor.time.state }}'
+    - platform: template
+      value_template: '{{ states.sensor.heater_departuretime.state == states.sensor.time.state }}'
   action:
     - delay:
         minutes: "{{ states('input_number.heater_delay') | int }}"
@@ -907,14 +611,14 @@
 - id: ifttt_automation
   alias: "IFTTT automation"
   trigger:
-    platform: event
-    event_type: ifttt_webhook_received
-    event_data:
-      action: call_service
+    - platform: event
+      event_type: ifttt_webhook_received
+      event_data:
+        action: call_service
   action:
-    service_template: '{{ trigger.event.data.service }}'
-    data_template:
-      entity_id: '{{ trigger.event.data.entity_id }}'
+    - service_template: '{{ trigger.event.data.service }}'
+      data_template:
+        entity_id: '{{ trigger.event.data.entity_id }}'
 
 # Start circulationg the hot water earlier on weekends
 - id: extra_vvc_weekend
@@ -924,7 +628,7 @@
       entity_id: binary_sensor.workday
       state: 'off'
     - condition: state
-      entity_id: group.household
+      entity_id: group.family
       state: 'home'
   trigger:
     - platform: time
@@ -960,6 +664,7 @@
         volume: 0.45
         delay: '00:00:15'
         message: 'Hej, tänk på att det just nu är högt elpris. Det ligger just nu på {{ states.sensor.nibe_31372_10069.state }} öre per kWh!'
+
 - id: low_electric_price
   alias: "Lågt elpris"
   condition:
@@ -994,7 +699,7 @@
 #       after: '08:00:00'
 #       before: '21:00:00'
 #     - condition: state
-#       entity_id: group.household
+#       entity_id: group.family
 #       state: 'home'
 #   trigger:
 #     - platform: state
@@ -1111,9 +816,6 @@
   initial_state: 'on'
   condition:
     - condition: state
-      entity_id: input_boolean.cottage_update
-      state: 'on'
-    - condition: state
       entity_id: input_select.cottage_status
       state: 'Away'
   trigger:
@@ -1155,7 +857,7 @@
   initial_state: 'on'
   trigger:
     - platform: state
-      entity_id: binary_sensor.television
+      entity_id: media_player.allrum
       to: 'off'
   condition:
     - condition: time
