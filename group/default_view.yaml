@@ -4,11 +4,7 @@ default_view:
   icon: mdi:home-assistant
   entities:
     - sensor.cottage_status
-    - group.lars
-    - group.emelie
-    - group.christina_anders
-    - group.lena_bernt
-    - device_tracker.frida_wifi
+    - group.family
     - light.fonsterlampor_vardagsrum_81
     - light.lampor_vardagsrum_2_136
     - light.fonsterlampor_uppe1_115
