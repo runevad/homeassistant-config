@@ -50,9 +50,6 @@
                                         "left": "88%",
                                         "top": "83%"
                                     },
-                                    "tap_action": {
-                                        "action": "more-info"
-                                    },
                                     "type": "state-icon"
                                 },
                                 {
@@ -919,22 +916,41 @@
                             "type": "custom:monster-card"
                         },
                         {
-                            "card": {
-                                "show_header_toggle": false,
-                                "title": "Hemma?"
-                            },
                             "entities": [
-                                "device_tracker.lars_wifi",
-                                "device_tracker.lars_bt",
-                                "device_tracker.lars_iphone",
-                                "device_tracker.emelie_wifi",
-                                "device_tracker.emelie_bt",
-                                "device_tracker.anders_wifi",
-                                "device_tracker.christina_wifi",
-                                "device_tracker.lena_wifi",
-                                "device_tracker.bernt_wifi",
-                                "device_tracker.frida_wifi"
+                                {
+                                    "entity": "device_tracker.lars_iphone"
+                                },
+                                {
+                                    "entity": "device_tracker.lars_wifi"
+                                },
+                                {
+                                    "entity": "device_tracker.lars_bt"
+                                },
+                                {
+                                    "entity": "device_tracker.em_p10"
+                                },
+                                {
+                                    "entity": "device_tracker.emelie_wifi"
+                                },
+                                {
+                                    "entity": "device_tracker.emelie_bt"
+                                },
+                                {
+                                    "entity": "device_tracker.anders_wifi"
+                                },
+                                {
+                                    "entity": "device_tracker.christina_wifi"
+                                },
+                                {
+                                    "entity": "device_tracker.lena_wifi"
+                                },
+                                {
+                                    "entity": "device_tracker.bernt_wifi"
+                                }
                             ],
+                            "show_name": true,
+                            "show_state": false,
+                            "title": "Enheter",
                             "type": "glance"
                         },
                         {
@@ -990,24 +1006,6 @@
                         },
                         {
                             "entities": [
-                                "device_tracker.lars_wifi",
-                                "device_tracker.lars_bt",
-                                "device_tracker.lars_iphone",
-                                "device_tracker.google_maps_104812533325498334396",
-                                "device_tracker.emelie_wifi",
-                                "device_tracker.emelie_bt",
-                                "device_tracker.anders_wifi",
-                                "device_tracker.christina_wifi",
-                                "device_tracker.lena_wifi",
-                                "device_tracker.bernt_wifi"
-                            ],
-                            "show_name": true,
-                            "show_state": false,
-                            "title": "Enheter",
-                            "type": "glance"
-                        },
-                        {
-                            "entities": [
                                 {
                                     "entity": "group.lars"
                                 },
@@ -1024,10 +1022,43 @@
                             "show_header_toggle": false,
                             "title": "Test",
                             "type": "entities"
+                        },
+                        {
+                            "card": {
+                                "title": "Entities with problems",
+                                "type": "glance"
+                            },
+                            "filter": {
+                                "include": [
+                                    {
+                                        "entity_id": "*",
+                                        "state": "unavailable"
+                                    }
+                                ]
+                            },
+                            "show_empty": false,
+                            "type": "custom:monster-card"
                         }
                     ],
                     "icon": "mdi:settings",
                     "title": "Sensors & Units"
+                },
+                {
+                    "cards": [
+                        {
+                            "entity": "camera.d_link_dcs_4602ev",
+                            "show_info": false,
+                            "type": "picture-entity"
+                        },
+                        {
+                            "entity": "camera.d_link_dcs_4622",
+                            "show_info": false,
+                            "type": "picture-entity"
+                        }
+                    ],
+                    "icon": "mdi:cctv",
+                    "id": "cameras",
+                    "title": "Cameras"
                 },
                 {
                     "badges": [],
@@ -1151,23 +1182,6 @@
                     "icon": "mdi:robot-vacuum-variant",
                     "path": "neato",
                     "title": "St\u00e4dStina"
-                },
-                {
-                    "cards": [
-                        {
-                            "entity": "camera.d_link_dcs_4602ev",
-                            "show_info": false,
-                            "type": "picture-entity"
-                        },
-                        {
-                            "entity": "camera.d_link_dcs_4622",
-                            "show_info": false,
-                            "type": "picture-entity"
-                        }
-                    ],
-                    "icon": "mdi:cctv",
-                    "id": "cameras",
-                    "title": "Cameras"
                 }
             ]
         }
