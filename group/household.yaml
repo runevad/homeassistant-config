@@ -1,6 +1,8 @@
-test_group_home:
-  - input_boolean.lars_home
-  - input_boolean.emelie_home
+family:
+  - group.lars
+  - group.emelie
+  - group.kerstin
+  - group.ingrid
 
 lars:
 #  - !secret google_maps_tracker_lars
@@ -13,20 +15,13 @@ emelie:
   - device_tracker.emelie_wifi
   - device_tracker.emelie_bt
 
+kerstin:
+
+ingrid:
+
 other:
   - device_tracker.christina_wifi
   - device_tracker.anders_wifi
   - device_tracker.bernt_wifi
   - device_tracker.lena_wifi
   - device_tracker.frida_wifi
-
-kerstin:
-
-ingrid:
-
-household:
-  - group.lars
-  - group.emelie
-  - group.other
-  - group.kerstin
-  - group.ingrid
