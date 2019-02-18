@@ -5,37 +5,22 @@
   workdays_only:
     name: Only active on workdays
     initial: true
-
-  lars_pickup:
-    name: 'Lars lämna på förskolan'
-    initial: 'on'
-    icon: mdi:bus-school
+  #
+  # lars_pickup:
+  #   name: 'Lars lämna på förskolan'
+  #   initial: 'on'
+  #   icon: mdi:bus-school
 
   cottage_update:
     name: 'Auto'
     initial: 'on'
     icon: mdi:security
 
+  cottage_guest_mode:
+    name: 'Gästläge'
+    initial: 'off'
+    icon: mdi:security
+
   trigger_first_morning:
     name: 'Waiting for first morning motion'
     icon: mdi:kettle
-
-  lars_home:
-    name: 'Lars hemma'
-    initial: 'off'
-    icon: mdi:home-account
-
-  emelie_home:
-    name: 'Emelie hemma'
-    initial: 'off'
-    icon: mdi:home-account
-
-  kerstin_home:
-    name: 'Kerstin hemma'
-    initial: 'off'
-    icon: mdi:home-account
-
-  ingrid_home:
-    name: 'Ingrid hemma'
-    initial: 'off'
-    icon: mdi:home-account
