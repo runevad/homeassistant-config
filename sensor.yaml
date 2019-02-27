@@ -6,80 +6,25 @@
     display_options:
       - 'time'
 
-  - platform: mqtt
-    name: "Outdoor temperature"
-    state_topic: "homeassistant/wemos_weather/temp"
-    qos: 0
-    unit_of_measurement: "°C"
-    #
-  - platform: mqtt
-    name: "Outdoor humidity"
-    state_topic: "homeassistant/wemos_weather/hum"
-    qos: 0
-    unit_of_measurement: "%"
-    #
-  - platform: mqtt
-    name: "Outdoor pressure"
-    state_topic: "homeassistant/wemos_weather/pres"
-    qos: 0
-    unit_of_measurement: "hPa"
-    #
-  - platform: mqtt
-    name: "Outdoor dew point"
-    state_topic: "homeassistant/wemos_weather/dew"
-    qos: 0
-    unit_of_measurement: "°C"
-    #
-  - platform: mqtt
-    name: "Weather station battery level"
-    state_topic: "homeassistant/wemos_weather/battery"
-    qos: 0
-    unit_of_measurement: "%"
-    #
-  - platform: mqtt
-    name: "Weather station signal strength"
-    state_topic: "homeassistant/wemos_weather/wifi_signal"
-    qos: 0
-    unit_of_measurement: "dB"
-    #
-  - platform: mqtt
-    name: "Weather station run time"
-    state_topic: "homeassistant/wemos_weather/run_time"
-    qos: 0
-    unit_of_measurement: "ms"
-
   - platform: template
     sensors:
       cottage_status:
         friendly_name: "House status"
         value_template: >-
           {{ states("input_select.cottage_status") }}
-      delta_t:
-        friendly_name: Delta T värmesystem
-        unit_of_measurement: "°C"
-        value_template: >-
-          {{ (float(states.sensor.nibe_31372_40008.attributes.raw_value) - float(states.sensor.nibe_31372_40012.attributes.raw_value)) /10 | round(2) }}
 
       energy_month:
         friendly_name: Elförbrukning månad
         unit_of_measurement: "kWh"
         value_template: >-
           {{ float(states.sensor.energy_tot_128.attributes.current_energy_kwh) | round(1) }}
+
       energy_car_heater:
         friendly_name: Elförbrukning motorvärmare
         unit_of_measurement: "kWh"
         value_template: >-
           {{ float(states.switch.car_heater_149.attributes.current_energy_kwh) | round(1) }}
 
-#      lars_emelie:
-#        friendly_name: ""
-#        value_template: >-
-#          {% if is_state("group.lars", "home") and is_state("group.emelie", "home") -%}
-#            Alla är hemma
-#          {%- else -%}
-#            Emelie är på {{ states("group.emelie") }} och Lars är på {{ states("group.lars") }}
-#          {%- endif %}
-#
 
 #NAS
   - platform: synologydsm
@@ -131,47 +76,40 @@
           {% endif %}
           {{ forecast }}
 
-  # - platform: mqtt
-  #   name: "ESP Christmas tree battery level"
-  #   state_topic: "homeassistant/wemos_christmas/battery"
-  #   qos: 0
-  #   unit_of_measurement: "%"
-  #   #
-  # - platform: mqtt
-  #   name: "ESP Christmas tree signal strength"
-  #   state_topic: "homeassistant/wemos_christmas/wifi_signal"
-  #   qos: 0
-  #   unit_of_measurement: "dB"
-  #   #
-  # - platform: mqtt
-  #   name: "ESP Christmas tree run time"
-  #   state_topic: "homeassistant/wemos_christmas/run_time"
-  #   qos: 0
-  #   unit_of_measurement: "ms"
+#### MQTT stuff
+#### Weather station
+  - platform: mqtt
+    name: Outdoor temperature
+    state_topic: wemos_weather_station/sensor/outdoor_temperature/state
+    unit_of_measurement: '°C'
+    icon: mdi:thermometer
 
-#Weether
-  # - platform: yr
-  #   name: yr.no Nu
-  #   monitored_conditions:
-  #     - temperature
-  #     - symbol
-  #     - precipitation
-  #     - windSpeed
+  - platform: mqtt
+    name: Outdoor pressure
+    state_topic: wemos_weather_station/sensor/outdoor_pressure/state
+    unit_of_measurement: 'hPa'
+    icon: mdi:gauge
 
-   # - platform: yr
-   #   name: yr.no imorgon
-   #   forecast: 24
-   #   monitored_conditions:
-   #     - temperature
-   #     - symbol
-   #     - precipitation
-   #     - windSpeed
-   #     - pressure
-   #     - windDirection
-   #     - humidity
-   #     - fog
-   #     - cloudiness
-   #     - lowClouds
-   #     - mediumClouds
-   #     - highClouds
-   #     - dewpointTemperature
+  - platform: mqtt
+    name: Outdoor humidity
+    state_topic: wemos_weather_station/sensor/outdoor_humidity/state
+    unit_of_measurement: '%'
+    icon: mdi:water-percent
+
+  - platform: mqtt
+    name: Weather station signal strength
+    state_topic: wemos_weather_station/sensor/weather_station_signal_strength/state
+    unit_of_measurement: 'dB'
+    icon: mdi:wifi
+
+  - platform: mqtt
+    name: Weather station battery level
+    state_topic: wemos_weather_station/sensor/weather_station_battery_level/state
+    unit_of_measurement: '%'
+    icon: mdi:battery
+
+  - platform: mqtt
+    name: Weather station run time
+    state_topic: wemos_weather_station/sensor/weather_station_run_time/state
+    unit_of_measurement: 'ms'
+    icon: mdi:timer

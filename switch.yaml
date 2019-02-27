@@ -1,5 +1,10 @@
 ## Switches
 
+  - platform: mqtt
+    name: Weather station restart switch
+    state_topic: wemos_weather_station/switch/weather_station_restart_switch/state
+    command_topic: wemos_weather_station/switch/weather_station_restart_switch/command
+    icon: mdi:restart
 
 ## HA-Dockermon
   - platform: rest
@@ -15,7 +20,7 @@
     body_on: '{"state": "start"}'
     body_off: '{"state": "stop"}'
     is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
- 
+
   - platform: rest
     resource: http://127.0.0.1:8126/container/mosquitto
     name: MQTT
@@ -29,10 +34,10 @@
     body_on: '{"state": "start"}'
     body_off: '{"state": "stop"}'
     is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
- 
+
   - platform: rest
     resource: http://127.0.0.1:8126/container/influxdb
     name: Influxdb
     body_on: '{"state": "start"}'
     body_off: '{"state": "stop"}'
-    is_on_template: '{{ value_json is not none and value_json.state == "running" }}' 
+    is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
