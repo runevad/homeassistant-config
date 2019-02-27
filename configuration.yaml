@@ -20,14 +20,12 @@ zone:
   longitude: !secret longitude_home
   elevation: 136
   radius: 125
-#  icon: mdi:account-multiple
 
 zone 2:
   name: 'FEV'
   latitude: !secret latitude_l_work
   longitude: !secret longitude_l_work
   radius: 700
-#  icon: mdi:worker
 
 http:
   ssl_certificate: !secret ssl_certificate
@@ -43,6 +41,9 @@ http:
 # Enables the frontend
 frontend:
 #  javascript_version: latest
+
+# New person mode
+person:
 
 # Enables configuration UI
 config:
@@ -102,14 +103,8 @@ recorder:
       - sensor.time
       - sensor.last_boot
       - sensor.date
-      - group.security
       - group.door_sensors
       - group.motion_sensors
-      - group.smoke_sensors
-      - automation.battery_notification
-      - automation.battery_notification_clear
-      - automation.battery_sensor_from_attributes
-      - automation.update_battery_status_group_members
 
 # View all events in a logbook
 logbook:
@@ -126,16 +121,29 @@ neato:
   username: !secret neato_username
   password: !secret neato_password
 
+# Old nibe
+#nibe:
+#    client_id: !secret nibe_id
+#    client_secret: !secret nibe_secret
+#    redirect_uri: !secret nibe_url
+#    writeaccess: false # set to true to support climate write (needs new tokens) and payment to Nibe
+#    systems:
+#        - system: '31372'
+#          units:
+#            - unit: 0
+#              categories:
+
 nibe:
-    client_id: !secret nibe_id
-    client_secret: !secret nibe_secret
-    redirect_uri: !secret nibe_url
-    writeaccess: false # set to true to support climate write (needs new tokens) and payment to Nibe
     systems:
         - system: '31372'
           units:
             - unit: 0
-              categories:
+              categories: True
+              statuses: True
+          climates: False
+          water_heaters: False
+
+ffmpeg:
 
 camera:
   - platform: synology
@@ -176,6 +184,9 @@ device_tracker:
     username: !secret unifi_username
     password: !secret unifi_password
     verify_ssl: false
+    ssid_filter:
+      - 'RunevadHome'
+      - 'RunevadGuest'
     monitored_conditions:
       - ip
       - radio
@@ -185,7 +196,7 @@ device_tracker:
     new_device_defaults:
       track_new_devices: false
       hide_if_away: false
-
+#
   - platform: bluetooth_tracker
 
 sun:
