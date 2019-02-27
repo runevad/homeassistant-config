@@ -1,725 +1,596 @@
+resources:
+  - type: js
+    url: /local/custom-lovelace/monster-card.js?v=1.2
+  - type: module
+    url: /local/custom-lovelace/weather-card/weather-card.js
 title: Slätberget
 views:
-  - path: default_view
-    title: default_view
-    icon: 'mdi:home-assistant'
-    badges: []
+  - badges: null
     cards:
-      - type: picture-elements
-        image: /local/floorplans/floor1.png
-#       title: 'Bottenvåning'
-        elements:
-          - type: state-icon
-            tap_action:
-              action: toggle
-            entity: light.fonsterlampor_vardagsrum_81
+      - card:
+          title: Low Battery Devices
+          type: glance
+        filter:
+          include:
+            - entity_id: '*battery_level*'
+              state: < 25
+            - attributes:
+                battery: < 25
+            - attributes:
+                battery_level: < 25
+        show_empty: false
+        type: 'custom:monster-card'
+      - elements:
+          - entity: camera.d_link_dcs_4602ev
             style:
-              top: 29%
+              left: 88%
+              top: 83%
+            type: state-icon
+          - entity: light.fonsterlampor_vardagsrum_81
+            style:
               left: 19.3%
-          - type: state-icon
+              top: 29%
             tap_action:
               action: toggle
-            entity: light.fonsterlampor_vardagsrum_81
+            type: state-icon
+          - entity: light.lampor_vardagsrum_2_136
             style:
-              top: 15%
+              left: 11%
+              top: 44%
+            tap_action:
+              action: toggle
+            type: state-icon
+          - entity: light.fonsterlampor_vardagsrum_81
+            style:
               left: 43%
-          - type: state-icon
+              top: 15%
             tap_action:
               action: toggle
-            entity: light.fonsterlampor_vardagsrum_81
+            type: state-icon
+          - entity: light.fonsterlampor_vardagsrum_81
             style:
-              top: 30%
               left: 68%
-          - type: state-icon
-            entity: binary_sensor.door_altan_29
+              top: 30%
+            tap_action:
+              action: toggle
+            type: state-icon
+          - entity: binary_sensor.door_altan_29
             style:
-              top: 21%
               left: 56%
-          - type: state-icon
-            entity: binary_sensor.door_groventre_137
+              top: 21%
+            type: state-icon
+          - entity: binary_sensor.door_groventre_137
             style:
-              top: 73%
               left: 85%
-          - type: state-icon
-            entity: binary_sensor.door_hall_35
+              top: 73%
+            type: state-icon
+          - entity: binary_sensor.door_hall_35
             style:
-              top: 81%
               left: 45.5%
-          - type: state-icon
-            entity: binary_sensor.motion_hall_11
+              top: 81%
+            type: state-icon
+          - entity: binary_sensor.motion_hall_11
             style:
+              left: 43%
               top: 61%
-              left: 43%
-          - type: state-icon
-            entity: binary_sensor.smokesensor_vardagsrum_133
+            type: state-icon
+          - entity: binary_sensor.smokesensor_vardagsrum_133
             style:
+              left: 43%
               top: 40%
-              left: 43%
-          - type: state-icon
-            entity: binary_sensor.smokesensor_groventre_124
+            type: state-icon
+          - entity: binary_sensor.smokesensor_groventre_124
             style:
-              top: 62%
               left: 72%
-          - type: state-label
-            entity: sensor.nibe_31372_40033
+              top: 62%
+            type: state-icon
+          - entity: sensor.nibe_31372_40033
             style:
-              top: 50%
               left: 43%
-          - type: state-label
-            entity: sensor.outdoor_temperature
-            title: Ute
+              top: 50%
+            type: state-label
+          - entity: sensor.outdoor_temperature
             style:
+              left: 80%
               top: 10%
-              left: 80%
-          - type: state-label
-            entity: sensor.outdoor_humidity
+            title: Ute
+            type: state-label
+          - entity: sensor.outdoor_humidity
             style:
+              left: 80%
               top: 15%
-              left: 80%
-          - type: state-icon
-            entity: binary_sensor.house_status_home
+            type: state-label
+          - entity: binary_sensor.house_status_home
             style:
-              top: 5%
               left: 35%
-          - type: state-label
-            entity: sensor.cottage_status
+              top: 5%
+            type: state-icon
+          - entity: sensor.cottage_status
             style:
-              top: 6%
               left: 46%
-          - type: service-button
-            title: Turn lights off
-            style:
-              top: 95%
-              left: 80%
-            service: light.turn_off
+              top: 6%
+            type: state-label
+          - service: light.turn_off
             service_data:
               entity_id: group.all_lights
-
-          # #Christmas tree
-          # - type: state-icon
-          #   title: Vatten till granen
-          #   entity: binary_sensor.esp_christmas_tree_water_level_low
-          #   style:
-          #     top: 35%
-          #     left: 30%
-
-## Devices
-          - type: image
-            title: Emelie
-            entity: group.emelie
-  #            show_info: false
-            state_image:
-              "home": /local/people/e_home.jpg
-              "not_home": /local/people/e_away.jpg
             style:
-              top: 8%
-              left: 8%
-              width: 10%
+              left: 80%
+              top: 95%
+            title: Turn lights off
+            type: service-button
+          - entity: group.emelie
+            image: /local/people/e_home.jpg
+            state_filter:
+              home: /local/people/e_home.jpg
+              not_home: brightness(150%) grayscale(100%)
+            style:
               border-radius: 50%
-          - type: image
-            title: Lars
-            entity: group.lars
-  #            show_info: false
+              left: 8%
+              top: 8%
+              width: 10%
+            title: Emelie
+            type: image
+          - entity: group.lars
             image: /local/people/l_home.jpg
             state_filter:
-              "home": /local/people/l_home.jpg
-              "not_home": brightness(150%) grayscale(100%)
+              home: /local/people/l_home.jpg
+              not_home: brightness(150%) grayscale(100%)
             style:
-              top: 8%
-              left: 21%
-              width: 10%
               border-radius: 50%
-          - type: state-icon
-            title: Household
-            entity: group.household
-  #            show_info: false
-            style:
-              top: 94%
-              left: 5%
+              left: 21%
+              top: 8%
               width: 10%
-
-      - type: picture-elements
-        image: /local/floorplans/floor2.png
-#            title: 'Övervåning'
-        elements:
-          - type: state-label
-            entity: sensor.nibe_31372_10069
+            title: Lars
+            type: image
+        image: /local/floorplans/floor1.png
+        type: picture-elements
+      - elements:
+          - entity: sensor.nibe_31372_10069
             style:
+              left: 17%
               top: 5%
-              left: 17%
-          - type: state-label
-            entity: sensor.energy_tot_128
+            type: state-label
+          - entity: sensor.energy_tot_128
             style:
+              left: 17%
               top: 10%
-              left: 17%
-          - type: state-label
-            entity: sensor.energy_month
+            type: state-label
+          - entity: light.fonsterlampor_uppe1_115
             style:
-              top: 15%
-              left: 17%
-          # - type: state-icon
-          #   tap_action:
-          #     action: toggle
-          #   entity: light.fonsterlampor_uppe1_115
-          #   style:
-          #     top: 16%
-          #     left: 42%
-          - type: state-icon
-            tap_action:
-              action: toggle
-            entity: light.fonsterlampor_uppe1_115
-            style:
+              left: 50%
               top: 16%
-              left: 50%
-          # - type: state-icon
-          #   tap_action:
-          #     action: toggle
-          #   entity: light.fonsterlampor_uppe1_115
-          #   style:
-          #     top: 16%
-          #     left: 58%
-          # - type: state-icon
-          #   tap_action:
-          #     action: toggle
-          #   entity: light.fonsterlampor_uppe1_115
-          #   style:
-          #     top: 80%
-          #     left: 42%
-          - type: state-icon
             tap_action:
               action: toggle
-            entity: light.fonsterlampor_uppe1_115
+            type: state-icon
+          - entity: light.fonsterlampor_uppe1_115
             style:
+              left: 50%
               top: 80%
-              left: 50%
-          # - type: state-icon
-          #   tap_action:
-          #     action: toggle
-          #   entity: light.fonsterlampor_uppe1_115
-          #   style:
-          #     top: 80%
-          #     left: 58%
-          - type: state-icon
-            entity: light.stora_fonstret_sovrum_vuxna_e14
+            tap_action:
+              action: toggle
+            type: state-icon
+          - entity: light.stora_fonstret_sovrum_vuxna_e14
+            hold_action:
+              action: toggle
             style:
-              top: 42.5%
               left: 87%
+              top: 42.5%
             tap_action:
               action: more-info
+            type: state-icon
+          - entity: light.stora_fonstret_ingrid
             hold_action:
               action: toggle
-
-          - type: state-icon
-            entity: light.stora_fonstret_ingrid_e14
             style:
-              top: 66%
               left: 12%
-            tap_action:
-              action: more-info
-            hold_action:
-              action: toggle
-          - type: state-icon
-            entity: light.stora_fonstret_ingrid
-            style:
               top: 72%
-              left: 12%
             tap_action:
               action: more-info
-            hold_action:
-              action: toggle
-          - type: icon
-            icon: mdi:weather-night
-            title: 'Nattlampa'
+            type: state-icon
+          - icon: 'mdi:weather-night'
             style:
-              top: 75%
+              color: 'rgb(68,115,158)'
               left: 33%
-              color: rgb(68,115,158)
+              top: 75%
             tap_action:
               action: call-service
               service: script.turn_on
               service_data:
                 entity_id: script.ingrid_night
-
-
-          - type: icon
-            icon: mdi:book-open-page-variant
-            title: 'Läsljus'
+            title: Nattlampa
+            type: icon
+          - icon: 'mdi:book-open-page-variant'
             style:
-              top: 70%
+              color: 'rgb(68,115,158)'
               left: 24%
-              color: rgb(68,115,158)
+              top: 70%
             tap_action:
               action: call-service
               service: script.turn_on
               service_data:
                 entity_id: script.ingrid_reading
-          - type: state-icon
-            entity: light.stora_fonstret_kerstin_e14
-            style:
-              top: 44%
-              left: 12%
-            tap_action:
-              action: more-info
+            title: Läsljus
+            type: icon
+          - entity: light.stora_fonstret_kerstin
             hold_action:
               action: toggle
-          - type: state-icon
-            entity: light.stora_fonstret_kerstin
             style:
+              left: 12%
               top: 38%
-              left: 12%
             tap_action:
               action: more-info
-            hold_action:
-              action: toggle
-          - type: icon
-            icon: mdi:weather-night
-            title: 'Nattlampa'
+            type: state-icon
+          - icon: 'mdi:weather-night'
             style:
-              top: 35%
+              color: 'rgb(68,115,158)'
               left: 33%
-              color: rgb(68,115,158)
+              top: 35%
             tap_action:
               action: call-service
               service: script.turn_on
               service_data:
                 entity_id: script.kerstin_night
-          - type: icon
-            icon: mdi:book-open-page-variant
-            title: 'Läsljus'
+            title: Nattlampa
+            type: icon
+          - icon: 'mdi:book-open-page-variant'
             style:
-              top: 40%
+              color: 'rgb(68,115,158)'
               left: 24%
-              color: rgb(68,115,158)
+              top: 40%
             tap_action:
               action: call-service
               service: script.turn_on
               service_data:
                 entity_id: script.kerstin_reading
-
-          - type: state-icon
-            entity: light.tradfri_bulb_e27_cws_opal_600lm
+            title: Läsljus
+            type: icon
+          - entity: light.tradfri_bulb_e27_cws_opal_600lm
+            hold_action:
+              action: toggle
             style:
+              left: 24%
               top: 30%
-              left: 24%
             tap_action:
               action: more-info
+            type: state-icon
+          - entity: light.lilla_fonstret_ingrid
             hold_action:
               action: toggle
-          - type: state-icon
-            entity: light.lilla_fonstret_ingrid
             style:
+              left: 24%
               top: 80%
-              left: 24%
             tap_action:
               action: more-info
-            hold_action:
-              action: toggle
-          - type: state-icon
-            entity: binary_sensor.motion_allrum_20
+            type: state-icon
+          - entity: binary_sensor.motion_allrum_20
             style:
-              top: 62%
               left: 56%
-          - type: state-icon
-            entity: binary_sensor.smokesensor_allrum_18
+              top: 62%
+            type: state-icon
+          - entity: binary_sensor.smokesensor_allrum_18
             style:
+              left: 50%
               top: 50%
-              left: 50%
-          - type: state-label
-            entity: sensor.temp_allrum_21
+            type: state-icon
+          - entity: sensor.temp_allrum_21
             style:
+              left: 50%
               top: 40%
-              left: 50%
-          - type: service-button
-            title: Turn lights off
-            style:
-              top: 95%
-              left: 80%
-            service: light.turn_off
+            type: state-label
+          - service: light.turn_off
             service_data:
               entity_id: group.all_lights
-          - type: state-icon
-            # title: 'Extra varmvatten 2h'
-            entity: switch.extra_hot_water
             style:
-              top: 76%
+              left: 80%
+              top: 95%
+            title: Turn lights off
+            type: service-button
+          - entity: switch.extra_hot_water
+            style:
               left: 84%
+              top: 76%
             tap_action:
               action: call-service
               service: script.turn_on
               service_data:
                 entity_id: script.extra_hot_water
-
-      - type: picture-elements
-        image: /local/floorplans/carport.png
-#            title: 'Carport'
-        elements:
-          - type: state-label
-            entity: sensor.nibe_31372_40008
+            type: state-icon
+        image: /local/floorplans/floor2.png
+        type: picture-elements
+      - elements:
+          - entity: sensor.nibe_31372_40008
             prefix: 'Kulvert '
             style:
-              top: 4.5%
               left: 60%
-          - type: state-label
-            entity: sensor.nibe_31372_40012
+              top: 4.5%
+            type: state-label
+          - entity: sensor.nibe_31372_40012
             prefix: ' / '
             style:
-              top: 4.5%
               left: 82%
-          - type: state-icon
-            entity: binary_sensor.smokesensor_forrad_126
+              top: 4.5%
+            type: state-label
+          - entity: binary_sensor.smokesensor_forrad_126
             style:
+              left: 40%
               top: 18%
-              left: 40%
-          - type: state-label
-            entity: sensor.smoke_temp_forrad_127
+            type: state-icon
+          - entity: sensor.smoke_temp_forrad_127
             style:
+              left: 40%
               top: 23%
-              left: 40%
-          - type: state-icon
-            entity: binary_sensor.door_forrad_132
+            type: state-label
+          - entity: binary_sensor.door_forrad_132
             style:
-              top: 25.5%
               left: 13%
-          - type: state-icon
-            entity: switch.vvc_135
+              top: 25.5%
+            type: state-icon
+          - entity: switch.vvc_135
             style:
-              top: 10.5%
               left: 81.4%
-          - type: state-label
-            entity: sensor.nibe_31372_43005
+              top: 10.5%
+            type: state-icon
+          - entity: sensor.nibe_31372_43005
             style:
+              left: 70%
               top: 11%
-              left: 70%
-          - type: state-label
-            entity: sensor.nibe_31372_43136
+            type: state-label
+          - entity: sensor.nibe_31372_43136
             style:
+              left: 70%
               top: 15.5%
-              left: 70%
-          - type: state-label
-            entity: sensor.nibe_31372_40013
+            type: state-label
+          - entity: sensor.nibe_31372_40013
             style:
+              left: 70%
               top: 20%
-              left: 70%
-          - type: state-icon
-            entity: switch.pull_nibe_external_alarm
+            type: state-label
+          - entity: switch.pull_nibe_external_alarm
             style:
+              left: 81.5%
               top: 15.2%
-              left: 81.5%
-          - type: state-icon
-            title: Extra varmvatten
-            entity: switch.extra_hot_water
-            tap_action:
-              action: toggle
+            type: state-icon
+          - entity: switch.extra_hot_water
             style:
+              left: 81.5%
               top: 19.5%
-              left: 81.5%
-          - type: state-label
-            entity: sensor.nibe_inside_temperature
+            tap_action: toggle
+            title: Extra varmvatten
+            type: state-icon
+          - entity: sensor.nibe_inside_temperature
             style:
+              left: 77%
               top: 25%
-              left: 77%
-          - type: state-label
-            entity: sensor.nibe_inside_humidity
+            type: state-label
+          - entity: sensor.nibe_inside_humidity
             style:
-              top: 28%
               left: 77%
-
-###########Carport
-          - type: image
-            title: V70
-            #show_info: false
-            entity: group.lars
+              top: 28%
+            type: state-label
+          - entity: group.lars
             state_image:
               home: /local/other/volvo_v70.png
               not_home: /local/other/volvo_v70.png
             style:
-              top: 52%
               left: 48%
+              top: 52%
               width: 58%
-          - type: image
-            title: V50
-            #show_info: false
-            entity: group.lars
+            title: V70
+            type: image
+          - entity: group.lars
             state_image:
               home: /local/other/volvo_v50.png
               not_home: /local/other/volvo_v50.png
             style:
-              top: 75%
               left: 48%
-              width: 58%
-          - type: state-icon
-            tap_action:
-              action: none
-            entity: switch.car_heater_136
-            style:
               top: 75%
-              left: 28%
-          - type: state-icon
-            tap_action:
-              action: more-info
-            entity: script.car_heater
+              width: 58%
+            title: V50
+            type: image
+          - entity: switch.car_heater_149
             style:
-              top: 86%
+              left: 28%
+              top: 75%
+            tap_action: none
+            type: state-icon
+          - entity: script.car_heater
+            style:
               left: 15%
-
-
-
-#      - type: entity-filter
-#        entities:
-#          - light.fonsterlampor_vardagsrum_81
-#          - light.fonsterlampor_uppe1_115
-#          - light.fonsteruttag_sovrum1_62
-#          - light.fonsteruttag_sovrum2_60
-#          - light.fonsteruttag_lekrum_61
-#        state_filter:
-#          - 'on'
-#        card:
-#          type: entities
-#          title: Lampor på
-
-#      - type: entity-filter
-#        entities:
-#          - binary_sensor.door_altan_29
-#          - binary_sensor.door_forrad_132
-#          - binary_sensor.door_groventre_137
-#          - binary_sensor.door_hall_35
-#        state_filter:
-#          - 'on'
-#        card:
-#          type: glance
-#          title: Öppna dörrar
-
-
-
-
-
-      # Camera outside
-      - type: picture-glance
-        title: Ute
-        image: null
-        camera_image: camera.d_link_dcs_4602ev
+              top: 86%
+            tap_action: more-info
+            type: state-icon
+        image: /local/floorplans/carport.png
+        type: picture-elements
+      - entity: weather.smhi_home
+        icons: /local/custom-lovelace/weather-card/icons/
+        name: Vika
+        type: 'custom:weather-card'
+      - camera_image: camera.d_link_dcs_4602ev
         entities:
-          - camera.d_link_dcs_4602ev
-          - camera.d_link_dcs_4622
+          - camera.dlink__dcs4602ev
           - binary_sensor.house_update
-
-      # Weather
-      - type: weather-forecast
-        entity: weather.smhi_home
-
-#      - type: history-graph
-#        title: Innomhus & Utomhus (48h)
-#        hours_to_show: 48
-#        entities:
-#          - sensor.nibe_31372_40033
-#          - sensor.outdoor_temperature
-
-      # Media
-      - type: media-control
-        entity: media_player.allrum
-      - type: horizontal-stack
-        cards:
-          - type: media-control
-            entity: media_player.kokvardagsrum
-          - type: media-control
-            entity: media_player.sallskapsrum
-
-      - type: sensor
-        icon: power-socket-eu
-        name: 'Elförbrukning'
-        graph: line
-        unit: 'W'
-        detail: 2
-        entity: sensor.energy_tot_128
-
-      - type: picture-glance
-        title: Neato
         image: null
-        camera_image: camera.stadstina_cleaning_map
+        title: Ute
+        type: picture-glance
+      - cards:
+          - content: |
+              ### Energiförbrukning
+            type: markdown
+          - cards:
+              - entity: sensor.daily_energy
+                max: 40
+                min: 0
+                name: Dygn
+                severity:
+                  green: 0
+                  red: 30
+                  yellow: 20
+                theme: default
+                type: gauge
+              - entity: sensor.monthly_energy
+                max: 800
+                min: 0
+                name: Månad
+                severity:
+                  green: 0
+                  red: 600
+                  yellow: 400
+                theme: default
+                type: gauge
+              - entity: sensor.monthly_car_heater_energy
+                max: 100
+                min: 0
+                name: Motorvärmare
+                severity:
+                  green: 0
+                  red: 60
+                  yellow: 20
+                theme: default
+                type: gauge
+            type: horizontal-stack
+        type: vertical-stack
+      - entity: media_player.allrum
+        type: media-control
+      - cards:
+          - entity: media_player.kokvardagsrum
+            type: media-control
+          - entity: media_player.sallskapsrum
+            type: media-control
+        type: horizontal-stack
+      - camera_image: camera.stadstina_cleaning_map
         entities:
           - vacuum.stadstina
           - switch.stadstina_schedule
-
-
-
-    # Specify a tab_icon if you want the view tab to be an icon.
-  - path: settings
-    title: Sensors & Units
-    icon: mdi:settings
-    cards:
-      - type: map
-        aspect_ratio: 60%
-        entities:
-          - entity: device_tracker.google_maps_104812533325498334396
-          # - zone.dellner
-          - entity: device_tracker.lars_iphone
-          - zone.home
-          # - zone.fev
-
-
-#      - type: entities
-#        entities:
-#          - light.fonsterlampor_vardagsrum_81
-#          - light.fonsterlampor_uppe1_115
-#          - light.fonsteruttag_sovrum1_62
-#          - light.fonsteruttag_sovrum2_60
-#          - light.fonsteruttag_lekrum_61
-#        title: Lampor
-
-#      - type: glance
-#        title: Dörrar
-#        entities:
-#          - binary_sensor.door_altan_29
-#          - binary_sensor.door_forrad_132
-#          - binary_sensor.door_groventre_137
-#          - entity: binary_sensor.door_hall_35
-#            name: Hall
-
-#      - type: glance
-#        title: Rörelsesensorer
-#        entities:
-#          - entity: binary_sensor.motion_allrum_20
-#            name: Uppe
-#          - entity: binary_sensor.motion_hall_11
-#            name: Nere
-
-#      - type: glance
-#        title: Rökdetektorer
-#        entities:
-#          - entity: binary_sensor.smokesensor_allrum_18
-#            name: Allrum
-#          - entity: binary_sensor.smokesensor_forrad_126
-#            name: Förråd
-#          - entity: binary_sensor.smokesensor_groventre_124
-#            name: Groventré
-#          - entity: binary_sensor.smokesensor_vardagsrum_133
-#            name: Vardagsrum
-
-      - type: entity-filter
-        entities:
-          - device_tracker.google_maps_117167038107838554425
-          - device_tracker.lars_wifi
-          - device_tracker.lars_bt
-          - device_tracker.lars_iphone
-          - device_tracker.google_maps_104812533325498334396
-          - device_tracker.emelie_wifi
-          - device_tracker.emelie_bt
-          - device_tracker.anders_wifi
-          - device_tracker.christina_wifi
-          - device_tracker.lena_wifi
-          - device_tracker.bernt_wifi
-          - device_tracker.frida_wifi
-        state_filter:
-          - 'home'
-        card:
-         # type: glance
-          title: "Hemma?"
-
-      - type: picture-elements
+        image: null
+        title: Neato
+        type: picture-glance
+    icon: 'mdi:home-assistant'
+    path: default_view
+    title: default_view
+  - cards:
+      - elements:
+          - entity: switch.mariadb
+            style:
+              left: 9%
+              top: 10%
+            type: state-icon
+          - entity: switch.mqtt
+            style:
+              left: 9%
+              top: 25%
+            type: state-icon
+          - entity: switch.influxdb
+            style:
+              left: 9%
+              top: 40%
+            type: state-icon
+          - entity: switch.grafana
+            style:
+              left: 9%
+              top: 55%
+            type: state-icon
+          - entity: switch.hass
+            style:
+              left: 9%
+              top: 70%
+            type: state-icon
+          - entity: script.restart_hass
+            style:
+              left: 9%
+              top: 85%
+            type: state-icon
+          - entity: sensor.cpu_load_total
+            style:
+              left: 81%
+              top: 10%
+            type: state-icon
+          - entity: sensor.cpu_load_total
+            style:
+              left: 90%
+              top: 10%
+            type: state-label
+          - entity: sensor.memory_usage_real
+            style:
+              left: 81%
+              top: 25%
+            type: state-icon
+          - entity: sensor.memory_usage_real
+            style:
+              left: 90%
+              top: 25%
+            type: state-label
+          - entity: sensor.volume_used_volume_1
+            style:
+              left: 81%
+              top: 40%
+            type: state-icon
+          - entity: sensor.volume_used_volume_1
+            style:
+              left: 90%
+              top: 40%
+            type: state-label
+          - entity: sensor.temperature_sda
+            style:
+              left: 81%
+              top: 55%
+            type: state-icon
+          - entity: sensor.temperature_sda
+            style:
+              left: 90%
+              top: 55%
+            type: state-label
+          - entity: sensor.temperature_sdb
+            style:
+              left: 81%
+              top: 70%
+            type: state-icon
+          - entity: sensor.temperature_sdb
+            style:
+              left: 90%
+              top: 70%
+            type: state-label
+          - entity: sensor.volume_status_volume_1
+            style:
+              left: 81%
+              top: 85%
+            type: state-icon
+          - entity: sensor.volume_status_volume_1
+            style:
+              left: 90%
+              top: 85%
+            type: state-label
         image: /local/other/nas.png
         title: NAS
-        elements:
-          - type: state-icon
-            entity: switch.mariadb
-            style:
-              top: 10%
-              left: 9%
-          - type: state-icon
-            entity: switch.mqtt
-            style:
-              top: 25%
-              left: 9%
-          - type: state-icon
-            entity: switch.influxdb
-            style:
-              top: 40%
-              left: 9%
-          - type: state-icon
-            entity: switch.grafana
-            style:
-              top: 55%
-              left: 9%
-          - type: state-icon
-            entity: switch.hass
-            style:
-              top: 70%
-              left: 9%
-          - type: state-icon
-            entity: script.restart_hass
-            style:
-              top: 85%
-              left: 9%
-
-          - type: state-icon
-            entity: sensor.cpu_load_total
-            style:
-              top: 10%
-              left: 81%
-          - type: state-label
-            entity: sensor.cpu_load_total
-            style:
-              top: 10%
-              left: 90%
-
-          - type: state-icon
-            entity: sensor.memory_usage_real
-            style:
-              top: 25%
-              left: 81%
-          - type: state-label
-            entity: sensor.memory_usage_real
-            style:
-              top: 25%
-              left: 90%
-
-          - type: state-icon
-            entity: sensor.volume_used_volume_1
-            style:
-              top: 40%
-              left: 81%
-          - type: state-label
-            entity: sensor.volume_used_volume_1
-            style:
-              top: 40%
-              left: 90%
-
-          - type: state-icon
-            entity: sensor.temperature_sda
-            style:
-              top: 55%
-              left: 81%
-          - type: state-label
-            entity: sensor.temperature_sda
-            style:
-              top: 55%
-              left: 90%
-
-          - type: state-icon
-            entity: sensor.temperature_sdb
-            style:
-              top: 70%
-              left: 81%
-          - type: state-label
-            entity: sensor.temperature_sdb
-            style:
-              top: 70%
-              left: 90%
-
-          - type: state-icon
-            entity: sensor.volume_status_volume_1
-            style:
-              top: 85%
-              left: 81%
-          - type: state-label
-            entity: sensor.volume_status_volume_1
-            style:
-              top: 85%
-              left: 90%
-
-
-      - type: glance
-        title: Holken
-        entities:
+        type: picture-elements
+      - card:
+          title: Low Battery Devices
+          type: glance
+        filter:
+          include:
+            - entity_id: '*bat*'
+              state: < 25
+            - attributes:
+                battery: < 25
+            - attributes:
+                battery_level: < 25
+        show_empty: false
+        type: 'custom:monster-card'
+      - entities:
+          - entity: device_tracker.lars_iphone
+          - entity: device_tracker.lars_wifi
+          - entity: device_tracker.lars_bt
+          - entity: device_tracker.em_p10
+          - entity: device_tracker.emelie_wifi
+          - entity: device_tracker.emelie_bt
+          - entity: device_tracker.anders_wifi
+          - entity: device_tracker.christina_wifi
+          - entity: device_tracker.lena_wifi
+          - entity: device_tracker.bernt_wifi
+        show_name: true
+        show_state: false
+        title: Enheter
+        type: glance
+      - entities:
           - sensor.outdoor_temperature
           - sensor.outdoor_humidity
           - sensor.outdoor_pressure
@@ -727,136 +598,55 @@ views:
           - sensor.weather_station_signal_strength
           - sensor.weather_station_battery_level
           - sensor.weather_station_run_time
-
-      # - type: glance
-      #   title: Christmas tree test
-      #   entities:
-      #     - sensor.esp_christmas_tree_signal_strength
-      #     - sensor.esp_christmas_tree_battery_level
-      #     - sensor.esp_christmas_tree_run_time
-      #     - binary_sensor.esp_christmas_tree_water_level_low
-
-      - type: glance
-        title: Battery Monitor
-        entities:
-          - group.battery_status
-          - group.battery_alert
-          - input_number.battery_alert_threshold_min
-          - input_number.battery_alert_threshold_max
-          - input_text.clear_mqtt_topic
-          - automation.battery_notification
-          - automation.battery_notification_clear
-          - automation.battery_notification_ios
-          - automation.battery_sensor_from_attributes
-          - automation.update_battery_status_group_members
-          - automation.clear_mqtt_topic
-
-
-      - type: glance
+        show_name: false
+        title: Holken
+        type: glance
+      - entities:
+          - entity: sensor.heater_departuretime
+          - entity: sensor.heater_activationtime
+          - entity: sensor.heater_temptime
+          - entity: sensor.heater_forecast
+          - entity: input_number.heater_hour
+          - entity: input_number.heater_minute
+          - entity: input_number.heater_delay
+          - entity: input_number.heater_maxmin
+          - entity: input_boolean.workdays_only
+          - entity: switch.car_heater_149
+        show_name: false
         title: Car heater
-        entities:
-          - sensor.heater_departuretime
-          - sensor.heater_activationtime
-          - sensor.heater_temptime
-          - sensor.heater_forecast
-          - input_number.heater_hour
-          - input_number.heater_minute
-          - input_number.heater_delay
-          - input_number.heater_maxmin
-          - input_boolean.workdays_only
-          - switch.car_heater_136
-
-
-      - type: glance
-        title: "Enheter"
-        entities:
-          - device_tracker.google_maps_117167038107838554425
-          - device_tracker.lars_wifi
-          - device_tracker.lars_bt
-          - device_tracker.lars_iphone
-          - device_tracker.google_maps_104812533325498334396
-          - device_tracker.emelie_wifi
-          - device_tracker.emelie_bt
-          - device_tracker.anders_wifi
-          - device_tracker.christina_wifi
-          - device_tracker.lena_wifi
-          - device_tracker.bernt_wifi
-          - device_tracker.frida_wifi
-
-      - title: Lars
+        type: glance
+      - entities:
+          - entity: group.lars
+          - entity: group.emelie
+          - entity: input_boolean.emelie_home
+          - entity: input_boolean.lars_home
+        show_header_toggle: false
+        title: Test
         type: entities
-        entities:
-          - device_tracker.lars_iphone
-          - device_tracker.lars_wifi
-          - device_tracker.lars_bt
-
-      - title: Emelie
-        type: entities
-        entities:
-          - device_tracker.google_maps_104812533325498334396
-          - device_tracker.emelie_wifi
-          - device_tracker.emelie_bt
-
-      - title: Christina_Anders
-        type: entities
-        entities:
-          - device_tracker.anders_wifi
-          - device_tracker.christina_wifi
-
-      - title: Lena_Bernt
-        type: entities
-        entities:
-          - device_tracker.lena_wifi
-          - device_tracker.bernt_wifi
-
-      - title: Lampor
-        type: entities
-        entities:
-          - light.fonsterlampor_vardagsrum_81
-          - light.fonsterlampor_uppe1_115
-          - light.stora_fonstret_sovrum_vuxna_e14
-          - light.stora_fonstret_ingrid_e14
-          - light.stora_fonstret_kerstin_e14
-
-
-  - path: cameras
+      - card:
+          title: Entities with problems
+          type: glance
+        filter:
+          include:
+            - entity_id: '*'
+              state: unavailable
+        show_empty: false
+        type: 'custom:monster-card'
+    icon: 'mdi:settings'
+    title: Sensors & Units
+  - cards:
+      - entity: camera.d_link_dcs_4602ev
+        show_info: false
+        type: picture-entity
+      - entity: camera.d_link_dcs_4622
+        show_info: false
+        type: picture-entity
+    icon: 'mdi:cctv'
+    id: cameras
     title: Cameras
-    icon: mdi:cctv
-    badges: []
+  - badges: []
     cards:
-      - type: picture-entity
-        entity: camera.d_link_dcs_4602ev
-        show_info: false
-      - type: picture-entity
-        entity: camera.d_link_dcs_4622
-        show_info: false
-      # - type: picture-entity
-      #   entity: camera.vika
-      #   show_info: false
-
-
-  - path: neato
-    title: StädStina
-    icon: 'mdi:robot-vacuum-variant'
-    badges: []
-    cards:
-      - title: Städkarta
-        type: entities
-        entities:
-          - camera.stadstina_cleaning_map
-      - title: Dammsugare
-        type: entities
-        entities:
-          - vacuum.stadstina
-
-  - path: nibe_31372_0
-    title: NIBE F1155
-    icon: 'mdi:thermostat'
-    badges: []
-    cards:
-      - type: entities
-        title: Status
-        entities:
+      - entities:
           - sensor.nibe_31372_40067
           - sensor.nibe_31372_40014
           - sensor.nibe_31372_40013
@@ -866,9 +656,9 @@ views:
           - sensor.nibe_31372_40079
           - sensor.nibe_31372_43005
         show_header_toggle: false
-      - type: entities
-        title: 'Compressor Module '
-        entities:
+        title: Status
+        type: entities
+      - entities:
           - sensor.nibe_31372_43416
           - sensor.nibe_31372_43439
           - sensor.nibe_31372_43437
@@ -886,33 +676,37 @@ views:
           - sensor.nibe_31372_43136
           - binary_sensor.nibe_31372_10012
         show_header_toggle: false
-      - type: entities
-        title: Climate System
-        entities:
+        title: 'Compressor Module '
+        type: entities
+      - entities:
           - sensor.nibe_31372_43009
           - sensor.nibe_31372_40008
           - sensor.nibe_31372_40012
           - sensor.nibe_31372_40033
         show_header_toggle: false
-      - type: entities
-        title: Addition
-        entities:
+        title: Climate System
+        type: entities
+      - entities:
+          - sensor.delta_t
+        name: Delta T
+        type: history-graph
+      - entities:
           - sensor.nibe_31372_47214
           - sensor.nibe_31372_43081
           - sensor.nibe_31372_43084
           - sensor.nibe_31372_47212
           - binary_sensor.nibe_31372_10033
         show_header_toggle: false
-      - type: entities
-        title: Smart Price Adaption
-        entities:
+        title: Addition
+        type: entities
+      - entities:
           - sensor.nibe_31372_44897
           - sensor.nibe_31372_44908
           - sensor.nibe_31372_10069
         show_header_toggle: false
-      - type: entities
-        title: Soft inputs/outputs
-        entities:
+        title: Smart Price Adaption
+        type: entities
+      - entities:
           - sensor.nibe_31372_47411
           - sensor.nibe_31372_47410
           - sensor.nibe_31372_47409
@@ -920,241 +714,23 @@ views:
           - sensor.nibe_31372_47407
           - sensor.nibe_31372_47412
         show_header_toggle: false
-
-
-###### Old floorplan
-#   - title: Floorplan
-#     panel: true
-#     cards:
-#       - type: picture-elements
-#         image: /local/floorplans/floorplan.jpg
-#         elements:
-# ###########Devices
-#             - type: image
-#               title: Emelie
-#               entity: group.emelie
-#     #            show_info: false
-#               state_image:
-#                 "home": /local/people/e_home.jpg
-#                 "not_home": /local//people/e_away.jpg
-#               style:
-#                 top: 7%
-#                 left: 4%
-#                 width: 5%
-#                 border-radius: 50%
-#
-#             - type: image
-#               title: Lars
-#               entity: group.lars
-#     #            show_info: false
-#               state_image:
-#                 "home": /local//people/l_home.jpg
-#                 "not_home": /local//people/l_away.jpg
-#               style:
-#                 top: 7%
-#                 left: 10%
-#                 width: 5%
-#                 border-radius: 50%
-# ###########Cars
-#             - type: image
-#               title: V50
-#               entity: group.lars
-#               #show_info: false
-#               state_image:
-#                 "home": /local/other/v50.png
-#                 "not_home": /local/other/v50.png
-#               style:
-#                 top: 45%
-#                 left: 86%
-#                 width: 14%
-#                 border-radius: 50%
-#             - type: image
-#               title: V70
-#               entity: group.lars
-#               #show_info: false
-#               state_image:
-#                 "home": /local/other/v70.png
-#                 "not_home": /local/other/v70.png
-#               style:
-#                 top: 65%
-#                 left: 86%
-#                 width: 15%
-#                 border-radius: 50%
-#
-#             - type: state-icon
-#               tap_action:
-#                 action: toggle
-#               entity: light.fonsterlampor_vardagsrum_81
-#               style:
-#                 top: 29%
-#                 left: 10.5%
-#             - type: state-icon
-#               tap_action:
-#                 action: toggle
-#               entity: light.fonsterlampor_vardagsrum_81
-#               style:
-#                 top: 15.5%
-#                 left: 18.5%
-#             - type: state-icon
-#               tap_action:
-#                 action: toggle
-#               entity: light.fonsterlampor_vardagsrum_81
-#               style:
-#                 top: 29%
-#                 left: 28.5%
-#
-#             - type: state-icon
-#               entity: binary_sensor.door_altan_29
-#               style:
-#                 top: 21%
-#                 left: 23.5%
-#             - type: state-icon
-#               entity: binary_sensor.door_groventre_137
-#               style:
-#                 top: 73.5%
-#                 left: 35.7%
-#             - type: state-icon
-#               entity: binary_sensor.door_hall_35
-#               style:
-#                 top: 81.5%
-#                 left: 19.5%
-#             - type: state-icon
-#               entity: binary_sensor.motion_hall_11
-#               style:
-#                 top: 61%
-#                 left: 19%
-#             - type: state-icon
-#               entity: binary_sensor.smokesensor_vardagsrum_133
-#               style:
-#                 top: 40%
-#                 left: 18%
-#             - type: state-icon
-#               entity: binary_sensor.smokesensor_groventre_124
-#               style:
-#                 top: 64%
-#                 left: 32%
-#             - type: state-label
-#               entity: sensor.nibe_31372_10069
-#               style:
-#                 top: 6%
-#                 left: 35%
-#             - type: state-label
-#               entity: sensor.energy_tot_128
-#               style:
-#                 top: 6%
-#                 left: 45%
-#             - type: state-label
-#               entity: sensor.nibe_31372_40033
-#               style:
-#                 top: 48%
-#                 left: 18%
-#             - type: state-label
-#               entity: sensor.wemos2_temperature
-#               title: Utetemperatur
-#               style:
-#                 top: 15%
-#                 left: 30%
-#             - type: state-label
-#               entity: sensor.wemos2_humidity
-#               style:
-#                 top: 20%
-#                 left: 30%
-#             - type: state-icon
-#               entity: binary_sensor.house_status_home
-#               style:
-#                 top: 5%
-#                 left: 15%
-#             - type: state-label
-#               entity: sensor.cottage_status
-#               style:
-#                 top: 6%
-#                 left: 20%
-#
-#             - type: service-button
-#               title: All lights off
-#               style:
-#                 top: 95%
-#                 left: 40%
-#               service: light.turn_off
-#               service_data:
-#                 entity_id: group.all_lights
-#
-# ##############Floor2
-#             - type: state-icon
-#               tap_action:
-#                 action: toggle
-#               entity: light.fonsterlampor_uppe1_115
-#               style:
-#                 top: 15.5%
-#                 left: 58.8%
-#             - type: state-icon
-#               tap_action:
-#                 action: toggle
-#               entity: light.fonsterlampor_uppe1_115
-#               style:
-#                 top: 81%
-#                 left: 58.8%
-#             - type: state-icon
-#               tap_action:
-#                 action: toggle
-#               entity: light.fonsteruttag_sovrum1_62
-#               style:
-#                 top: 42.5%
-#                 left: 71.5%
-#             - type: state-icon
-#               tap_action:
-#                 action: toggle
-#               entity: light.fonsteruttag_sovrum2_60
-#               style:
-#                 top: 66%
-#                 left: 46%
-#             - type: state-icon
-#               tap_action:
-#                 action: toggle
-#               entity: light.fonsteruttag_lekrum_61
-#               style:
-#                 top: 44%
-#                 left: 46%
-#             - type: state-label
-#               entity: sensor.temp_allrum_21
-#               style:
-#                 top: 40%
-#                 left: 59%
-#             - type: state-icon
-#               entity: binary_sensor.motion_allrum_20
-#               style:
-#                 top: 62%
-#                 left: 59%
-#             - type: state-icon
-#               entity: binary_sensor.smokesensor_allrum_18
-#               style:
-#                 top: 50%
-#                 left: 59%
-#
-#
-# ###########Carport
-#             - type: state-icon
-#               entity: binary_sensor.door_forrad_132
-#               style:
-#                 top: 22.5%
-#                 left: 78.5%
-#             - type: state-label
-#               entity: sensor.smoke_temp_forrad_127
-#               style:
-#                 top: 22%
-#                 left: 83%
-#             - type: state-icon
-#               entity: binary_sensor.smokesensor_forrad_126
-#               style:
-#                 top: 15%
-#                 left: 83%
-#             - type: state-label
-#               entity: sensor.nibe_31372_43005
-#               style:
-#                 top: 11%
-#                 left: 90%
-#             - type: state-label
-#               entity: sensor.nibe_31372_43136
-#               style:
-#                 top: 16%
-#                 left: 90%
+        title: Soft inputs/outputs
+        type: entities
+    icon: 'mdi:thermostat'
+    path: nibe_31372_0
+    title: NIBE F1155
+  - badges: []
+    cards:
+      - entities:
+          - camera.stadstina_cleaning_map
+        show_header_toggle: false
+        title: Städkarta
+        type: entities
+      - entities:
+          - vacuum.stadstina
+        show_header_toggle: false
+        title: Dammsugare
+        type: entities
+    icon: 'mdi:robot-vacuum-variant'
+    path: neato
+    title: StädStina

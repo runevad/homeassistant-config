@@ -22,19 +22,30 @@
                                 "type": "glance"
                             },
                             "filter": {
+                                "exclude": [
+                                    {
+                                        "entity_id": "device_tracker.lars_iphone"
+                                    },
+                                    {
+                                        "entity_id": "device_tracker.em_p10"
+                                    },
+                                    {
+                                        "entity_id": "switch.*"
+                                    }
+                                ],
                                 "include": [
                                     {
                                         "entity_id": "*battery_level*",
-                                        "state": "< 25"
+                                        "state": "< 28"
                                     },
                                     {
                                         "attributes": {
-                                            "battery": "< 25"
+                                            "battery": "< 28"
                                         }
                                     },
                                     {
                                         "attributes": {
-                                            "battery_level": "< 25"
+                                            "battery_level": "< 28"
                                         }
                                     }
                                 ]
@@ -44,14 +55,6 @@
                         },
                         {
                             "elements": [
-                                {
-                                    "entity": "camera.d_link_dcs_4602ev",
-                                    "style": {
-                                        "left": "88%",
-                                        "top": "83%"
-                                    },
-                                    "type": "state-icon"
-                                },
                                 {
                                     "entity": "light.fonsterlampor_vardagsrum_81",
                                     "style": {
@@ -198,7 +201,7 @@
                                     "type": "service-button"
                                 },
                                 {
-                                    "entity": "group.emelie",
+                                    "entity": "person.emelie",
                                     "state_image": {
                                         "home": "/local/people/e_home.jpg",
                                         "not_home": "/local/people/e_away.jpg"
@@ -213,11 +216,10 @@
                                     "type": "image"
                                 },
                                 {
-                                    "entity": "group.lars",
-                                    "image": "/local/people/l_home.jpg",
-                                    "state_filter": {
+                                    "entity": "person.lars",
+                                    "state_image": {
                                         "home": "/local/people/l_home.jpg",
-                                        "not_home": "brightness(150%) grayscale(100%)"
+                                        "not_home": "/local/people/l_away.jpg"
                                     },
                                     "style": {
                                         "border-radius": "50%",
@@ -227,16 +229,6 @@
                                     },
                                     "title": "Lars",
                                     "type": "image"
-                                },
-                                {
-                                    "entity": "group.household",
-                                    "style": {
-                                        "left": "5%",
-                                        "top": "94%",
-                                        "width": "10%"
-                                    },
-                                    "title": "Household",
-                                    "type": "state-icon"
                                 }
                             ],
                             "image": "/local/floorplans/floor1.png",
@@ -644,7 +636,7 @@
                         {
                             "camera_image": "camera.d_link_dcs_4602ev",
                             "entities": [
-                                "camera.dlink__dcs4602ev",
+                                "camera.d_link_dcs_4602ev",
                                 "binary_sensor.house_update"
                             ],
                             "image": null,
@@ -654,55 +646,46 @@
                         {
                             "cards": [
                                 {
-                                    "content": "### Energif\u00f6rbrukning\n",
-                                    "type": "markdown"
+                                    "entity": "sensor.daily_energy",
+                                    "max": 40,
+                                    "min": 0,
+                                    "name": "Dygn",
+                                    "severity": {
+                                        "green": 0,
+                                        "red": 30,
+                                        "yellow": 20
+                                    },
+                                    "theme": "default",
+                                    "type": "gauge"
                                 },
                                 {
-                                    "cards": [
-                                        {
-                                            "entity": "sensor.daily_energy",
-                                            "max": 40,
-                                            "min": 0,
-                                            "name": "Dygn",
-                                            "severity": {
-                                                "green": 0,
-                                                "red": 30,
-                                                "yellow": 20
-                                            },
-                                            "theme": "default",
-                                            "type": "gauge"
-                                        },
-                                        {
-                                            "entity": "sensor.monthly_energy",
-                                            "max": 800,
-                                            "min": 0,
-                                            "name": "M\u00e5nad",
-                                            "severity": {
-                                                "green": 0,
-                                                "red": 600,
-                                                "yellow": 400
-                                            },
-                                            "theme": "default",
-                                            "type": "gauge"
-                                        },
-                                        {
-                                            "entity": "sensor.monthly_car_heater_energy",
-                                            "max": 100,
-                                            "min": 0,
-                                            "name": "Motorv\u00e4rmare",
-                                            "severity": {
-                                                "green": 0,
-                                                "red": 60,
-                                                "yellow": 20
-                                            },
-                                            "theme": "default",
-                                            "type": "gauge"
-                                        }
-                                    ],
-                                    "type": "horizontal-stack"
+                                    "entity": "sensor.monthly_energy",
+                                    "max": 800,
+                                    "min": 0,
+                                    "name": "M\u00e5nad",
+                                    "severity": {
+                                        "green": 0,
+                                        "red": 600,
+                                        "yellow": 400
+                                    },
+                                    "theme": "default",
+                                    "type": "gauge"
+                                },
+                                {
+                                    "entity": "sensor.monthly_car_heater_energy",
+                                    "max": 100,
+                                    "min": 0,
+                                    "name": "Motorv\u00e4rmare",
+                                    "severity": {
+                                        "green": 0,
+                                        "red": 60,
+                                        "yellow": 20
+                                    },
+                                    "theme": "default",
+                                    "type": "gauge"
                                 }
                             ],
-                            "type": "vertical-stack"
+                            "type": "horizontal-stack"
                         },
                         {
                             "entity": "media_player.allrum",
@@ -918,6 +901,12 @@
                         {
                             "entities": [
                                 {
+                                    "entity": "person.lars"
+                                },
+                                {
+                                    "entity": "person.emelie"
+                                },
+                                {
                                     "entity": "device_tracker.lars_iphone"
                                 },
                                 {
@@ -946,22 +935,39 @@
                                 },
                                 {
                                     "entity": "device_tracker.bernt_wifi"
+                                },
+                                {
+                                    "entity": "group.family"
                                 }
                             ],
                             "show_name": true,
-                            "show_state": false,
+                            "show_state": true,
                             "title": "Enheter",
                             "type": "glance"
                         },
                         {
                             "entities": [
-                                "sensor.outdoor_temperature",
-                                "sensor.outdoor_humidity",
-                                "sensor.outdoor_pressure",
-                                "sensor.outdoor_dew_point",
-                                "sensor.weather_station_signal_strength",
-                                "sensor.weather_station_battery_level",
-                                "sensor.weather_station_run_time"
+                                {
+                                    "entity": "sensor.outdoor_temperature"
+                                },
+                                {
+                                    "entity": "sensor.outdoor_humidity"
+                                },
+                                {
+                                    "entity": "sensor.outdoor_pressure"
+                                },
+                                {
+                                    "entity": "sensor.weather_station_signal_strength"
+                                },
+                                {
+                                    "entity": "sensor.weather_station_battery_level"
+                                },
+                                {
+                                    "entity": "sensor.weather_station_run_time"
+                                },
+                                {
+                                    "entity": "switch.weather_station_restart_switch"
+                                }
                             ],
                             "show_name": false,
                             "title": "Holken",
@@ -977,9 +983,6 @@
                                 },
                                 {
                                     "entity": "sensor.heater_temptime"
-                                },
-                                {
-                                    "entity": "sensor.heater_forecast"
                                 },
                                 {
                                     "entity": "input_number.heater_hour"
@@ -998,30 +1001,14 @@
                                 },
                                 {
                                     "entity": "switch.car_heater_149"
+                                },
+                                {
+                                    "entity": "automation.engine_heater_activate"
                                 }
                             ],
                             "show_name": false,
                             "title": "Car heater",
                             "type": "glance"
-                        },
-                        {
-                            "entities": [
-                                {
-                                    "entity": "group.lars"
-                                },
-                                {
-                                    "entity": "group.emelie"
-                                },
-                                {
-                                    "entity": "input_boolean.emelie_home"
-                                },
-                                {
-                                    "entity": "input_boolean.lars_home"
-                                }
-                            ],
-                            "show_header_toggle": false,
-                            "title": "Test",
-                            "type": "entities"
                         },
                         {
                             "card": {
@@ -1038,6 +1025,59 @@
                             },
                             "show_empty": false,
                             "type": "custom:monster-card"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "sensor.lolin32_downstairs_uptime_sensor"
+                                },
+                                {
+                                    "entity": "sensor.lolin32_downstairs_wifi_signal_sensor"
+                                },
+                                {
+                                    "entity": "sensor.lolin32_upstairs_uptime_sensor"
+                                },
+                                {
+                                    "entity": "sensor.lolin32_upstairs_wifi_signal_sensor"
+                                }
+                            ],
+                            "show_header_toggle": false,
+                            "title": "ESP32 test",
+                            "type": "entities"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "automation.engine_heater_activate"
+                                },
+                                {
+                                    "entity": "automation.morning_lights_weekday"
+                                },
+                                {
+                                    "entity": "automation.wake_up_light_weekdays"
+                                }
+                            ],
+                            "title": "Automationer",
+                            "type": "glance"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "sensor.wemos_test_pro_wifi"
+                                },
+                                {
+                                    "entity": "sensor.wemos_test_pro_bat"
+                                },
+                                {
+                                    "entity": "sensor.wemos_test_pro_run_time"
+                                },
+                                {
+                                    "entity": "switch.wemos_test_pro_restart"
+                                }
+                            ],
+                            "show_header_toggle": false,
+                            "title": "Wemos pro test",
+                            "type": "entities"
                         }
                     ],
                     "icon": "mdi:settings",
@@ -1080,22 +1120,51 @@
                         },
                         {
                             "entities": [
-                                "sensor.nibe_31372_43416",
-                                "sensor.nibe_31372_43439",
-                                "sensor.nibe_31372_43437",
-                                "sensor.nibe_31372_40015",
-                                "sensor.nibe_31372_40016",
-                                "sensor.nibe_31372_40017",
-                                "sensor.nibe_31372_40008",
-                                "sensor.nibe_31372_40018",
-                                "sensor.nibe_31372_40019",
-                                "sensor.nibe_31372_40012",
-                                "sensor.nibe_31372_40022",
-                                "sensor.nibe_31372_43420",
-                                "sensor.nibe_31372_43424",
-                                "sensor.nibe_31372_43122",
-                                "sensor.nibe_31372_43136",
-                                "binary_sensor.nibe_31372_10012"
+                                {
+                                    "entity": "sensor.nibe_31372_43416"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_43439"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_43437"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_40015"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_40016"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_40017"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_40008"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_40018"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_40019"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_40012"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_40022"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_43420"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_43424"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_43122"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_43136"
+                                }
                             ],
                             "show_header_toggle": false,
                             "title": "Compressor Module ",
@@ -1114,18 +1183,18 @@
                         },
                         {
                             "entities": [
-                                "sensor.delta_t"
-                            ],
-                            "name": "Delta T",
-                            "type": "history-graph"
-                        },
-                        {
-                            "entities": [
-                                "sensor.nibe_31372_47214",
-                                "sensor.nibe_31372_43081",
-                                "sensor.nibe_31372_43084",
-                                "sensor.nibe_31372_47212",
-                                "binary_sensor.nibe_31372_10033"
+                                {
+                                    "entity": "sensor.nibe_31372_47214"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_43081"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_43084"
+                                },
+                                {
+                                    "entity": "sensor.nibe_31372_47212"
+                                }
                             ],
                             "show_header_toggle": false,
                             "title": "Addition",
