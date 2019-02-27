@@ -1,23 +1,23 @@
 family:
-  - group.lars
-  - group.emelie
-  - group.kerstin
-  - group.ingrid
+  - person.lars
+  - person.emelie
+#  - person.kerstin
+#  - person.ingrid
 
-lars:
-#  - !secret google_maps_tracker_lars
-  - device_tracker.lars_iphone
-  - device_tracker.lars_wifi
-  - device_tracker.lars_bt
-
-emelie:
-  - device_tracker.em_p10
-  - device_tracker.emelie_wifi
-  - device_tracker.emelie_bt
-
-kerstin:
-
-ingrid:
+#lars:
+#  - device_tracker.lars_iphone
+#  - device_tracker.lars_wifi
+#  - device_tracker.lars_bt
+#
+#emelie:
+#  - device_tracker.em_p10
+#  - device_tracker.emelie_wifi
+#  - device_tracker.emelie_bt
+#
+#kerstin:
+#
+#ingrid:
+#
 
 other:
   - device_tracker.christina_wifi

@@ -1,3 +1,7 @@
+zone.home:
+  beacon:
+    uuid: 'c0a8a66d-df60-0893-0dac-125688b01d42'
+
 #Switches Docker icons
 switch.grafana:
   icon: mdi:chart-bar-stacked
