@@ -72,42 +72,6 @@ cottage_home:
           - group.door_units
           - group.motion_units
 
-# // Extra for another time when house "state" is set to "just arrived"
-    # - condition: time
-    #   after: '07:00:00'
-    #   before: '21:00:00'
-    # - condition: template
-    #   value_template: >
-    #     {%- if states.group.household.last_changed -%}
-    #       {{ (as_timestamp(now()) - as_timestamp(states.group.household.last_changed)) > 1800 }}
-    #     {%- else -%}
-    #       true
-    #     {%- endif -%}
-    # - wait_template: "{{ is_state('switch.motion_hall_11', 'on') }}"
-    #   timeout: '00:05:00'
-    #   continue_on_timeout: 'true'
-    # - service: media_player.volume_set
-    #   data_template:
-    #     entity_id: media_player.kokvardagsrum
-    #     volume_level: .45
-    # - service: tts.google_say
-    #   data_template:
-    #     entity_id: media_player.kokvardagsrum
-    #     message: "Välkommen hem, jag startar lite musik åt dig"
-    # - delay: '00:00:10'
-    # - service: media_player.select_source
-    #   data:
-    #     entity_id: media_player.kokvardagsrum
-    #     source: 'The Most Beautiful Songs in the World'
-    # - service: media_player.volume_set
-    #   data:
-    #     entity_id: media_player.kokvardagsrum
-    #     volume_level: .06
-    # - service: media_player.play_media
-    #   data:
-    #     entity_id: media_player.kokvardagsrum
-    #     media_content_type: music
-
 cottage_away:
   alias: "Cottage Away"
   sequence:
