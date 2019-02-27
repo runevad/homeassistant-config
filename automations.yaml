@@ -59,8 +59,8 @@
     # Wait 3 min for wifi to grab if GPS and/or BT failed
     - delay: '00:03:00'
     - condition: state
-      entity_id: group.family
-      state: 'not_home'
+      entity_id: input_select.cottage_status
+      state: 'Away'
     - service: light.turn_on
       data:
         entity_id: group.all_lights
@@ -129,25 +129,25 @@
     - condition: state
       entity_id: input_boolean.cottage_update
       state: 'on'
-    - condition: template
-      value_template: >
-        {%- if states.automation.disarm_cottage_from_away.attributes.last_triggered -%}
-          {{ (as_timestamp(now()) - as_timestamp(states.automation.disarm_cottage_from_away.attributes.last_triggered)) > 240 }}
-        {%- else -%}
-          true
-        {%- endif -%}
-    - condition: template
-      value_template: "{{ states.input_select.cottage_status.state != 'Away' }}"
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: input_select.cottage_status
+          state: 'Home'
+          for:
+            minutes: 10
+        - condition: state
+          entity_id: input_select.cottage_status
+          state: 'Standby'
+          for:
+            minutes: 10
   trigger:
-    - platform: state
-      entity_id: group.family
-      from: 'home'
-      to: 'not_home'
-    - platform: state
-      entity_id: group.family
-      from: 'home'
-      to: 'not_home'
-      for: '00:10:00'
+   - platform: state
+     entity_id: group.family
+     from: 'home'
+     to: 'not_home'
+     for:
+       minutes: 5
   action:
      service: homeassistant.turn_on
      entity_id: script.cottage_away
@@ -160,18 +160,25 @@
     - condition: state
       entity_id: input_boolean.cottage_update
       state: 'on'
-    - condition: template
-      value_template: >
-        {%- if states.automation.arm_cottage.attributes.last_triggered -%}
-          {{ (as_timestamp(now()) - as_timestamp(states.automation.arm_cottage.attributes.last_triggered)) > 240 }}
-        {%- else -%}
-          true
-        {%- endif -%}
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: input_select.cottage_status
+          state: 'Away'
+        - condition: state
+          entity_id: input_select.cottage_status
+          state: 'Night'
   trigger:
-    - platform: state
-      entity_id: group.family
-      from: 'not_home'
-      to: 'home'
+   - platform: state
+     entity_id:
+       - person.lars
+       - person.emelie
+     from: 'not_home'
+     to: 'home'
+   - platform: state
+     entity_id: input_boolean.cottage_guest_mode
+     from: 'off'
+     to: 'on'
   action:
      service: homeassistant.turn_on
      entity_id: script.cottage_standby
@@ -184,21 +191,17 @@
   condition:
     - condition: and
       conditions:
-        - condition: template
-          value_template: "{{ states.input_select.cottage_status.state != 'Home' }}"
         - condition: time
           after: '07:30:00'
           before: '22:30:00'
         - condition: state
           entity_id: input_boolean.cottage_update
           state: 'on'
-        - condition: template
-          value_template: >
-            {%- if states.input_select.cottage_status.last_changed -%}
-              {{ (as_timestamp(now()) - as_timestamp(states.input_select.cottage_status.last_changed)) > 300 }}
-            {%- else -%}
-              true
-            {%- endif -%}
+        - condition: state
+          entity_id: input_select.cottage_status
+          state: 'Standby'
+          for:
+            minutes: 20
         - condition: or
           conditions:
             - condition: state
@@ -214,8 +217,10 @@
     - service: homeassistant.turn_on
       entity_id: script.cottage_home
 
+
 ## Standby morning mode
 #################################
+
 - id: cottage_standby_morning
   alias: "House morning Standby"
   initial_state: 'on'
@@ -280,13 +285,11 @@
         - condition: time
           after: '00:15:00'
           before: '05:00:00'
-        - condition: template
-          value_template: >
-            {%- if states.input_select.cottage_status.last_changed -%}
-              {{ (as_timestamp(now()) - as_timestamp(states.input_select.cottage_status.last_changed)) > 900 }}
-            {%- else -%}
-              true
-            {%- endif -%}
+        - condition: state
+          entity_id: input_select.cottage_status
+          state: 'Standby'
+          for:
+            minutes: 40
         - condition: or
           conditions:
             - condition: state
@@ -301,33 +304,6 @@
   action:
     - service: homeassistant.turn_on
       entity_id: script.cottage_night
-
-##Disarm when someone is coming home during Night mode
-###############
-- id: disarm_cottage_at_night
-  alias: "Disarm house at night"
-  initial_state: 'on'
-  condition:
-    - condition: and
-      conditions:
-        - condition: state
-          entity_id: input_boolean.cottage_update
-          state: 'on'
-        - condition: state
-          entity_id: input_select.cottage_status
-          state: 'Night'
-  trigger:
-   - platform: state
-     entity_id:
-       - group.lars
-       - group.emelie
-       - group.kerstin
-       - group.ingrid
-     from: 'not_home'
-     to: 'home'
-  action:
-    service: homeassistant.turn_on
-    entity_id: script.cottage_standby
 
 #IKEA Modes
 #white:
