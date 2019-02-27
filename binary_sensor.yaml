@@ -10,18 +10,17 @@
   - platform: template
     sensors:
       house_status_home:
-        value_template: "{{ states.group.household.state == 'home' }}"
+        value_template: "{{ states.group.family.state == 'home' }}"
         friendly_name: 'Home'
         device_class: occupancy
       house_update:
         value_template: "{{ states.input_boolean.cottage_update.state == 'off' }}"
         friendly_name: 'Auto'
         device_class: safety
-  #
-  # - platform: mqtt
-  #   name: "ESP Christmas tree water level low"
-  #   state_topic: "homeassistant/wemos_christmas/water_sensor"
-  #   payload_on: "1"   #wet
-  #   payload_off: "0"  #dry
-  #   qos: 0
-  #   device_class: moisture
+
+
+#### MQTT
+#### ESP32 test
+  - platform: mqtt
+    name: ESP32 test status
+    state_topic: upstairs_lolin32/binary_sensor/esp32_test_status/state
