@@ -56,6 +56,22 @@
                         {
                             "elements": [
                                 {
+                                    "entity": "binary_sensor.cottage_update",
+                                    "style": {
+                                        "left": "8%",
+                                        "top": "91%"
+                                    },
+                                    "type": "state-icon"
+                                },
+                                {
+                                    "entity": "binary_sensor.cottage_guest_mode",
+                                    "style": {
+                                        "left": "14%",
+                                        "top": "91%"
+                                    },
+                                    "type": "state-icon"
+                                },
+                                {
                                     "entity": "light.fonsterlampor_vardagsrum_81",
                                     "style": {
                                         "left": "19.3%",
@@ -173,7 +189,7 @@
                                     "type": "state-label"
                                 },
                                 {
-                                    "entity": "binary_sensor.house_status_home",
+                                    "entity": "binary_sensor.cottage_status_home",
                                     "style": {
                                         "left": "35%",
                                         "top": "5%"
@@ -202,9 +218,10 @@
                                 },
                                 {
                                     "entity": "person.emelie",
-                                    "state_image": {
-                                        "home": "/local/people/e_home.jpg",
-                                        "not_home": "/local/people/e_away.jpg"
+                                    "image": "/local/people/e_home.jpg",
+                                    "state_filter": {
+                                        "home": "none",
+                                        "not_home": "grayscale(90%) opacity(40%)"
                                     },
                                     "style": {
                                         "border-radius": "50%",
@@ -217,9 +234,10 @@
                                 },
                                 {
                                     "entity": "person.lars",
-                                    "state_image": {
-                                        "home": "/local/people/l_home.jpg",
-                                        "not_home": "/local/people/l_away.jpg"
+                                    "image": "/local/people/l_home.jpg",
+                                    "state_filter": {
+                                        "FEV": "grayscale(90%) opacity(40%)",
+                                        "not_home": "grayscale(90%) opacity(40%)"
                                     },
                                     "style": {
                                         "border-radius": "50%",
@@ -578,10 +596,12 @@
                                     "type": "state-label"
                                 },
                                 {
-                                    "entity": "group.lars",
-                                    "state_image": {
-                                        "home": "/local/other/volvo_v70.png",
-                                        "not_home": "/local/other/volvo_v70.png"
+                                    "entity": "person.emelie",
+                                    "image": "/local/other/volvo_v70.png",
+                                    "state_filter": {
+                                        "FEV": "opacity(0%)",
+                                        "home": "none",
+                                        "not_home": "opacity(0%)"
                                     },
                                     "style": {
                                         "left": "48%",
@@ -592,10 +612,12 @@
                                     "type": "image"
                                 },
                                 {
-                                    "entity": "group.lars",
-                                    "state_image": {
-                                        "home": "/local/other/volvo_v50.png",
-                                        "not_home": "/local/other/volvo_v50.png"
+                                    "entity": "person.lars",
+                                    "image": "/local/other/volvo_v50.png",
+                                    "state_filter": {
+                                        "FEV": "opacity(0%)",
+                                        "home": "none",
+                                        "not_home": "opacity(0%)"
                                     },
                                     "style": {
                                         "left": "48%",
@@ -637,7 +659,9 @@
                             "camera_image": "camera.d_link_dcs_4602ev",
                             "entities": [
                                 "camera.d_link_dcs_4602ev",
-                                "binary_sensor.house_update"
+                                "binary_sensor.cottage_update",
+                                "binary_sensor.cottage_status_home",
+                                "binary_sensor.cottage_guest_mode"
                             ],
                             "image": null,
                             "title": "Ute",
@@ -720,6 +744,11 @@
                     "title": "default_view"
                 },
                 {
+                    "badges": [
+                        "input_boolean.cottage_update",
+                        "input_boolean.cottage_guest_mode",
+                        "input_select.cottage_status"
+                    ],
                     "cards": [
                         {
                             "elements": [
@@ -1081,7 +1110,7 @@
                         }
                     ],
                     "icon": "mdi:settings",
-                    "title": "Sensors & Units"
+                    "title": "Settings"
                 },
                 {
                     "cards": [
@@ -1251,6 +1280,30 @@
                     "icon": "mdi:robot-vacuum-variant",
                     "path": "neato",
                     "title": "St\u00e4dStina"
+                },
+                {
+                    "badges": [],
+                    "cards": [
+                        {
+                            "card": {
+                                "show_header_toggle": false,
+                                "title": "Automations",
+                                "type": "entities"
+                            },
+                            "filter": {
+                                "include": [
+                                    {
+                                        "entity_id": "auto*"
+                                    }
+                                ]
+                            },
+                            "show_empty": false,
+                            "type": "custom:monster-card"
+                        }
+                    ],
+                    "icon": "mdi:auto-fix",
+                    "path": "toggles",
+                    "title": "Toggles"
                 }
             ]
         }

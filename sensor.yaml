@@ -9,7 +9,7 @@
   - platform: template
     sensors:
       cottage_status:
-        friendly_name: "House status"
+        friendly_name: "Cottage status"
         value_template: >-
           {{ states("input_select.cottage_status") }}
 

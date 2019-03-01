@@ -9,15 +9,18 @@
 
   - platform: template
     sensors:
-      house_status_home:
+      cottage_status_home:
         value_template: "{{ states.group.family.state == 'home' }}"
         friendly_name: 'Home'
         device_class: occupancy
-      house_update:
+      cottage_update:
         value_template: "{{ states.input_boolean.cottage_update.state == 'off' }}"
         friendly_name: 'Auto'
         device_class: safety
-
+      cottage_guest_mode:
+        value_template: "{{ states.input_boolean.cottage_guest_mode.state == 'off' }}"
+        friendly_name: 'Auto'
+        device_class: safety
 
 #### MQTT
 #### ESP32 test
