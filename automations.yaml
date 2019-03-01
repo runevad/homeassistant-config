@@ -45,8 +45,7 @@
       - condition: state
         entity_id: input_select.cottage_status
         state: 'Away'
-        for:
-          minutes: 10
+        for: '00:10:00'
   trigger:
     - platform: state
       entity_id:
@@ -57,10 +56,10 @@
       to: 'on'
   action:
     # Wait 3 min for wifi to grab if GPS and/or BT failed
-    - delay: '00:03:00'
+    - delay: '00:05:00'
     - condition: state
-      entity_id: input_select.cottage_status
-      state: 'Away'
+      entity_id: group.family
+      state: 'not_home'
     - service: light.turn_on
       data:
         entity_id: group.all_lights
@@ -105,7 +104,7 @@
   trigger:
     - platform: numeric_state
       entity_id: sensor.smoke_temp_forrad_127
-      below: '10'
+      below: 10
   action:
     - service: notify.ios_lars_iphone
       data:
@@ -134,20 +133,16 @@
         - condition: state
           entity_id: input_select.cottage_status
           state: 'Home'
-          for:
-            minutes: 10
+          for: '00:10:00'
         - condition: state
           entity_id: input_select.cottage_status
           state: 'Standby'
-          for:
-            minutes: 10
+          for: '00:10:00'
   trigger:
    - platform: state
      entity_id: group.family
-     from: 'home'
      to: 'not_home'
-     for:
-       minutes: 5
+     for: '00:05:00'
   action:
      service: homeassistant.turn_on
      entity_id: script.cottage_away
@@ -173,11 +168,9 @@
      entity_id:
        - person.lars
        - person.emelie
-     from: 'not_home'
      to: 'home'
    - platform: state
      entity_id: input_boolean.cottage_guest_mode
-     from: 'off'
      to: 'on'
   action:
      service: homeassistant.turn_on
@@ -200,8 +193,7 @@
         - condition: state
           entity_id: input_select.cottage_status
           state: 'Standby'
-          for:
-            minutes: 20
+          for: '00:20:00'
         - condition: or
           conditions:
             - condition: state
@@ -288,8 +280,7 @@
         - condition: state
           entity_id: input_select.cottage_status
           state: 'Standby'
-          for:
-            minutes: 40
+          for: '00:40:00'
         - condition: or
           conditions:
             - condition: state
@@ -328,7 +319,7 @@
       state: 'Away'
   trigger:
     - platform: time
-      at: '00:36'
+      at: '00:36:00'
   action:
     - service: light.turn_off
       entity_id: group.all_lights
@@ -354,7 +345,7 @@
       below: -4.0
     - platform: numeric_state
       entity_id: sensor.lux_allrum_22
-      below: '30'
+      below: 30
   action:
     - service: light.turn_on
       data:
@@ -382,7 +373,7 @@
       below: -4.0
     - platform: numeric_state
       entity_id: sensor.lux_allrum_22
-      below: '30'
+      below: 30
   action:
     - service: light.turn_on
       data:
@@ -421,7 +412,7 @@
               state: 'below_horizon'
             - condition: numeric_state
               entity_id: sensor.lux_allrum_22
-              below: '30'
+              below: 30
   trigger:
     - platform: state
       entity_id: binary_sensor.motion_allrum_20
@@ -446,7 +437,7 @@
           after: '23:00:00'
         - condition: numeric_state
           entity_id: sensor.lux_allrum_22
-          below: '30'
+          below: 30
         - condition: state
           entity_id: light.fonsterlampor_uppe1_115
           state: 'off'
@@ -457,7 +448,7 @@
   action:
     - service: light.turn_on
       entity_id: light.fonsterlampor_uppe1_115
-    - delay: 00:04:00
+    - delay: '00:04:00'
     - service: light.turn_off
       entity_id: light.fonsterlampor_uppe1_115
 
@@ -471,7 +462,7 @@
           after: '23:00:00'
         - condition: numeric_state
           entity_id: sensor.lux_hall_13
-          below: '30'
+          below: 30
         - condition: state
           entity_id: light.fonsterlampor_vardagsrum_81
           state: 'off'
@@ -482,7 +473,7 @@
   action:
     - service: light.turn_on
       entity_id: light.fonsterlampor_vardagsrum_81
-    - delay: 00:04:00
+    - delay: '00:04:00'
     - service: light.turn_off
       entity_id: light.fonsterlampor_vardagsrum_81
 
@@ -608,7 +599,7 @@
       state: 'home'
   trigger:
     - platform: time
-      at: '07:00'
+      at: '07:30:00'
   action:
     - service: homeassistant.turn_on
       data:
