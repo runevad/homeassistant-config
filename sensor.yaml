@@ -25,6 +25,17 @@
         value_template: >-
           {{ float(states.switch.car_heater_149.attributes.current_energy_kwh) | round(1) }}
 
+# From SMHI https://www.smhi.se/polopoly_fs/1.6392!/webb_vindavkylning.pdf
+# SMHI Weather component gives wind in km/h, the calculation needs m/s. Thereby divide by 3.6
+      outdoor_feels_like_temperature:
+        friendly_name: Outdoor feels like temperature
+        unit_of_measurement: '°C'
+        icon_template: mdi:thermometer
+        value_template: >-
+          {% set tm = namespace() %}
+          {% set tm.wind = float(states.weather.smhi_home.attributes.wind_speed) / 3.6 %}
+          {% set tm.temp = float(states.sensor.outdoor_temperature.state) %}
+          {{ ( 13.12 + 0.6215 * tm.temp - 13.956 * tm.wind**0.16 + 0.48669 * tm.temp * tm.wind**0.16 ) | round(1) }}
 
 #NAS
   - platform: synologydsm
@@ -43,38 +54,37 @@
 
   - platform: template
     sensors:
-      heater_departuretime:
-        friendly_name: 'Departure time'
-        value_template: '{% if states.input_number.heater_hour.state|round(0)|string|length == 1 %}0{% endif %}{{ states.input_number.heater_hour.state|round(0)|string }}:{% if states.input_number.heater_minute.state|round(0)|string|length == 1 %}0{% endif %}{{ states.input_number.heater_minute.state|round(0)|string }}'
-
-      heater_activationtime:
-        friendly_name: 'Calculated activation time'
+      heater_forecast:
+        friendly_name: 'Temperature forecast'
         value_template: >-
-          {% set atime = (states.sensor.heater_temptime.state|round(0) * 60) %}
-          {% if states.input_number.heater_hour.state|round(0)|string|length == 1 %} {% set time = 0 %} {% endif %}
-          {% set time = time|string + states.input_number.heater_hour.state|round(0)|string + ':' %}
-          {% if states.input_number.heater_minute.state|round(0)|string|length == 1 %} {% set time = time|string + '0' %} {% endif %}
-          {% set time = time|string + states.input_number.heater_minute.state|round(0)|string %}
-          {{ (as_timestamp(now().strftime("%Y-%m-%d") + ' ' + time) - atime) | timestamp_custom("%H:%M")|string }}
+          {% set hf = namespace() %}
+          {% if states.sensor.time.state < states.input_text.heater_departuretime.state and states.sensor.time.state > '00:00' %}
+          {% set hf.forecast = states.weather.smhi_home.attributes.forecast[0].templow %}
+          {% else %}
+          {% set hf.forecast = states.weather.smhi_home.attributes.temperature %}
+          {% endif %}
+          {{ hf.forecast }}
 
       heater_temptime:
         friendly_name: 'Temperature adjusted time'
         value_template: >-
-          {% set temp = states.sensor.heater_forecast.state|int %}
-          {% if temp <= -15 %} {% set t = 1 %}
-          {% elif temp > 5 %} {% set t = 20 %}
-          {% else %} {% set t = (15 + temp) %} {% endif %}
-          {{ (states.input_number.heater_maxmin.state|round(0)/(t**0.3))|int }}
+          {% set ht = namespace() %}
+          {% set ht.temp = states.sensor.heater_forecast.state|int %}
+          {% if ht.temp <= -15 %} {% set ht.t = 1 %}
+          {% elif ht.temp > 5 %} {% set ht.t = 20 %}
+          {% else %} {% set ht.t = (15 + ht.temp) %} {% endif %}
+          {{ (states.input_number.heater_maxmin.state|round(0)/(ht.t**0.3))|int }}
 
-      heater_forecast:
-        friendly_name: 'Temperature forecast'
+      heater_activationtime:
+        friendly_name: 'Calculated activation time'
         value_template: >-
-          {% if states.sensor.time.state < states.sensor.heater_departuretime.state and states.sensor.time.state > '00:00' %}
-          {% set forecast = states.weather.smhi_home.attributes.forecast[0].templow %}
-          {% else %}
-          {% set forecast = states.weather.smhi_home.attributes.temperature %}
-          {% endif %}
-          {{ forecast }}
+          {% set ha = namespace() %}
+          {% set ha.atime = (states.sensor.heater_temptime.state|round(0) * 60) %}
+          {% if states.input_number.heater_hour.state|round(0)|string|length == 1 %} {% set ha.time = 0 %} {% endif %}
+          {% set ha.time = ha.time|string + states.input_number.heater_hour.state|round(0)|string + ':' %}
+          {% if states.input_number.heater_minute.state|round(0)|string|length == 1 %} {% set ha.time = ha.time|string + '0' %} {% endif %}
+          {% set ha.time = ha.time|string + states.input_number.heater_minute.state|round(0)|string %}
+          {{ (as_timestamp(now().strftime("%Y-%m-%d") + ' ' + ha.time) - ha.atime) | timestamp_custom("%H:%M")|string }}
 
 #### MQTT stuff
 #### Weather station
