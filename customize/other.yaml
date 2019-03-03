@@ -20,6 +20,8 @@ sensor.heater_forecast:
 sensor.heater_temptime:
   unit_of_measurement: min
   icon: mdi:timer
+input_text.heater_departuretime:
+  icon: mdi:timer
 
 switch.extra_hot_water:
   icon: mdi:shower

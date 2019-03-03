@@ -168,6 +168,8 @@
      entity_id:
        - person.lars
        - person.emelie
+       - device_tracker.lars_bt
+       - device_tracker.emelie_bt
      to: 'home'
    - platform: state
      entity_id: input_boolean.cottage_guest_mode

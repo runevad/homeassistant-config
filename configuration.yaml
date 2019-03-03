@@ -19,7 +19,7 @@ zone:
   latitude: !secret latitude_home
   longitude: !secret longitude_home
   elevation: 136
-  radius: 125
+  radius: 100
 
 zone 2:
   name: 'FEV'
@@ -57,7 +57,7 @@ updater:
   include_used_components: True
 
 # Discover some devices automatically
-discovery:
+#discovery:
 
 # Activate cloud component
 cloud:
@@ -193,6 +193,7 @@ device_tracker:
       - _is_guest_by_uap
       - _last_seen_by_uap
       - _uptime_by_uap
+    consider_home: 300
     new_device_defaults:
       track_new_devices: false
       hide_if_away: false
@@ -225,21 +226,13 @@ utility_meter:
     cycle: monthly
 
 automation: !include automations.yaml
-
 group: !include_dir_merge_named group
-
 script: !include scripts.yaml
-
 sensor: !include sensor.yaml
-
 switch: !include switch.yaml
-
-# scene: !include scenes.yaml
-
+scene: !include scenes.yaml
 binary_sensor: !include binary_sensor.yaml
-
 input_select: !include input_select.yaml
-
+input_text: !include input_text.yaml
 input_number: !include input_number.yaml
-
 input_boolean: !include input_boolean.yaml
