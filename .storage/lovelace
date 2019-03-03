@@ -207,18 +207,21 @@
                                 {
                                     "service": "light.turn_off",
                                     "service_data": {
-                                        "entity_id": "group.all_lights"
+                                        "entity_id": [
+                                            "group.window_lights",
+                                            "group.bedroom_lights"
+                                        ]
                                     },
                                     "style": {
-                                        "left": "80%",
+                                        "left": "85%",
                                         "top": "95%"
                                     },
-                                    "title": "Turn lights off",
+                                    "title": "Nattljus p\u00e5",
                                     "type": "service-button"
                                 },
                                 {
                                     "entity": "person.emelie",
-                                    "image": "/local/people/e_home.jpg",
+                                    "image": "/local/people/e.jpg",
                                     "state_filter": {
                                         "home": "none",
                                         "not_home": "grayscale(90%) opacity(40%)"
@@ -234,7 +237,7 @@
                                 },
                                 {
                                     "entity": "person.lars",
-                                    "image": "/local/people/l_home.jpg",
+                                    "image": "/local/people/l.jpg",
                                     "state_filter": {
                                         "FEV": "grayscale(90%) opacity(40%)",
                                         "not_home": "grayscale(90%) opacity(40%)"
@@ -461,9 +464,9 @@
                                     },
                                     "style": {
                                         "left": "80%",
-                                        "top": "95%"
+                                        "top": "92%"
                                     },
-                                    "title": "Turn lights off",
+                                    "title": "Alla lampor av",
                                     "type": "service-button"
                                 },
                                 {
@@ -630,8 +633,8 @@
                                 {
                                     "entity": "switch.car_heater_149",
                                     "style": {
-                                        "left": "28%",
-                                        "top": "75%"
+                                        "left": "16.5%",
+                                        "top": "87.3%"
                                     },
                                     "tap_action": "none",
                                     "type": "state-icon"
@@ -639,8 +642,8 @@
                                 {
                                     "entity": "script.car_heater",
                                     "style": {
-                                        "left": "15%",
-                                        "top": "86%"
+                                        "left": "23%",
+                                        "top": "87%"
                                     },
                                     "tap_action": "more-info",
                                     "type": "state-icon"
@@ -980,6 +983,9 @@
                                     "entity": "sensor.outdoor_temperature"
                                 },
                                 {
+                                    "entity": "sensor.outdoor_feels_like_temperature"
+                                },
+                                {
                                     "entity": "sensor.outdoor_humidity"
                                 },
                                 {
@@ -1005,19 +1011,13 @@
                         {
                             "entities": [
                                 {
-                                    "entity": "sensor.heater_departuretime"
+                                    "entity": "input_text.heater_departuretime"
                                 },
                                 {
                                     "entity": "sensor.heater_activationtime"
                                 },
                                 {
                                     "entity": "sensor.heater_temptime"
-                                },
-                                {
-                                    "entity": "input_number.heater_hour"
-                                },
-                                {
-                                    "entity": "input_number.heater_minute"
                                 },
                                 {
                                     "entity": "input_number.heater_delay"
