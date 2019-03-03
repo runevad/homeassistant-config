@@ -4,16 +4,16 @@ family:
 #  - person.kerstin
 #  - person.ingrid
 
-#lars:
-#  - device_tracker.lars_iphone
-#  - device_tracker.lars_wifi
-#  - device_tracker.lars_bt
+lars:
+  - device_tracker.lars_iphone
+  - device_tracker.lars_wifi
+  - device_tracker.lars_bt
 #
-#emelie:
-#  - device_tracker.em_p10
-#  - device_tracker.emelie_wifi
-#  - device_tracker.emelie_bt
-#
+emelie:
+  - device_tracker.em_p10
+  - device_tracker.emelie_wifi
+  - device_tracker.emelie_bt
+
 #kerstin:
 #
 #ingrid:
