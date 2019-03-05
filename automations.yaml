@@ -531,7 +531,7 @@
   alias: "Engine heater activate"
   trigger:
     - platform: template
-      value_template: '{{ states.sensor.heater_activationtime.state == states.sensor.time.state }}'
+      value_template: "{{ states.sensor.heater_activationtime.state == states('sensor.time') }}"
   condition:
     - condition: and
       conditions:
@@ -561,7 +561,7 @@
   alias: "Engine heater deactivate"
   trigger:
     - platform: template
-      value_template: '{{ states.sensor.heater_departuretime.state == states.sensor.time.state }}'
+      value_template: "{{ states('sensor.time') == (states.input_datetime.heater_departuretime.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
   action:
     - delay:
         minutes: "{{ states('input_number.heater_delay') | int }}"

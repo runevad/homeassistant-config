@@ -140,18 +140,25 @@ nibe:
             - unit: 0
               categories: True
               statuses: True
-          climates: False
-          water_heaters: False
+          climates: True
+          water_heaters: True
 
 ffmpeg:
 
 camera:
-  - platform: synology
-    url: https://192.168.1.4:5001
-    username: !secret synology_user
-    password: !secret synology_pass
-    timeout: 30
+  - platform: mjpeg
+    name: front
+    mjpeg_url: !secret front_camera_url
+    username: !secret camera_username
+    password: !secret camera_password
     verify_ssl: False
+
+#  - platform: synology
+#    url: https://192.168.1.4:5001
+#    username: !secret synology_user
+#    password: !secret synology_pass
+#    timeout: 30
+#    verify_ssl: False
 
 ios:
   push:
@@ -233,6 +240,12 @@ switch: !include switch.yaml
 scene: !include scenes.yaml
 binary_sensor: !include binary_sensor.yaml
 input_select: !include input_select.yaml
-input_text: !include input_text.yaml
+#input_text: !include input_text.yaml
 input_number: !include input_number.yaml
 input_boolean: !include input_boolean.yaml
+input_datetime:
+  heater_departuretime:
+    name: "Departure time"
+    has_date: false
+    has_time: true
+    initial: '07:00'

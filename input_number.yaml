@@ -1,20 +1,10 @@
 #----------- INPUT NUMBER -----------#
 # Input numbers to set the time for car heater
-
 heater_delay:
-  name: Time to overrun
+  name: "Time to overrun"
   icon: mdi:timer
-#  initial: 30
+  initial: 30
   min: 0
-  max: 59
-  step: 1
-  unit_of_measurement: min
-
-heater_maxmin:
-  name: Maximum runtime
-  icon: mdi:timer
-#  initial: 120
-  min: 30
-  max: 240
-  step: 10
+  max: 60
+  step: 5
   unit_of_measurement: min

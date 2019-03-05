@@ -66,7 +66,7 @@
                                 {
                                     "entity": "binary_sensor.cottage_guest_mode",
                                     "style": {
-                                        "left": "14%",
+                                        "left": "16%",
                                         "top": "91%"
                                     },
                                     "type": "state-icon"
@@ -174,16 +174,27 @@
                                 {
                                     "entity": "sensor.outdoor_temperature",
                                     "style": {
-                                        "left": "80%",
-                                        "top": "10%"
+                                        "left": "73%",
+                                        "top": "8%"
                                     },
+                                    "title": "Ute",
+                                    "type": "state-label"
+                                },
+                                {
+                                    "entity": "sensor.outdoor_feels_like_temperature",
+                                    "prefix": "( ",
+                                    "style": {
+                                        "left": "90%",
+                                        "top": "8%"
+                                    },
+                                    "suffix": " )",
                                     "title": "Ute",
                                     "type": "state-label"
                                 },
                                 {
                                     "entity": "sensor.outdoor_humidity",
                                     "style": {
-                                        "left": "80%",
+                                        "left": "73%",
                                         "top": "15%"
                                     },
                                     "type": "state-label"
@@ -192,7 +203,7 @@
                                     "entity": "binary_sensor.cottage_status_home",
                                     "style": {
                                         "left": "35%",
-                                        "top": "5%"
+                                        "top": "6%"
                                     },
                                     "type": "state-icon"
                                 },
@@ -200,7 +211,7 @@
                                     "entity": "sensor.cottage_status",
                                     "style": {
                                         "left": "46%",
-                                        "top": "6%"
+                                        "top": "6.5%"
                                     },
                                     "type": "state-label"
                                 },
@@ -659,9 +670,9 @@
                             "type": "custom:weather-card"
                         },
                         {
-                            "camera_image": "camera.d_link_dcs_4602ev",
+                            "camera_image": "camera.front",
                             "entities": [
-                                "camera.d_link_dcs_4602ev",
+                                "camera.front",
                                 "binary_sensor.cottage_update",
                                 "binary_sensor.cottage_status_home",
                                 "binary_sensor.cottage_guest_mode"
@@ -1011,7 +1022,7 @@
                         {
                             "entities": [
                                 {
-                                    "entity": "input_text.heater_departuretime"
+                                    "entity": "input_datetime.heater_departuretime"
                                 },
                                 {
                                     "entity": "sensor.heater_activationtime"
@@ -1020,10 +1031,10 @@
                                     "entity": "sensor.heater_temptime"
                                 },
                                 {
-                                    "entity": "input_number.heater_delay"
+                                    "entity": "sensor.heater_forecast"
                                 },
                                 {
-                                    "entity": "input_number.heater_maxmin"
+                                    "entity": "input_number.heater_delay"
                                 },
                                 {
                                     "entity": "input_boolean.workdays_only"
@@ -1115,7 +1126,7 @@
                 {
                     "cards": [
                         {
-                            "entity": "camera.d_link_dcs_4602ev",
+                            "entity": "camera.front",
                             "show_info": false,
                             "type": "picture-entity"
                         },
