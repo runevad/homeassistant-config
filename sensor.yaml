@@ -51,7 +51,7 @@
     port: 5000
     username: !secret synology_user
     password: !secret synology_pass
-    ssl: false
+    ssl: False
     monitored_conditions:
       - cpu_total_load
       - memory_real_usage

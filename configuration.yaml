@@ -199,7 +199,7 @@ device_tracker:
     host: 192.168.1.2
     username: !secret unifi_username
     password: !secret unifi_password
-    verify_ssl: false
+    verify_ssl: False
     ssid_filter:
       - 'RunevadHome'
       - 'RunevadGuest'
@@ -211,8 +211,8 @@ device_tracker:
       - _uptime_by_uap
     consider_home: 300
     new_device_defaults:
-      track_new_devices: false
-      hide_if_away: false
+      track_new_devices: False
+      hide_if_away: False
   - platform: bluetooth_tracker
 
 owntracks:
@@ -257,7 +257,7 @@ input_number:
 input_boolean:
   workdays_only:
     name: Only active on workdays
-    initial: true
+    initial: True
   # lars_pickup:
   #   name: 'Lars lämna på förskolan'
   #   initial: 'on'
@@ -277,6 +277,6 @@ input_boolean:
 input_datetime:
   heater_departuretime:
     name: "Departure time"
-    has_date: false
-    has_time: true
+    has_date: False
+    has_time: True
     initial: '07:00'

@@ -66,7 +66,7 @@
     - service: notify.ios_lars_iphone
       data_template:
         title: "LARM!"
-        message: "The {{ trigger.to_state.name }} was changed to {{ trigger.to_state.state }} while no one is home - {{ as_timestamp(now()) | timestamp_custom('%Y-%m-%d %H:%M:%S', true) }}"
+        message: "The {{ trigger.to_state.name }} was changed to {{ trigger.to_state.state }} while no one is home - {{ as_timestamp(now()) | timestamp_custom('%Y-%m-%d %H:%M:%S', True) }}"
         data:
           push:
             badge: 666
@@ -128,6 +128,9 @@
     - condition: state
       entity_id: input_boolean.cottage_update
       state: 'on'
+    - condition: state
+      entity_id: input_boolean.cottage_guest_mode
+      state: 'off'
     - condition: or
       conditions:
         - condition: state
@@ -149,20 +152,15 @@
 
 # #### Disarm
 - id: disarm_cottage_from_away
-  alias: "Disarm house to Standby"
+  alias: "Disarm house from Away"
   initial_state: 'on'
   condition:
     - condition: state
       entity_id: input_boolean.cottage_update
       state: 'on'
-    - condition: or
-      conditions:
-        - condition: state
-          entity_id: input_select.cottage_status
-          state: 'Away'
-        - condition: state
-          entity_id: input_select.cottage_status
-          state: 'Night'
+    - condition: state
+      entity_id: input_select.cottage_status
+      state: 'Away'
   trigger:
    - platform: state
      entity_id:
@@ -170,6 +168,30 @@
        - person.emelie
        - device_tracker.lars_bt
        - device_tracker.emelie_bt
+     to: 'home'
+   - platform: state
+     entity_id: input_boolean.cottage_guest_mode
+     to: 'on'
+  action:
+     service: homeassistant.turn_on
+     entity_id: script.cottage_standby
+
+# #### Disarm from night mode
+- id: disarm_cottage_from_night
+  alias: "Disarm house from Night"
+  initial_state: 'on'
+  condition:
+    - condition: state
+      entity_id: input_boolean.cottage_update
+      state: 'on'
+    - condition: state
+      entity_id: input_select.cottage_status
+      state: 'Night'
+  trigger:
+   - platform: state
+     entity_id:
+       - person.lars
+       - person.emelie
      to: 'home'
    - platform: state
      entity_id: input_boolean.cottage_guest_mode
@@ -815,11 +837,11 @@
     - service: media_player.sonos_set_option
       data:
         entity_id: media_player.sallskapsrum
-        night_sound: true
+        night_sound: True
     - service: media_player.sonos_set_option
       data:
         entity_id: media_player.sallskapsrum
-        speech_enhance: true
+        speech_enhance: True
 
 - id: sonos_disable_speech_enhance_and_night_sound
   alias: "Sonos Disable speech enhance and night sound"
@@ -836,8 +858,8 @@
     - service: media_player.sonos_set_option
       data:
         entity_id: media_player.sallskapsrum
-        night_sound: false
+        night_sound: False
     - service: media_player.sonos_set_option
       data:
         entity_id: media_player.sallskapsrum
-        speech_enhance: false
+        speech_enhance: False
