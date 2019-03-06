@@ -36,16 +36,16 @@
                                 "include": [
                                     {
                                         "entity_id": "*battery_level*",
-                                        "state": "< 28"
+                                        "state": "< 20"
                                     },
                                     {
                                         "attributes": {
-                                            "battery": "< 28"
+                                            "battery": "< 20"
                                         }
                                     },
                                     {
                                         "attributes": {
-                                            "battery_level": "< 28"
+                                            "battery_level": "< 20"
                                         }
                                     }
                                 ]
@@ -584,13 +584,12 @@
                                     "type": "state-icon"
                                 },
                                 {
-                                    "entity": "switch.extra_hot_water",
+                                    "entity": "water_heater.nibe_31372_40014",
                                     "style": {
                                         "left": "81.5%",
                                         "top": "19.5%"
                                     },
-                                    "tap_action": "toggle",
-                                    "title": "Extra varmvatten",
+                                    "title": "Varmvattenprod",
                                     "type": "state-icon"
                                 },
                                 {
@@ -668,6 +667,14 @@
                             "icons": "/local/custom-lovelace/weather-card/icons/",
                             "name": "Vika",
                             "type": "custom:weather-card"
+                        },
+                        {
+                            "entities": [
+                                {
+                                    "entity": "water_heater.nibe_31372_40014"
+                                }
+                            ],
+                            "type": "entities"
                         },
                         {
                             "camera_image": "camera.front",
@@ -751,6 +758,17 @@
                             "image": null,
                             "title": "Neato",
                             "type": "picture-glance"
+                        },
+                        {
+                            "entity": "climate.nibe_31372_s1_room",
+                            "name": "Innetemp",
+                            "theme": "default",
+                            "type": "thermostat"
+                        },
+                        {
+                            "entity": "climate.nibe_31372_s1_supply",
+                            "name": "Golvv\u00e4rme",
+                            "type": "thermostat"
                         }
                     ],
                     "icon": "mdi:home-assistant",
@@ -917,23 +935,23 @@
                         },
                         {
                             "card": {
-                                "title": "Low Battery Devices",
+                                "title": "Replace Battery Soon",
                                 "type": "glance"
                             },
                             "filter": {
                                 "include": [
                                     {
                                         "entity_id": "*bat*",
-                                        "state": "< 25"
+                                        "state": "< 30"
                                     },
                                     {
                                         "attributes": {
-                                            "battery": "< 25"
+                                            "battery": "< 30"
                                         }
                                     },
                                     {
                                         "attributes": {
-                                            "battery_level": "< 25"
+                                            "battery_level": "< 30"
                                         }
                                     }
                                 ]
@@ -1131,7 +1149,7 @@
                             "type": "picture-entity"
                         },
                         {
-                            "entity": "camera.d_link_dcs_4622",
+                            "entity": "camera.indoor",
                             "show_info": false,
                             "type": "picture-entity"
                         }

@@ -27,6 +27,8 @@ zone 2:
   longitude: !secret longitude_l_work
   radius: 700
 
+map:
+
 http:
   ssl_certificate: !secret ssl_certificate
   ssl_key: !secret ssl_key
@@ -38,32 +40,62 @@ http:
   ip_ban_enabled: True
   login_attempts_threshold: 5
 
-# Enables the frontend
 frontend:
-#  javascript_version: latest
 
-# New person mode
 person:
 
-# Enables configuration UI
 config:
 
+updater:
+  include_used_components: True
 # Checks for available updates
 # Note: This component will send some information about your system to
 # the developers to assist with development of Home Assistant.
 # For more information, please see:
 # https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
-updater:
-  include_used_components: True
 
-# Discover some devices automatically
-#discovery:
-
-# Activate cloud component
 cloud:
 
-# Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
+
+tts:
+  - platform: google
+    language: 'sv'
+    time_memory: 21600
+
+recorder:
+  db_url: !secret recorder_db_url
+  purge_keep_days: 50
+  purge_interval: 5
+  include:
+    domains:
+      - sensor
+      - light
+      - switch
+      - device_tracker
+      - person
+  exclude:
+    domains:
+      - script
+      - weblink
+      - updater
+    entities:
+      - sun.sun
+      - sensor.date
+      - sensor.date_time
+      - sensor.time
+      - sensor.time_utc
+      - sensor.last_boot
+      - group.door_sensors
+      - group.door_units
+      - group.motion_sensors
+      - group.motion_units
+      - group.lars
+      - group.emelie
+
+logbook:
+
+history:
 
 influxdb:
   host: 192.168.1.4
@@ -73,44 +105,24 @@ influxdb:
   password: !secret influx_password
   max_retries: 3
   default_measurement: state
-  exclude:
-    entities:
-      - sun.sun
-      - sensor.time
-      - sensor.last_boot
-      - sensor.date
   include:
     domains:
       - sensor
       - light
       - switch
       - device_tracker
+  exclude:
+    entities:
+      - sun.sun
+      - sensor.date
+      - sensor.date_time
+      - sensor.time
+      - sensor.time_utc
+      - sensor.last_boot
   tags:
     source: hass
 
-recorder:
-  db_url: !secret recorder_db_url
-  purge_keep_days: 50
-  purge_interval: 5
-  exclude:
-    domains:
-#      - automation
-#      - script
-      - weblink
-      - updater
-    entities:
-      - sun.sun
-      - sensor.time
-      - sensor.last_boot
-      - sensor.date
-      - group.door_sensors
-      - group.motion_sensors
-
-# View all events in a logbook
-logbook:
-
-# Enables support for tracking state changes over time.
-history:
+system_health:
 
 vera:
   vera_controller_url: http://192.168.1.5:3480/
@@ -120,18 +132,6 @@ vera:
 neato:
   username: !secret neato_username
   password: !secret neato_password
-
-# Old nibe
-#nibe:
-#    client_id: !secret nibe_id
-#    client_secret: !secret nibe_secret
-#    redirect_uri: !secret nibe_url
-#    writeaccess: false # set to true to support climate write (needs new tokens) and payment to Nibe
-#    systems:
-#        - system: '31372'
-#          units:
-#            - unit: 0
-#              categories:
 
 nibe:
     systems:
@@ -143,7 +143,18 @@ nibe:
           climates: True
           water_heaters: True
 
-ffmpeg:
+sun:
+
+utility_meter:
+  daily_energy:
+    source: sensor.energy_month
+    cycle: daily
+  monthly_energy:
+    source: sensor.energy_month
+    cycle: monthly
+  monthly_car_heater_energy:
+    source: sensor.energy_car_heater
+    cycle: monthly
 
 camera:
   - platform: mjpeg
@@ -152,13 +163,14 @@ camera:
     username: !secret camera_username
     password: !secret camera_password
     verify_ssl: False
+  - platform: mjpeg
+    name: indoor
+    mjpeg_url: !secret indoor_camera_url
+    username: !secret camera_username
+    password: !secret camera_password
+    verify_ssl: False
 
-#  - platform: synology
-#    url: https://192.168.1.4:5001
-#    username: !secret synology_user
-#    password: !secret synology_pass
-#    timeout: 30
-#    verify_ssl: False
+ffmpeg:
 
 ios:
   push:
@@ -182,9 +194,6 @@ ios:
         identifier: 'notis'
         actions:
 
-owntracks:
-  max_gps_accuracy: 300
-
 device_tracker:
   - platform: unifi
     host: 192.168.1.2
@@ -204,45 +213,67 @@ device_tracker:
     new_device_defaults:
       track_new_devices: false
       hide_if_away: false
-#
   - platform: bluetooth_tracker
 
-sun:
-
-map:
-
-tts:
-  - platform: google
-    language: 'sv'
-    time_memory: 21600
-
-system_health:
+owntracks:
+  max_gps_accuracy: 300
 
 shell_command:
   restart_hass: 'curl http://127.0.0.1:8126/container/homeassistant/restart'
 
-utility_meter:
-  daily_energy:
-    source: sensor.energy_month
-    cycle: daily
-  monthly_energy:
-    source: sensor.energy_month
-    cycle: monthly
-  monthly_car_heater_energy:
-    source: sensor.energy_car_heater
-    cycle: monthly
+group: !include_dir_merge_named group
 
 automation: !include automations.yaml
-group: !include_dir_merge_named group
+
 script: !include scripts.yaml
+
 sensor: !include sensor.yaml
+
 switch: !include switch.yaml
-scene: !include scenes.yaml
+
 binary_sensor: !include binary_sensor.yaml
-input_select: !include input_select.yaml
-#input_text: !include input_text.yaml
-input_number: !include input_number.yaml
-input_boolean: !include input_boolean.yaml
+
+input_select:
+  cottage_status:
+      name: 'Cottage status'
+      options:
+       - Home
+       - Away
+       - Night
+       - Standby
+      initial: Standby
+      icon: mdi:security
+
+input_number:
+  heater_delay:
+    name: "Time to overrun"
+    icon: mdi:timer
+    initial: 30
+    min: 0
+    max: 60
+    step: 5
+    unit_of_measurement: min
+
+input_boolean:
+  workdays_only:
+    name: Only active on workdays
+    initial: true
+  # lars_pickup:
+  #   name: 'Lars lämna på förskolan'
+  #   initial: 'on'
+  #   icon: mdi:bus-school
+  cottage_update:
+    name: 'Auto'
+    initial: 'on'
+    icon: mdi:security
+  cottage_guest_mode:
+    name: 'Gästläge'
+    initial: 'off'
+    icon: mdi:security
+  trigger_first_morning:
+    name: 'Waiting for first morning motion'
+    icon: mdi:kettle
+
 input_datetime:
   heater_departuretime:
     name: "Departure time"
