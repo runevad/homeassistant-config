@@ -272,7 +272,7 @@
                                     "entity": "sensor.nibe_31372_10069",
                                     "style": {
                                         "left": "17%",
-                                        "top": "5%"
+                                        "top": "7%"
                                     },
                                     "type": "state-label"
                                 },
@@ -280,7 +280,7 @@
                                     "entity": "sensor.energy_tot_128",
                                     "style": {
                                         "left": "17%",
-                                        "top": "10%"
+                                        "top": "12%"
                                     },
                                     "type": "state-label"
                                 },
@@ -288,7 +288,7 @@
                                     "entity": "light.fonsterlampor_uppe1_115",
                                     "style": {
                                         "left": "50%",
-                                        "top": "16%"
+                                        "top": "10%"
                                     },
                                     "tap_action": {
                                         "action": "toggle"
@@ -299,7 +299,7 @@
                                     "entity": "light.fonsterlampor_uppe1_115",
                                     "style": {
                                         "left": "50%",
-                                        "top": "80%"
+                                        "top": "88%"
                                     },
                                     "tap_action": {
                                         "action": "toggle"
@@ -312,7 +312,7 @@
                                         "action": "toggle"
                                     },
                                     "style": {
-                                        "left": "87%",
+                                        "left": "88%",
                                         "top": "42.5%"
                                     },
                                     "tap_action": {
@@ -327,7 +327,7 @@
                                     },
                                     "style": {
                                         "left": "12%",
-                                        "top": "72%"
+                                        "top": "70%"
                                     },
                                     "tap_action": {
                                         "action": "more-info"
@@ -338,8 +338,8 @@
                                     "icon": "mdi:weather-night",
                                     "style": {
                                         "color": "rgb(68,115,158)",
-                                        "left": "33%",
-                                        "top": "75%"
+                                        "left": "32.8%",
+                                        "top": "80%"
                                     },
                                     "tap_action": {
                                         "action": "call-service",
@@ -356,7 +356,7 @@
                                     "style": {
                                         "color": "rgb(68,115,158)",
                                         "left": "24%",
-                                        "top": "70%"
+                                        "top": "75%"
                                     },
                                     "tap_action": {
                                         "action": "call-service",
@@ -375,7 +375,7 @@
                                     },
                                     "style": {
                                         "left": "12%",
-                                        "top": "38%"
+                                        "top": "44%"
                                     },
                                     "tap_action": {
                                         "action": "more-info"
@@ -386,7 +386,7 @@
                                     "icon": "mdi:weather-night",
                                     "style": {
                                         "color": "rgb(68,115,158)",
-                                        "left": "33%",
+                                        "left": "32.5%",
                                         "top": "35%"
                                     },
                                     "tap_action": {
@@ -423,7 +423,7 @@
                                     },
                                     "style": {
                                         "left": "24%",
-                                        "top": "30%"
+                                        "top": "27%"
                                     },
                                     "tap_action": {
                                         "action": "more-info"
@@ -437,7 +437,7 @@
                                     },
                                     "style": {
                                         "left": "24%",
-                                        "top": "80%"
+                                        "top": "88%"
                                     },
                                     "tap_action": {
                                         "action": "more-info"
@@ -448,7 +448,7 @@
                                     "entity": "binary_sensor.motion_allrum_20",
                                     "style": {
                                         "left": "56%",
-                                        "top": "62%"
+                                        "top": "69%"
                                     },
                                     "type": "state-icon"
                                 },
@@ -456,7 +456,7 @@
                                     "entity": "binary_sensor.smokesensor_allrum_18",
                                     "style": {
                                         "left": "50%",
-                                        "top": "50%"
+                                        "top": "55%"
                                     },
                                     "type": "state-icon"
                                 },
@@ -464,27 +464,15 @@
                                     "entity": "sensor.temp_allrum_21",
                                     "style": {
                                         "left": "50%",
-                                        "top": "40%"
+                                        "top": "45%"
                                     },
                                     "type": "state-label"
                                 },
                                 {
-                                    "service": "light.turn_off",
-                                    "service_data": {
-                                        "entity_id": "group.all_lights"
-                                    },
-                                    "style": {
-                                        "left": "80%",
-                                        "top": "92%"
-                                    },
-                                    "title": "Alla lampor av",
-                                    "type": "service-button"
-                                },
-                                {
                                     "entity": "switch.extra_hot_water",
                                     "style": {
-                                        "left": "84%",
-                                        "top": "76%"
+                                        "left": "85%",
+                                        "top": "83%"
                                     },
                                     "tap_action": {
                                         "action": "call-service",
@@ -962,7 +950,7 @@
                                     "type": "state-label"
                                 },
                                 {
-                                    "entity": "sensor.volume_status_volume_1",
+                                    "entity": "sensor.status_volume_1",
                                     "style": {
                                         "left": "81%",
                                         "top": "85%"
@@ -970,7 +958,7 @@
                                     "type": "state-icon"
                                 },
                                 {
-                                    "entity": "sensor.volume_status_volume_1",
+                                    "entity": "sensor.status_volume_1",
                                     "style": {
                                         "left": "90%",
                                         "top": "85%"
