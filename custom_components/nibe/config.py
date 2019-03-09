@@ -1,15 +1,18 @@
-import voluptuous as vol
+"""Nibe uplink configuration."""
+
 import logging
+from typing import Dict  # noqa
+import voluptuous as vol
+from aiohttp.web import Request, Response
 
 from homeassistant import config_entries
-from .const import *
-
-from aiohttp.web import Request, Response
 from homeassistant.components.http import HomeAssistantView
-from homeassistant.const import (
-    HTTP_OK,
-    HTTP_BAD_REQUEST
-)
+from homeassistant.const import HTTP_BAD_REQUEST, HTTP_OK
+
+from .const import (AUTH_CALLBACK_NAME, AUTH_CALLBACK_URL, CONF_ACCESS_DATA,
+                    CONF_CLIENT_ID, CONF_CLIENT_SECRET, CONF_CODE,
+                    CONF_REDIRECT_URI, CONF_UPLINK_APPLICATION_URL,
+                    CONF_WRITEACCESS, DATA_NIBE, DOMAIN)
 
 _LOGGER = logging.getLogger(__name__)
 _view = None
@@ -17,16 +20,18 @@ _view = None
 
 @config_entries.HANDLERS.register(DOMAIN)
 class NibeConfigFlow(config_entries.ConfigFlow):
+    """Conflig flow for nibe uplink."""
+
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
     def __init__(self):
+        """Init."""
         self.access_data = None
         self.user_data = None
 
     async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user."""
-
         if user_input:
             from nibeuplink import Uplink
 
@@ -48,6 +53,8 @@ class NibeConfigFlow(config_entries.ConfigFlow):
 
         url = '{}{}'.format(self.hass.config.api.base_url, AUTH_CALLBACK_URL)
 
+        config = self.hass.data[DATA_NIBE]['config']
+
         return self.async_show_form(
             step_id='user',
             description_placeholders={
@@ -56,29 +63,36 @@ class NibeConfigFlow(config_entries.ConfigFlow):
             },
             data_schema=vol.Schema({
                 vol.Required(CONF_REDIRECT_URI,
-                             default=url): str,
-                vol.Required(CONF_CLIENT_ID): str,
-                vol.Required(CONF_CLIENT_SECRET): str,
+                             default=config.get(CONF_REDIRECT_URI,
+                                                url)): str,
+                vol.Required(CONF_CLIENT_ID,
+                             default=config.get(CONF_CLIENT_ID,
+                                                None)): str,
+                vol.Required(CONF_CLIENT_SECRET,
+                             default=config.get(CONF_CLIENT_SECRET,
+                                                None)): str,
                 vol.Required(CONF_WRITEACCESS,
-                             default=False): bool,
+                             default=config.get(CONF_WRITEACCESS,
+                                                False)): bool,
             })
         )
 
     async def async_step_auth(self, user_input=None):
+        """Handle authentication step."""
         _LOGGER.debug('Async step auth %s', user_input)
 
         errors = {}
         if user_input is not None:
             try:
                 await self.uplink.get_access_token(user_input['code'])
-            except Exception as e:
+            except Exception:
                 _LOGGER.exception('Error on converting code')
                 errors['base'] = 'code'
             else:
                 self.user_data[CONF_ACCESS_DATA] = self.uplink.access_data
                 return self.async_create_entry(
                     title="Nibe Uplink",
-                    data= self.user_data)
+                    data=self.user_data)
 
         global _view
         if not _view:
@@ -112,9 +126,10 @@ class NibeAuthView(HomeAssistantView):
         """Initialize instance of the view."""
         super().__init__()
         self.hass = hass
-        self._flows = {}
+        self._flows = {}  # type: Dict[str, str]
 
     def register_flow(self, state, flow_id):
+        """Register a flow in the view."""
         self._flows[state] = flow_id
         _LOGGER.debug('Register state %s for flow_id %s', state, flow_id)
 

@@ -1,20 +1,19 @@
+"""Base entites for nibe."""
+
 import asyncio
-from collections import OrderedDict
 import logging
+from collections import OrderedDict
 from datetime import datetime, timedelta
-from typing import (Dict, Any, List)
+from typing import Any, Dict, List
 
+from homeassistant.components.group import ATTR_ADD_ENTITIES, ATTR_OBJECT_ID
+from homeassistant.components.group import DOMAIN as DOMAIN_GROUP
+from homeassistant.components.group import SERVICE_SET
 from homeassistant.helpers.entity import Entity
-from homeassistant.components.group import (
-    ATTR_ADD_ENTITIES, ATTR_OBJECT_ID,
-    DOMAIN as DOMAIN_GROUP, SERVICE_SET)
 
-from .const import (
-    DOMAIN as DOMAIN_NIBE,
-    SIGNAL_PARAMETERS_UPDATED,
-    SIGNAL_STATUSES_UPDATED,
-    SCAN_INTERVAL,
-)
+from .const import DOMAIN as DOMAIN_NIBE
+from .const import (SCAN_INTERVAL, SIGNAL_PARAMETERS_UPDATED,
+                    SIGNAL_STATUSES_UPDATED)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -26,10 +25,10 @@ UNIT_ICON = {
 
 
 class NibeEntity(Entity):
-    """Base class for all nibe sytem entities"""
+    """Base class for all nibe sytem entities."""
 
     def __init__(self, uplink, system_id, groups, parameters=None):
-        """Initialize base class"""
+        """Initialize base class."""
         super().__init__()
         self._uplink = uplink
         self._system_id = system_id
@@ -40,11 +39,13 @@ class NibeEntity(Entity):
             self._parameters.update(parameters)
 
     def get_parameters(self, parameter_ids: List[str]):
+        """Register a parameter for retrieval."""
         for parameter_id in parameter_ids:
             if parameter_id not in self._parameters:
                 self._parameters[parameter_id] = None
 
     def get_bool(self, parameter_id):
+        """Get bool parameter."""
         data = self._parameters[parameter_id]
         if data is None or data['value'] is None:
             return False
@@ -52,6 +53,7 @@ class NibeEntity(Entity):
             return bool(data['value'])
 
     def get_float(self, parameter_id, default=None):
+        """Get float parameter."""
         data = self._parameters[parameter_id]
         if data is None or data['value'] is None:
             return default
@@ -59,6 +61,7 @@ class NibeEntity(Entity):
             return float(data['value'])
 
     def get_value(self, parameter_id, default=None):
+        """Get value in display format."""
         data = self._parameters[parameter_id]
         if data is None or data['value'] is None:
             return default
@@ -66,6 +69,7 @@ class NibeEntity(Entity):
             return data['value']
 
     def get_scale(self, parameter_id):
+        """Calculate scale of parameter."""
         data = self._parameters[parameter_id]
         if data is None or data['value'] is None:
             return 1.0
@@ -74,32 +78,34 @@ class NibeEntity(Entity):
 
     @property
     def device_info(self):
+        """Return device identifier."""
         return {
             'identifiers': {(DOMAIN_NIBE, self._system_id)},
         }
 
     async def async_parameters_updated(self,
                                        data: Dict[str, Dict[str, Any]]):
-        """Called whenever core get an updated parameter"""
+        """Handle updated parameter."""
         changed = False
         for key, value in data.items():
             if key in self._parameters:
-                data = dict(value)
-                data['timeout'] = (datetime.now() +
-                                   timedelta(seconds=(SCAN_INTERVAL * 2)))
+                value2 = dict(value)
+                value2['timeout'] = (datetime.now() +
+                                     timedelta(seconds=(SCAN_INTERVAL * 2)))
                 _LOGGER.debug("Data changed for %s %s",
                               self.entity_id, key)
                 changed = True
-                self._parameters[key] = data
+                self._parameters[key] = value2
 
         if changed:
             self.async_schedule_update_ha_state()
 
     async def async_statuses_updated(self, data):
+        """Handle update of status."""
         pass
 
     async def async_added_to_hass(self):
-        """Once registed ad this entity to member groups"""
+        """Once registed add this entity to member groups."""
         self.hass.helpers.dispatcher.async_dispatcher_connect(
             SIGNAL_PARAMETERS_UPDATED, self.async_parameters_updated)
 
@@ -120,6 +126,7 @@ class NibeEntity(Entity):
             )
 
     async def async_update(self):
+        """Update of entity."""
         _LOGGER.debug("Update %s", self.entity_id)
 
         def timedout(data):
@@ -146,7 +153,7 @@ class NibeEntity(Entity):
 
 
 class NibeParameterEntity(NibeEntity):
-    """Base class with common attributes for parameter entities"""
+    """Base class with common attributes for parameter entities."""
 
     def __init__(self,
                  uplink,
@@ -156,7 +163,7 @@ class NibeParameterEntity(NibeEntity):
                  groups=[],
                  entity_id_format=None
                  ):
-        """Initialize base class for parameters"""
+        """Initialize base class for parameters."""
         super().__init__(uplink,
                          system_id,
                          groups,
@@ -185,12 +192,12 @@ class NibeParameterEntity(NibeEntity):
 
     @property
     def unique_id(self):
-        """Return a unique identifier for a this parameter"""
+        """Return a unique identifier for a this parameter."""
         return "{}_{}".format(self._system_id, self._parameter_id)
 
     @property
     def should_poll(self):
-        """Indicate that we need to poll data"""
+        """Indicate that we need to poll data."""
         return True
 
     @property
@@ -223,11 +230,11 @@ class NibeParameterEntity(NibeEntity):
 
     @property
     def icon(self):
-        """Return a calculated icon for this data if known"""
+        """Return a calculated icon for this data if known."""
         return self._icon
 
     def parse_data(self):
-        """Parse dat to update internal variables"""
+        """Parse data to update internal variables."""
         data = self._parameters[self._parameter_id]
         if data:
             if self._name is None:
