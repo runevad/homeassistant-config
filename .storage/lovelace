@@ -776,12 +776,61 @@
                     "title": "default_view"
                 },
                 {
-                    "badges": [
-                        "input_boolean.cottage_update",
-                        "input_boolean.cottage_guest_mode",
-                        "input_select.cottage_status"
-                    ],
+                    "badges": [],
                     "cards": [
+                        {
+                            "columns": 3,
+                            "entities": [
+                                {
+                                    "entity": "input_boolean.cottage_update"
+                                },
+                                {
+                                    "entity": "input_boolean.cottage_guest_mode"
+                                },
+                                {
+                                    "entity": "input_select.cottage_status"
+                                },
+                                {
+                                    "entity": "binary_sensor.cottage_update"
+                                },
+                                {
+                                    "entity": "binary_sensor.cottage_guest_mode"
+                                },
+                                {
+                                    "entity": "binary_sensor.cottage_status_home"
+                                }
+                            ],
+                            "show_name": true,
+                            "show_state": false,
+                            "title": "House Status",
+                            "type": "glance"
+                        },
+                        {
+                            "card": {
+                                "title": "Replace Battery Soon",
+                                "type": "glance"
+                            },
+                            "filter": {
+                                "include": [
+                                    {
+                                        "entity_id": "*bat*",
+                                        "state": "< 30"
+                                    },
+                                    {
+                                        "attributes": {
+                                            "battery": "< 30"
+                                        }
+                                    },
+                                    {
+                                        "attributes": {
+                                            "battery_level": "< 30"
+                                        }
+                                    }
+                                ]
+                            },
+                            "show_empty": false,
+                            "type": "custom:monster-card"
+                        },
                         {
                             "elements": [
                                 {
@@ -932,32 +981,6 @@
                             "image": "/local/other/nas.png",
                             "title": "NAS",
                             "type": "picture-elements"
-                        },
-                        {
-                            "card": {
-                                "title": "Replace Battery Soon",
-                                "type": "glance"
-                            },
-                            "filter": {
-                                "include": [
-                                    {
-                                        "entity_id": "*bat*",
-                                        "state": "< 30"
-                                    },
-                                    {
-                                        "attributes": {
-                                            "battery": "< 30"
-                                        }
-                                    },
-                                    {
-                                        "attributes": {
-                                            "battery_level": "< 30"
-                                        }
-                                    }
-                                ]
-                            },
-                            "show_empty": false,
-                            "type": "custom:monster-card"
                         },
                         {
                             "entities": [
