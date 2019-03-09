@@ -8,10 +8,6 @@ __pycache__
 #Cert
 *.pem
 
-#Special .storage
-.storage/*
-!/.storage/lovelace
-
 # Other
 *.uuid
 *.conf
