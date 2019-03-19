@@ -3,36 +3,36 @@
 #####################################
 switch.door_altan_29:
   friendly_name: "Altand\xF6rr"
-  icon: mdi:glassdoor
+  icon: mdi:door
 binary_sensor.door_altan_29:
   friendly_name: "Altan"
-  device_class: opening
+  device_class: door
 sensor.door_temp_altan_30:
   friendly_name: "Altand\xF6rr"
 ##Förråd
 #####################################
-switch.door_forrad_132:
+switch.door_storage_151:
   friendly_name: "F\xF6rr\xE5dsd\xF6rr"
-  icon: mdi:glassdoor
-binary_sensor.door_forrad_132:
+  icon: mdi:door
+binary_sensor.door_storage_151:
   friendly_name: "F\xF6rr\xE5d"
-  device_class: opening
+  device_class: door
 ##Groventre
 #####################################
 switch.door_groventre_137:
   friendly_name: "Groventr\xE9d\xF6rr"
-  icon: mdi:glassdoor
+  icon: mdi:door
 binary_sensor.door_groventre_137:
   friendly_name: "Groventr\xE9"
-  device_class: opening
+  device_class: door
 ##Hall
 #####################################
 switch.door_hall_35:
   friendly_name: "Entr\xE9d\xF6rr"
-  icon: mdi:glassdoor
+  icon: mdi:door
 binary_sensor.door_hall_35:
   friendly_name: "Entr\xE9"
-  device_class: opening
+  device_class: door
 sensor.door_temp_hall_36:
   friendly_name: "Entr\xE9d\xF6rr"
 
