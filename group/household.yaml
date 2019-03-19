@@ -3,6 +3,11 @@ family:
   entities:
   - person.lars
   - person.emelie
+  - device_tracker.christina_wifi
+  - device_tracker.anders_wifi
+  - device_tracker.bernt_wifi
+  - device_tracker.lena_wifi
+  - device_tracker.frida_wifi
 #  - person.kerstin
 #  - person.ingrid
 

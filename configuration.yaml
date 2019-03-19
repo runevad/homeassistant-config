@@ -94,6 +94,9 @@ recorder:
       - group.emelie
 
 logbook:
+  exclude:
+    domains:
+      - device_tracker
 
 history:
 
@@ -159,18 +162,18 @@ utility_meter:
 camera:
   - platform: mjpeg
     name: front
+    still_image_url: !secret front_camera_still_url
     mjpeg_url: !secret front_camera_url
     username: !secret camera_username
     password: !secret camera_password
     verify_ssl: False
   - platform: mjpeg
     name: indoor
+    still_image_url: !secret indoor_camera_still_url
     mjpeg_url: !secret indoor_camera_url
     username: !secret camera_username
     password: !secret camera_password
     verify_ssl: False
-
-ffmpeg:
 
 ios:
   push:
