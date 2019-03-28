@@ -160,10 +160,17 @@ utility_meter:
     cycle: monthly
 
 camera:
-  - platform: mjpeg
+  - platform: generic
     name: front
     still_image_url: !secret front_camera_still_url
-    mjpeg_url: !secret front_camera_url
+    username: !secret camera_username
+    password: !secret camera_password
+    authentication: digest
+    verify_ssl: False
+  - platform: mjpeg
+    name: carport
+    still_image_url: !secret carport_camera_still_url
+    mjpeg_url: !secret carport_camera_url
     username: !secret camera_username
     password: !secret camera_password
     verify_ssl: False
@@ -234,7 +241,29 @@ sensor: !include sensor.yaml
 
 switch: !include switch.yaml
 
-binary_sensor: !include binary_sensor.yaml
+binary_sensor:
+  - platform: template
+    sensors:
+      cottage_status_home:
+        value_template: "{{ states.group.family.state == 'home' }}"
+        friendly_name: 'Home'
+        device_class: occupancy
+      cottage_update:
+        value_template: "{{ states.input_boolean.cottage_update.state == 'off' }}"
+        friendly_name: 'Auto'
+        device_class: safety
+      cottage_guest_mode:
+        value_template: "{{ states.input_boolean.cottage_guest_mode.state == 'on' }}"
+        friendly_name: 'Auto'
+        device_class: safety
+#### Workday
+  - platform: workday
+    country: SE
+    name: workday
+#### MQTT
+  - platform: mqtt
+    name: ESP32 test status
+    state_topic: upstairs_lolin32/binary_sensor/esp32_test_status/state
 
 input_select:
   cottage_status:
