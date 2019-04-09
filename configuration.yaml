@@ -6,6 +6,16 @@ homeassistant:
   unit_system: metric
   time_zone: Europe/Stockholm
 
+  auth_providers:
+    - type: homeassistant
+    - type: trusted_networks
+      trusted_networks:
+        - 127.0.0.1
+        - 192.168.1.0/24
+        - 192.168.100.0/24
+      trusted_users:
+        192.168.1.0/24:
+          - 13b0bff34a9446c484ba5dfc9e92fab4
   #Customize
   customize: !include_dir_merge_named customize
   customize_domain:
@@ -33,10 +43,6 @@ http:
   ssl_certificate: !secret ssl_certificate
   ssl_key: !secret ssl_key
   base_url: !secret base_url
-  trusted_networks:
-    - 127.0.0.1
-    - 192.168.1.0/24
-    - 192.168.100.0/24
   ip_ban_enabled: True
   login_attempts_threshold: 5
 
@@ -159,28 +165,29 @@ utility_meter:
     source: sensor.energy_car_heater
     cycle: monthly
 
+ffmpeg:
+
 camera:
   - platform: generic
     name: front
     still_image_url: !secret front_camera_still_url
+    stream_source: !secret front_camera_stream_url
     username: !secret camera_username
     password: !secret camera_password
     authentication: digest
     verify_ssl: False
-  - platform: mjpeg
-    name: carport
-    still_image_url: !secret carport_camera_still_url
-    mjpeg_url: !secret carport_camera_url
-    username: !secret camera_username
-    password: !secret camera_password
-    verify_ssl: False
-  - platform: mjpeg
-    name: indoor
-    still_image_url: !secret indoor_camera_still_url
-    mjpeg_url: !secret indoor_camera_url
-    username: !secret camera_username
-    password: !secret camera_password
-    verify_ssl: False
+  # - platform: onvif
+  #   name: carport
+  #   host: !secret carport_camera_url
+  #   port: !secret camera_port
+  #   username: !secret camera_username
+  #   password: !secret camera_password
+  # - platform: onvif
+  #   name: indoor
+  #   host: !secret indoor_camera_url
+  #   port: !secret camera_port
+  #   username: !secret camera_username
+  #   password: !secret camera_password
 
 ios:
   push:
