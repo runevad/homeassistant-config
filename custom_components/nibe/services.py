@@ -1,4 +1,4 @@
-"""Services for nibe uplink"""
+"""Services for nibe uplink."""
 import logging
 
 import voluptuous as vol
@@ -91,7 +91,7 @@ async def async_register_services(hass):
     hass.services.async_register(
         DOMAIN,
         SERVICE_SET_PARAMETER,
-        set_smarthome_mode,
+        set_parameter,
         SERVICE_SET_PARAMETER_SCHEMA)
 
     hass.services.async_register(
