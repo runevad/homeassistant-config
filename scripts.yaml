@@ -212,6 +212,7 @@ kerstin_night:
       entity_id:
         - light.stora_fonstret_kerstin_e14
         - light.stora_fonstret_kerstin
+        - light.sanglampa_kerstin
     - delay: '00:00:01'
     - service: light.turn_on
       data:
@@ -228,6 +229,7 @@ ingrid_night:
       entity_id:
         - light.stora_fonstret_ingrid_e14
         - light.stora_fonstret_ingrid
+        - light.sanglampa_ingrid
     - delay: '00:00:01'
     - service: light.turn_on
       data:
@@ -242,11 +244,20 @@ kerstin_reading:
   sequence:
     - service: light.turn_on
       data:
-        brightness: 255
-        color_temp: 454
+        brightness: 200
+      entity_id:
+        - light.sanglampa_kerstin
+    - delay: '00:00:01'
+    - service: light.turn_on
+      data:
+        brightness: 1
+        rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:
         - light.tradfri_bulb_e27_cws_opal_600lm
+    - delay: '00:00:01'
+    - service: light.turn_off
+      entity_id:
         - light.stora_fonstret_kerstin_e14
         - light.stora_fonstret_kerstin
 
@@ -255,10 +266,19 @@ ingrid_reading:
   sequence:
     - service: light.turn_on
       data:
-        brightness: 255
-        color_temp: 454
+        brightness: 200
+      entity_id:
+        - light.sanglampa_ingrid
+    - delay: '00:00:01'
+    - service: light.turn_on
+      data:
+        brightness: 1
+        rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:
         - light.lilla_fonstret_ingrid
-        - light.stora_fonstret_ingrid_e14
+    - delay: '00:00:01'
+    - service: light.turn_off
+      entity_id:
         - light.stora_fonstret_ingrid
+        - light.stora_fonstret_ingrid_e14
