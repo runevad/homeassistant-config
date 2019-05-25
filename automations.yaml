@@ -389,7 +389,7 @@
           state: 'on'
         - condition: time
           after: '19:30:00'
-          before: '22:00:00'
+          before: '21:00:00'
   trigger:
     - platform: numeric_state
       entity_id: sun.sun
@@ -401,9 +401,8 @@
   action:
     - service: light.turn_on
       data:
-        brightness: 180
+        brightness: 5
         color_temp: 454
-        transition: 60
       entity_id:
         - group.window_lights
         - light.stora_fonstret_sovrum_vuxna_e14
@@ -834,11 +833,11 @@
       after: '20:30:00'
       before: '01:00:00'
   action:
-    - service: media_player.sonos_set_option
+    - service: sonos.set_option
       data:
         entity_id: media_player.sallskapsrum
         night_sound: True
-    - service: media_player.sonos_set_option
+    - service: sonos.set_option
       data:
         entity_id: media_player.sallskapsrum
         speech_enhance: True
@@ -855,11 +854,11 @@
       after: '20:30:00'
       before: '07:00:00'
   action:
-    - service: media_player.sonos_set_option
+    - service: sonos.set_option
       data:
         entity_id: media_player.sallskapsrum
         night_sound: False
-    - service: media_player.sonos_set_option
+    - service: sonos.set_option
       data:
         entity_id: media_player.sallskapsrum
         speech_enhance: False

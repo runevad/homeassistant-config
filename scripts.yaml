@@ -3,7 +3,7 @@
 sonos_doorbell:
   alias: "Sonos doorbell"
   sequence:
-    - service: media_player.sonos_snapshot
+    - service: sonos.snapshot
       entity_id: media_player.kokvardagsrum
     - service: media_player.volume_set
       entity_id: media_player.kokvardagsrum
@@ -15,13 +15,13 @@ sonos_doorbell:
         media_content_id: !secret mp3_doorbell
         media_content_type: 'music'
     - delay: '00:00:15'
-    - service: media_player.sonos_restore
+    - service: sonos.restore
       entity_id: media_player.kokvardagsrum
 
 sonos_fire_alarm:
   alias: "Sonos fire alarm"
   sequence:
-    - service: media_player.sonos_snapshot
+    - service: sonos.snapshot
       entity_id: media_player.kokvardagsrum
     - service: media_player.volume_set
       entity_id: media_player.kokvardagsrum
@@ -33,13 +33,13 @@ sonos_fire_alarm:
         media_content_id: !secret mp3_fire_alarm
         media_content_type: 'music'
     - delay: '00:00:40'
-    - service: media_player.sonos_restore
+    - service: sonos.restore
       entity_id: media_player.kokvardagsrum
 
 sonos_alarm:
   alias: "Sonos alarm"
   sequence:
-    - service: media_player.sonos_snapshot
+    - service: sonos.snapshot
       entity_id: media_player.kokvardagsrum
     - service: media_player.volume_set
       entity_id: media_player.kokvardagsrum
@@ -51,7 +51,7 @@ sonos_alarm:
         media_content_id: !secret mp3_alarm
         media_content_type: 'music'
     - delay: '00:03:00'
-    - service: media_player.sonos_restore
+    - service: sonos.restore
       entity_id: media_player.kokvardagsrum
 
 ### Setting home modes
@@ -161,10 +161,10 @@ car_heater:
 sonos_say:
   alias: "Sonos TTS script"
   sequence:
-    - service: media_player.sonos_snapshot
+    - service: sonos.snapshot
       data_template:
         entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
-    - service: media_player.sonos_unjoin
+    - service: sonos.unjoin
       data_template:
         entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
     - service: media_player.volume_set
@@ -178,7 +178,7 @@ sonos_say:
     - delay: "{{ delay|default('00:00:00') }}"
     - wait_template: "{{ is_state(sonos_entity|default('media_player.kokvardagsrum'), 'playing') }}"
       timeout: '00:00:10'
-    - service: media_player.sonos_restore
+    - service: sonos.restore
       data_template:
         entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
 

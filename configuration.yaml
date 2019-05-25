@@ -10,9 +10,8 @@ homeassistant:
     - type: homeassistant
     - type: trusted_networks
       trusted_networks:
-        - 127.0.0.1
         - 192.168.1.0/24
-        - 192.168.100.0/24
+      allow_bypass_login: true
       trusted_users:
         192.168.1.0/24:
           - 13b0bff34a9446c484ba5dfc9e92fab4
@@ -43,16 +42,19 @@ http:
   ssl_certificate: !secret ssl_certificate
   ssl_key: !secret ssl_key
   base_url: !secret base_url
-  ip_ban_enabled: True
-  login_attempts_threshold: 5
+#  ip_ban_enabled: True
+#  login_attempts_threshold: 5
 
 frontend:
 
 person:
 
+mobile_app:
+
 config:
 
 updater:
+  reporting: true
   include_used_components: True
 # Checks for available updates
 # Note: This component will send some information about your system to
@@ -65,7 +67,8 @@ cloud:
 conversation:
 
 tts:
-  - platform: google
+  - platform: google_translate
+    service_name: google_say
     language: 'sv'
     time_memory: 21600
 
