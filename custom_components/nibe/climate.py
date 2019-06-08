@@ -21,6 +21,14 @@ from homeassistant.helpers.event import (async_track_state_change,
                                          async_track_time_interval)
 from homeassistant.helpers.restore_state import RestoreEntity
 
+from nibeuplink import (
+    PARAM_PUMP_SPEED_HEATING_MEDIUM,
+    ClimateSystem,
+    SetThermostatModel,
+    Uplink,
+    get_active_climate
+)
+
 from . import NibeSystem
 from .const import (ATTR_TARGET_TEMPERATURE, ATTR_VALVE_POSITION,
                     CONF_CLIMATE_SYSTEMS, CONF_CLIMATES,
@@ -30,49 +38,23 @@ from .const import (ATTR_TARGET_TEMPERATURE, ATTR_VALVE_POSITION,
 from .const import DOMAIN as DOMAIN_NIBE
 from .entity import NibeEntity
 
-DEPENDENCIES = ['nibe']
 PARALLEL_UPDATES = 0
 _LOGGER = logging.getLogger(__name__)
 
 
-async def _is_climate_active(uplink, system, climate):
-    if not system.config[CONF_CLIMATES]:
-        return False
-
-    if climate.active_accessory is None:
-        return True
-
-    active_accessory = await uplink.get_parameter(
-        system.system_id,
-        climate.active_accessory)
-
-    _LOGGER.debug("Accessory status for {} is {}".format(
-        climate.name,
-        active_accessory))
-
-    if active_accessory and active_accessory['rawValue']:
-        return True
-
-    return False
-
-
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the climate device based on a config entry."""
-    from nibeuplink import (  # noqa
-        PARAM_CLIMATE_SYSTEMS,
-        ClimateSystem,
-        Uplink)
-
     if DATA_NIBE not in hass.data:
         raise PlatformNotReady
 
-    uplink = hass.data[DATA_NIBE]['uplink']  # type: Uplink
-    systems = hass.data[DATA_NIBE]['systems']  # type: List[NibeSystem]
+    uplink = hass.data[DATA_NIBE].uplink  # type: Uplink
+    systems = hass.data[DATA_NIBE].systems  # type: List[NibeSystem]
 
     entities = []
 
-    async def add_active(system: NibeSystem, climate: ClimateSystem):
-        if await _is_climate_active(uplink, system, climate):
+    async def add_active(system: NibeSystem):
+        climates = await get_active_climate(uplink, system.system_id)
+        for climate in climates.values():
             entities.append(
                 NibeClimateSupply(
                     uplink,
@@ -106,9 +88,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
             )
 
     await asyncio.gather(*[
-        add_active(system, climate)
-        for climate in PARAM_CLIMATE_SYSTEMS.values()
+        add_active(system)
         for system in systems.values()
+        if system.config[CONF_CLIMATES]
     ])
 
     async_add_entities(entities, True)
@@ -121,14 +103,12 @@ class NibeClimate(NibeEntity, ClimateDevice):
                  uplink,
                  system_id: int,
                  statuses: Set[str],
-                 climate: ClimateDevice):
+                 climate: ClimateSystem):
         """Init."""
         super(NibeClimate, self).__init__(
             uplink,
             system_id,
             [])
-
-        from nibeuplink import (PARAM_PUMP_SPEED_HEATING_MEDIUM)
 
         self.get_parameters([
             PARAM_PUMP_SPEED_HEATING_MEDIUM,
@@ -160,8 +140,6 @@ class NibeClimate(NibeEntity, ClimateDevice):
     @property
     def device_state_attributes(self):
         """Extra state attributes."""
-        from nibeuplink import (PARAM_PUMP_SPEED_HEATING_MEDIUM)
-
         data = OrderedDict()
         data['status'] = self._status
         data['pump_speed_heating_medium'] = \
@@ -214,15 +192,12 @@ class NibeClimate(NibeEntity, ClimateDevice):
         finally:
             _LOGGER.debug("Put parameter response {}".format(self._status))
 
-    async def async_update(self):
-        """Update internal state."""
-        _LOGGER.debug("Update climate {}".format(self.name))
-        await super().async_update()
-        self.parse_data()
-
-    async def async_statuses_updated(self, statuses: Set[str]):
+    async def async_statuses_updated(self, system_id: int, statuses: Set[str]):
         """Statuses have been updated."""
+        if system_id != self._system_id:
+            return
         self.parse_statuses(statuses)
+        self.parse_data()
         self.async_schedule_update_ha_state()
 
     def parse_statuses(self, statuses: Set[str]):
@@ -236,10 +211,6 @@ class NibeClimate(NibeEntity, ClimateDevice):
         else:
             self._is_on = False
 
-    def parse_data(self):
-        """Parse data received."""
-        pass
-
 
 class NibeClimateRoom(NibeClimate):
     """Climate entity for a room temperature sensor."""
@@ -248,7 +219,7 @@ class NibeClimateRoom(NibeClimate):
                  uplink,
                  system_id: int,
                  statuses: Set[str],
-                 climate: ClimateDevice):
+                 climate: ClimateSystem):
         """Init."""
         super().__init__(
             uplink,
@@ -357,7 +328,7 @@ class NibeClimateSupply(NibeClimate):
                  uplink,
                  system_id: int,
                  statuses: Set[str],
-                 climate: ClimateDevice):
+                 climate: ClimateSystem):
         """Init."""
         super().__init__(
             uplink,
@@ -686,8 +657,6 @@ class NibeThermostat(ClimateDevice, RestoreEntity):
         await self.async_update_ha_state()
 
     async def _async_publish(self, time=None):
-        from nibeuplink import SetThermostatModel
-
         def scaled(value, multi=10):
             if value is None:
                 return None

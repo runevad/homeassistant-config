@@ -1,10 +1,10 @@
 """Support for nibe uplink."""
 
-
+import attr
 import asyncio
 import json
 import logging
-from datetime import timedelta
+from typing import List
 
 import voluptuous as vol
 
@@ -12,23 +12,20 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant import config_entries
 from homeassistant.components import persistent_notification
 from homeassistant.const import CONF_NAME
-from homeassistant.helpers.event import async_track_time_interval
+from nibeuplink import Uplink
 
-from .config import NibeConfigFlow  # noqa
+from .config_flow import NibeConfigFlow  # noqa
 from .const import (CONF_ACCESS_DATA, CONF_BINARY_SENSORS, CONF_CATEGORIES,
                     CONF_CLIENT_ID, CONF_CLIENT_SECRET, CONF_CLIMATE_SYSTEMS,
                     CONF_CLIMATES, CONF_CURRENT_TEMPERATURE, CONF_REDIRECT_URI,
                     CONF_SENSORS, CONF_STATUSES, CONF_SWITCHES, CONF_SYSTEM,
                     CONF_SYSTEMS, CONF_THERMOSTATS, CONF_UNIT, CONF_UNITS,
                     CONF_VALVE_POSITION, CONF_WATER_HEATERS, CONF_WRITEACCESS,
-                    DATA_NIBE, DOMAIN, SCAN_INTERVAL,
+                    DATA_NIBE, DOMAIN, SCAN_INTERVAL, CONF_FANS,
                     SIGNAL_PARAMETERS_UPDATED, SIGNAL_STATUSES_UPDATED)
-from .services import async_register_services
+from .services import async_register_services, async_track_delta_time
 
 _LOGGER = logging.getLogger(__name__)
-
-DEPENDENCIES = ['group']
-REQUIREMENTS = ['nibeuplink==0.6.3']
 
 
 def none_as_true(data):
@@ -61,6 +58,7 @@ SYSTEM_SCHEMA = vol.Schema({
         vol.All(cv.ensure_list, [cv.string]),
     vol.Optional(CONF_CLIMATES, default=False): none_as_true,
     vol.Optional(CONF_WATER_HEATERS, default=False): none_as_true,
+    vol.Optional(CONF_FANS, default=False): none_as_true,
     vol.Optional(CONF_SWITCHES, default=[]):
         vol.All(cv.ensure_list, [cv.string]),
     vol.Optional(CONF_BINARY_SENSORS, default=[]):
@@ -83,15 +81,23 @@ CONFIG_SCHEMA = vol.Schema({
 }, extra=vol.ALLOW_EXTRA)
 
 FORWARD_PLATFORMS = ('climate', 'switch', 'sensor',
-                     'binary_sensor', 'water_heater')
+                     'binary_sensor', 'water_heater',
+                     'fan')
 
 
-async def async_setup_systems(hass, uplink, entry):
+@attr.s
+class NibeData():
+    """Holder for nibe data."""
+
+    config = attr.ib()
+    uplink = attr.ib(default=None, type=Uplink)
+    systems = attr.ib(default=[], type=List['NibeSystem'])
+
+
+async def async_setup_systems(hass, data: NibeData, entry):
     """Configure each system."""
-    config = hass.data[DATA_NIBE]['config']
-
-    if not len(config.get(CONF_SYSTEMS)):
-        systems = await uplink.get_systems()
+    if not len(data.config.get(CONF_SYSTEMS)):
+        systems = await data.uplink.get_systems()
         msg = json.dumps(systems, indent=1)
         persistent_notification.async_create(
             hass,
@@ -104,15 +110,14 @@ async def async_setup_systems(hass, uplink, entry):
     systems = {
         config[CONF_SYSTEM]:
             NibeSystem(hass,
-                       uplink,
+                       data.uplink,
                        config[CONF_SYSTEM],
                        config,
                        entry.entry_id)
-        for config in config.get(CONF_SYSTEMS)
+        for config in data.config.get(CONF_SYSTEMS)
     }
 
-    hass.data[DATA_NIBE]['systems'] = systems
-    hass.data[DATA_NIBE]['uplink'] = uplink
+    data.systems = systems
 
     tasks = [system.load() for system in systems.values()]
 
@@ -125,20 +130,17 @@ async def async_setup_systems(hass, uplink, entry):
 
 async def async_setup(hass, config):
     """Configure the nibe uplink component."""
-    hass.data[DATA_NIBE] = {}
-    hass.data[DATA_NIBE]['config'] = config[DOMAIN]
+    hass.data[DATA_NIBE] = NibeData(config[DOMAIN])
 
-    """Monkey patch hass to get detected"""
-    config_entries.FLOWS.append(DOMAIN)
-
-    """
-    Monkey patch history component to get full state history.
-    https://github.com/home-assistant/home-assistant/pull/21390
-    """
-    import homeassistant.components.history as history
-    if 'water_heater' not in history.SIGNIFICANT_DOMAINS:
-        history.SIGNIFICANT_DOMAINS = (*history.SIGNIFICANT_DOMAINS,
-                                       'water_heater')
+    """Monkey patch hass to get detected."""
+    try:
+        config_entries.FLOWS.append(DOMAIN)
+    except AttributeError:
+        try:
+            from homeassistant.generated import config_flows
+            config_flows.FLOWS.append(DOMAIN)
+        except AttributeError:
+            _LOGGER.warning("Unable to extend config flow list.")
 
     await async_register_services(hass)
     return True
@@ -147,8 +149,6 @@ async def async_setup(hass, config):
 async def async_setup_entry(hass, entry: config_entries.ConfigEntry):
     """Set up an access point from a config entry."""
     _LOGGER.debug("Setup nibe entry")
-
-    from nibeuplink import Uplink
 
     scope = None
     if entry.data.get(CONF_WRITEACCESS):
@@ -171,15 +171,19 @@ async def async_setup_entry(hass, entry: config_entries.ConfigEntry):
         scope=scope
     )
 
+    data = hass.data[DATA_NIBE]
+    data.uplink = uplink
+
     await uplink.refresh_access_token()
 
-    await async_setup_systems(hass, uplink, entry)
+    await async_setup_systems(hass, data, entry)
 
     return True
 
 
 async def async_unload_entry(hass, entry):
     """Unload a configuration entity."""
+    data = hass.data[DATA_NIBE]
     await asyncio.wait([
         hass.config_entries.async_forward_entry_unload(
             entry, platform)
@@ -188,12 +192,13 @@ async def async_unload_entry(hass, entry):
 
     await asyncio.wait([
         system.unload()
-        for system in hass.data[DATA_NIBE]['systems'].values()
+        for system in data.systems.values()
     ])
 
-    await hass.data[DATA_NIBE]['uplink'].close()
-    del hass.data[DATA_NIBE]['systems']
-    del hass.data[DATA_NIBE]['uplink']
+    await data.uplink.close()
+    data.systems = []
+    data.uplink = None
+    data.monitor = None
     return True
 
 
@@ -211,6 +216,7 @@ class NibeSystem(object):
         self.notice = []
         self.statuses = set()
         self._device_info = {}
+        self._unsub = []
 
     @property
     def device_info(self):
@@ -219,7 +225,9 @@ class NibeSystem(object):
 
     async def unload(self):
         """Unload system."""
-        pass
+        for unsub in reversed(self._unsub):
+            unsub()
+        self._unsub = []
 
     async def load(self):
         """Load system."""
@@ -240,11 +248,19 @@ class NibeSystem(object):
             **self._device_info
         )
 
-        await self.update()
-        async_track_time_interval(
-            self.hass,
-            self.update,
-            timedelta(seconds=SCAN_INTERVAL))
+        await self.update_notifications()
+        await self.update_statuses()
+
+        self._unsub.append(
+            async_track_delta_time(
+                self.hass,
+                SCAN_INTERVAL,
+                self.update_notifications))
+        self._unsub.append(
+            async_track_delta_time(
+                self.hass,
+                SCAN_INTERVAL,
+                self.update_statuses))
 
     async def update_statuses(self):
         """Update status list."""
@@ -259,10 +275,10 @@ class NibeSystem(object):
         _LOGGER.debug("Statuses: %s", statuses)
 
         self.hass.helpers.dispatcher.async_dispatcher_send(
-            SIGNAL_PARAMETERS_UPDATED, parameters)
+            SIGNAL_PARAMETERS_UPDATED, self.system_id, parameters)
 
         self.hass.helpers.dispatcher.async_dispatcher_send(
-            SIGNAL_STATUSES_UPDATED, statuses)
+            SIGNAL_STATUSES_UPDATED, self.system_id, statuses)
 
     async def update_notifications(self):
         """Update notification list."""
@@ -283,8 +299,3 @@ class NibeSystem(object):
                 self.hass,
                 'nibe:{}'.format(x['notificationId'])
             )
-
-    async def update(self, now=None):
-        """Update system state."""
-        await self.update_notifications()
-        await self.update_statuses()

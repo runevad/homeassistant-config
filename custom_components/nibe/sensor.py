@@ -15,7 +15,6 @@ from .const import (CONF_CATEGORIES, CONF_SENSORS, CONF_STATUSES, CONF_UNIT,
 from .const import DOMAIN as DOMAIN_NIBE
 from .entity import NibeParameterEntity
 
-DEPENDENCIES = ['nibe']
 PARALLEL_UPDATES = 0
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,7 +29,7 @@ async def async_load(hass, uplink):
     if DATA_NIBE not in hass.data:
         raise PlatformNotReady
 
-    systems = hass.data[DATA_NIBE]['systems']
+    systems = hass.data[DATA_NIBE].systems
 
     sensors = defaultdict(gen_dict)
     group = hass.components.group
@@ -96,7 +95,7 @@ async def async_load(hass, uplink):
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the device based on a config entry."""
-    uplink = hass.data[DATA_NIBE]['uplink']
+    uplink = hass.data[DATA_NIBE].uplink
     sensors = await async_load(hass, uplink)
     entites_update = []
     entites_done = []

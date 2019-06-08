@@ -3,6 +3,7 @@ import logging
 
 import voluptuous as vol
 
+from homeassistant.helpers.event import async_call_later
 import homeassistant.helpers.config_validation as cv
 from homeassistant.const import ATTR_NAME, ATTR_TEMPERATURE
 
@@ -13,6 +14,37 @@ from .const import (ATTR_TARGET_TEMPERATURE, ATTR_VALVE_POSITION, DATA_NIBE,
 _LOGGER = logging.getLogger(__name__)
 
 
+def async_track_delta_time(hass, delta, callable):
+    """
+    Run callable cyclicly.
+
+    Similar to async_track_time_interval, but where we
+    instead guarantee delta between calls
+    """
+    remove = None
+    skipped = False
+
+    def skip():
+        nonlocal skipped
+        skipped = True
+
+    async def fun(now):
+        nonlocal remove
+        remove = skip
+
+        try:
+            await callable()
+        finally:
+            if not skipped:
+                remove = async_call_later(hass, delta, fun)
+
+    def remover():
+        remove()
+
+    remove = async_call_later(hass, delta, fun)
+    return remover
+
+
 async def async_register_services(hass):
     """Register public services."""
     from nibeuplink import (
@@ -21,21 +53,21 @@ async def async_register_services(hass):
 
     async def set_smarthome_mode(call):
         """Set smarthome mode."""
-        uplink = hass.data[DATA_NIBE]['uplink']
+        uplink = hass.data[DATA_NIBE].uplink
         await uplink.put_smarthome_mode(
             call.data['system'],
             call.data['mode']
         )
 
     async def set_parameter(call):
-        uplink = hass.data[DATA_NIBE]['uplink']
+        uplink = hass.data[DATA_NIBE].uplink
         await uplink.put_parameter(
             call.data['system'],
             call.data['parameter'],
             call.data['value'])
 
     async def set_thermostat(call):
-        uplink = hass.data[DATA_NIBE]['uplink']
+        uplink = hass.data[DATA_NIBE].uplink
 
         def scaled(value, multi=10):
             if value is None:

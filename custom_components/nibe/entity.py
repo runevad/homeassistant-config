@@ -4,16 +4,23 @@ import asyncio
 import logging
 from collections import OrderedDict
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union, Optional
 
 from homeassistant.components.group import ATTR_ADD_ENTITIES, ATTR_OBJECT_ID
 from homeassistant.components.group import DOMAIN as DOMAIN_GROUP
 from homeassistant.components.group import SERVICE_SET
 from homeassistant.helpers.entity import Entity
 
+from nibeuplink import Uplink
+
 from .const import DOMAIN as DOMAIN_NIBE
 from .const import (SCAN_INTERVAL, SIGNAL_PARAMETERS_UPDATED,
                     SIGNAL_STATUSES_UPDATED)
+from .services import async_track_delta_time
+
+ParameterId = Union[str, int]
+Parameter = Dict[str, Any]
+ParameterSet = Dict[ParameterId, Optional[Parameter]]
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -27,49 +34,72 @@ UNIT_ICON = {
 class NibeEntity(Entity):
     """Base class for all nibe sytem entities."""
 
-    def __init__(self, uplink, system_id, groups, parameters=None):
+    def __init__(self,
+                 uplink: Uplink,
+                 system_id: int,
+                 groups: List[str],
+                 parameters: Optional[ParameterSet] = None):
         """Initialize base class."""
         super().__init__()
         self._uplink = uplink
         self._system_id = system_id
         self._groups = groups
         self._device_info = None
-        self._parameters = OrderedDict()
+        self._parameters = OrderedDict()  # type: ParameterSet
+        self._unsub = []
         if parameters:
             self._parameters.update(parameters)
 
-    def get_parameters(self, parameter_ids: List[str]):
+    def get_parameters(self, parameter_ids: List[Optional[ParameterId]]):
         """Register a parameter for retrieval."""
         for parameter_id in parameter_ids:
-            if parameter_id not in self._parameters:
+            if parameter_id and parameter_id not in self._parameters:
                 self._parameters[parameter_id] = None
 
-    def get_bool(self, parameter_id):
+    def get_bool(self, parameter_id: Optional[ParameterId]):
         """Get bool parameter."""
+        if not parameter_id:
+            return None
         data = self._parameters[parameter_id]
         if data is None or data['value'] is None:
             return False
         else:
             return bool(data['value'])
 
-    def get_float(self, parameter_id, default=None):
+    def get_float(self, parameter_id: Optional[ParameterId], default=None):
         """Get float parameter."""
+        if not parameter_id:
+            return None
         data = self._parameters[parameter_id]
         if data is None or data['value'] is None:
             return default
         else:
             return float(data['value'])
 
-    def get_value(self, parameter_id, default=None):
+    def get_value(self, parameter_id: Optional[ParameterId], default=None):
         """Get value in display format."""
+        if not parameter_id:
+            return None
         data = self._parameters[parameter_id]
         if data is None or data['value'] is None:
             return default
         else:
             return data['value']
 
-    def get_scale(self, parameter_id):
+    def get_raw(self, parameter_id: Optional[ParameterId], default=None):
+        """Get value in display format."""
+        if not parameter_id:
+            return None
+        data = self._parameters[parameter_id]
+        if data is None or data['rawValue'] is None:
+            return default
+        else:
+            return data['rawValue']
+
+    def get_scale(self, parameter_id: Optional[ParameterId]):
         """Calculate scale of parameter."""
+        if not parameter_id:
+            return None
         data = self._parameters[parameter_id]
         if data is None or data['value'] is None:
             return 1.0
@@ -83,9 +113,22 @@ class NibeEntity(Entity):
             'identifiers': {(DOMAIN_NIBE, self._system_id)},
         }
 
+    @property
+    def should_poll(self):
+        """Indicate that we need to poll data."""
+        return False
+
+    def parse_data(self):
+        """Parse data to update internal variables."""
+        pass
+
     async def async_parameters_updated(self,
+                                       system_id: int,
                                        data: Dict[str, Dict[str, Any]]):
         """Handle updated parameter."""
+        if system_id != self._system_id:
+            return
+
         changed = False
         for key, value in data.items():
             if key in self._parameters:
@@ -98,19 +141,29 @@ class NibeEntity(Entity):
                 self._parameters[key] = value2
 
         if changed:
+            self.parse_data()
             self.async_schedule_update_ha_state()
 
-    async def async_statuses_updated(self, data):
+    async def async_statuses_updated(self, system_id, data):
         """Handle update of status."""
         pass
 
+    async def async_will_remove_from_hass(self):
+        for unsub in reversed(self._unsub):
+            unsub()
+        self._unsub = None
+
     async def async_added_to_hass(self):
         """Once registed add this entity to member groups."""
-        self.hass.helpers.dispatcher.async_dispatcher_connect(
-            SIGNAL_PARAMETERS_UPDATED, self.async_parameters_updated)
+        self._unsub.append(
+            self.hass.helpers.dispatcher.async_dispatcher_connect(
+                SIGNAL_PARAMETERS_UPDATED, self.async_parameters_updated)
+        )
 
-        self.hass.helpers.dispatcher.async_dispatcher_connect(
-            SIGNAL_STATUSES_UPDATED, self.async_statuses_updated)
+        self._unsub.append(
+            self.hass.helpers.dispatcher.async_dispatcher_connect(
+                SIGNAL_STATUSES_UPDATED, self.async_statuses_updated)
+        )
 
         for group in self._groups:
             _LOGGER.debug("Adding entity {} to group {}".format(
@@ -124,6 +177,16 @@ class NibeEntity(Entity):
                     }
                 )
             )
+
+        async def update():
+            await self.async_update()
+            await self.async_update_ha_state()
+
+        self._unsub.append(
+            async_track_delta_time(
+                self.hass,
+                SCAN_INTERVAL,
+                update))
 
     async def async_update(self):
         """Update of entity."""
@@ -148,8 +211,10 @@ class NibeEntity(Entity):
                 get(parameter_id)
                 for parameter_id, data in self._parameters.items()
                 if timedout(data)
-            ],
+            ]
         )
+
+        self.parse_data()
 
 
 class NibeParameterEntity(NibeEntity):
@@ -196,11 +261,6 @@ class NibeParameterEntity(NibeEntity):
         return "{}_{}".format(self._system_id, self._parameter_id)
 
     @property
-    def should_poll(self):
-        """Indicate that we need to poll data."""
-        return True
-
-    @property
     def device_state_attributes(self):
         """Return the state attributes."""
         data = self._parameters[self._parameter_id]
@@ -244,8 +304,3 @@ class NibeParameterEntity(NibeEntity):
             self._value = data['value']
         else:
             self._value = None
-
-    async def async_update(self):
-        """Fetch new state data for the sensor."""
-        await super().async_update()
-        self.parse_data()
