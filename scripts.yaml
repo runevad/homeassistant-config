@@ -65,7 +65,7 @@ cottage_home:
         option: 'Home'
     - service: switch.turn_on
       data:
-        entity_id: switch.vvc_135
+        entity_id: switch.vvc
     - service: homeassistant.turn_off
       data:
         entity_id:
@@ -81,13 +81,13 @@ cottage_away:
         option: 'Away'
     - service: switch.turn_off
       data:
-        entity_id: switch.vvc_135
+        entity_id: switch.vvc
     - service: homeassistant.turn_on
       data:
         entity_id:
           - group.door_units
           - group.motion_units
-    - service: light.turn_off
+    - service: switch.turn_off
       data:
         entity_id: group.all_lights
     - service: media_player.turn_off
@@ -101,7 +101,7 @@ cottage_standby:
         option: 'Standby'
     - service: switch.turn_off
       data:
-        entity_id: switch.vvc_135
+        entity_id: switch.vvc
     - service: homeassistant.turn_off
       data:
         entity_id:
@@ -118,9 +118,9 @@ cottage_night:
     - service: switch.turn_off
       data:
         entity_id:
-          - switch.vvc_135
+          - switch.vvc
           - switch.extra_hot_water
-    - service: light.turn_off
+    - service: switch.turn_off
       data:
         entity_id: group.window_lights
     - service: homeassistant.turn_on
@@ -151,11 +151,11 @@ car_heater:
   sequence:
     - service: switch.turn_on
       data:
-        entity_id: switch.car_heater_149
+        entity_id: switch.car_heater
     - delay: '02:30:00' #30 min "overrun time"
     - service: switch.turn_off
       data:
-        entity_id: switch.car_heater_149
+        entity_id: switch.car_heater
 
 #Sonos
 sonos_say:
@@ -210,9 +210,8 @@ kerstin_night:
   sequence:
     - service: light.turn_off
       entity_id:
-        - light.stora_fonstret_kerstin_e14
-        - light.stora_fonstret_kerstin
-        - light.sanglampa_kerstin
+        - light.kerstin_fonster_stora
+        - light.kerstin_sanglampa
     - delay: '00:00:01'
     - service: light.turn_on
       data:
@@ -220,16 +219,15 @@ kerstin_night:
         rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:
-        - light.tradfri_bulb_e27_cws_opal_600lm
+        - light.kerstin_fonster_lilla
 
 ingrid_night:
   alias: "Ingrid sovrum night mode"
   sequence:
     - service: light.turn_off
       entity_id:
-        - light.stora_fonstret_ingrid_e14
-        - light.stora_fonstret_ingrid
-        - light.sanglampa_ingrid
+        - light.ingrid_fonster_stora
+        - light.ingrid_sanglampa
     - delay: '00:00:01'
     - service: light.turn_on
       data:
@@ -237,7 +235,7 @@ ingrid_night:
         rgb_color: [255,0,0]
         # transition: 2
       entity_id:
-        - light.lilla_fonstret_ingrid
+        - light.ingrid_fonster_lilla
 
 kerstin_reading:
   alias: "Läslampa Kerstin"
@@ -246,7 +244,7 @@ kerstin_reading:
       data:
         brightness: 200
       entity_id:
-        - light.sanglampa_kerstin
+        - light.kerstin_sanglampa
     - delay: '00:00:01'
     - service: light.turn_on
       data:
@@ -254,12 +252,11 @@ kerstin_reading:
         rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:
-        - light.tradfri_bulb_e27_cws_opal_600lm
+        - light.kerstin_fonster_lilla
     - delay: '00:00:01'
     - service: light.turn_off
       entity_id:
-        - light.stora_fonstret_kerstin_e14
-        - light.stora_fonstret_kerstin
+        - light.kerstin_fonster_stora
 
 ingrid_reading:
   alias: "Läslampa Ingrid"
@@ -268,7 +265,7 @@ ingrid_reading:
       data:
         brightness: 200
       entity_id:
-        - light.sanglampa_ingrid
+        - light.ingrid_sanglampa
     - delay: '00:00:01'
     - service: light.turn_on
       data:
@@ -276,9 +273,8 @@ ingrid_reading:
         rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:
-        - light.lilla_fonstret_ingrid
+        - light.ingrid_fonster_lilla
     - delay: '00:00:01'
     - service: light.turn_off
       entity_id:
-        - light.stora_fonstret_ingrid
-        - light.stora_fonstret_ingrid_e14
+        - light.ingrid_fonster_stora

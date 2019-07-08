@@ -626,7 +626,7 @@
   action:
     - service: homeassistant.turn_on
       data:
-        entity_id: switch.vvc_135
+        entity_id: switch.vvc
 
 #### Monnitor the price of electricity
 #### getting billed by the hourly price
@@ -762,32 +762,32 @@
             category: "alarm"
     - service: homeassistant.turn_on
       entity_id: script.sonos_fire_alarm
-
-- id: smoke_sensors_auto_on
-  alias: "Auto Smoke Sensors ON"
-  initial_state: 'on'
-  condition:
-    - condition: or
-      conditions:
-        - condition: state
-          entity_id: switch.smokesensor_allrum_18
-          state: 'off'
-        - condition: state
-          entity_id: switch.smokesensor_forrad_126
-          state: 'off'
-        - condition: state
-          entity_id: switch.smokesensor_groventre_124
-          state: 'off'
-        - condition: state
-          entity_id: switch.smokesensor_vardagsrum_133
-          state: 'off'
-  trigger:
-    - platform: time_pattern
-      minutes: '/30'
-  action:
-    - service: homeassistant.turn_on
-      entity_id: group.smoke_units
-
+#
+# - id: smoke_sensors_auto_on
+#   alias: "Auto Smoke Sensors ON"
+#   initial_state: 'on'
+#   condition:
+#     - condition: or
+#       conditions:
+#         - condition: state
+#           entity_id: switch.smokesensor_allrum_18
+#           state: 'off'
+#         - condition: state
+#           entity_id: switch.smokesensor_forrad_126
+#           state: 'off'
+#         - condition: state
+#           entity_id: switch.smokesensor_groventre_124
+#           state: 'off'
+#         - condition: state
+#           entity_id: switch.smokesensor_vardagsrum_133
+#           state: 'off'
+#   trigger:
+#     - platform: time_pattern
+#       minutes: '/30'
+#   action:
+#     - service: homeassistant.turn_on
+#       entity_id: group.smoke_units
+#
 #### neato vaccum robot
 - id: cleaning_robot_running
   alias: "Neato running take down sensors"

@@ -1,11 +1,4 @@
 homeassistant:
-  name: Slätberget
-  latitude: !secret latitude_home
-  longitude: !secret longitude_home
-  elevation: !secret elevation
-  unit_system: metric
-  time_zone: Europe/Stockholm
-
   auth_providers:
     - type: homeassistant
     - type: trusted_networks
@@ -14,29 +7,16 @@ homeassistant:
       allow_bypass_login: true
       trusted_users:
         192.168.1.0/24:
-          - 13b0bff34a9446c484ba5dfc9e92fab4
+          - 9b40eeeaefb24820940f02bc9ddbad86
   #Customize
-  customize: !include_dir_merge_named customize
+  customize: !include customize.yaml
   customize_domain:
     automation:
       initial_state: 'on'
   #Packages
   packages: !include_dir_named packages
 
-zone:
-  name: 'Home'
-  latitude: !secret latitude_home
-  longitude: !secret longitude_home
-  elevation: 136
-  radius: 100
-
-zone 2:
-  name: 'FEV'
-  latitude: !secret latitude_l_work
-  longitude: !secret longitude_l_work
-  radius: 700
-
-map:
+default_config:
 
 http:
   ssl_certificate: !secret ssl_certificate
@@ -45,24 +25,8 @@ http:
 #  ip_ban_enabled: True
 #  login_attempts_threshold: 5
 
-frontend:
-
-person:
-
-mobile_app:
-
-config:
-
 updater:
-  reporting: true
-  include_used_components: True
-# Checks for available updates
-# Note: This component will send some information about your system to
-# the developers to assist with development of Home Assistant.
-# For more information, please see:
-# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
-
-cloud:
+  include_used_components: true
 
 conversation:
 
@@ -74,7 +38,7 @@ tts:
 
 recorder:
   db_url: !secret recorder_db_url
-  purge_keep_days: 50
+  purge_keep_days: 30
   purge_interval: 5
   include:
     domains:
@@ -107,8 +71,6 @@ logbook:
     domains:
       - device_tracker
 
-history:
-
 influxdb:
   host: 192.168.1.4
   port: 8086
@@ -134,12 +96,14 @@ influxdb:
   tags:
     source: hass
 
-system_health:
+zwave:
+  usb_path: /dev/ttyACM0
+  device_config: !include zwave_device_config.yaml
+  network_key: !secret zwave_key
 
-vera:
-  vera_controller_url: http://192.168.1.5:3480/
-  exclude: [116]
-  lights: [81, 62, 61, 60, 115, 136]
+zha:
+  usb_path: /dev/ttyACM1
+  database_path: /config/zigbee.db
 
 neato:
   username: !secret neato_username
@@ -176,14 +140,12 @@ nibe:
           climates: True
           water_heaters: True
 
-sun:
-
 utility_meter:
   daily_energy:
-    source: sensor.energy_month
+    source: sensor.energy_meter_energy
     cycle: daily
   monthly_energy:
-    source: sensor.energy_month
+    source: sensor.energy_meter_energy
     cycle: monthly
   monthly_car_heater_energy:
     source: sensor.energy_car_heater
@@ -206,12 +168,14 @@ camera:
   #   port: !secret camera_port
   #   username: !secret camera_username
   #   password: !secret camera_password
-  # - platform: onvif
-  #   name: indoor
-  #   host: !secret indoor_camera_url
-  #   port: !secret camera_port
-  #   username: !secret camera_username
-  #   password: !secret camera_password
+  - platform: generic
+    name: indoor
+    still_image_url: !secret indoor_camera_still_url
+    stream_source: !secret indoor_camera_stream_url
+    username: !secret camera_username
+    password: !secret camera_password
+    authentication: digest
+    verify_ssl: False
 
 ios:
   push:
@@ -220,13 +184,13 @@ ios:
         identifier: 'alarm'
         actions:
           - identifier: 'SOUND_ALARM'
-            title: 'Starta larmet!!'
+            title: "Starta larmet!!"
             activationMode: 'background'
             authenticationRequired: no
             destructive: yes
             behavior: 'default'
           - identifier: 'SILENCE_ALARM'
-            title: 'Tysta larmet'
+            title: "Tysta larmet"
             activationMode: 'background'
             authenticationRequired: no
             destructive: no
@@ -240,7 +204,7 @@ device_tracker:
     host: 192.168.1.2
     username: !secret unifi_username
     password: !secret unifi_password
-    verify_ssl: False
+    verify_ssl: false
     ssid_filter:
       - 'RunevadHome'
       - 'RunevadGuest'
@@ -254,7 +218,6 @@ device_tracker:
     new_device_defaults:
       track_new_devices: False
       hide_if_away: False
-  - platform: bluetooth_tracker
 
 owntracks:
   max_gps_accuracy: 300
@@ -271,6 +234,11 @@ script: !include scripts.yaml
 sensor: !include sensor.yaml
 
 switch: !include switch.yaml
+
+light:
+  - platform: switch
+    name: "Fönsterlampor tre små"
+    entity_id: switch.wall_plug_living_room_window_south
 
 binary_sensor:
   - platform: template

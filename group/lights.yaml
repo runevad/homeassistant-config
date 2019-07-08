@@ -10,6 +10,6 @@ bedroom_lights:
 window_lights:
   name: "Fönsterlampor"
   entities:
-    - light.fonsterlampor_vardagsrum_81
-    - light.fonsterlampor_uppe1_115
-    - light.lampor_vardagsrum_2_136
+    - switch.window_lights_downstairs
+    - switch.window_lights_upstairs
+    - switch.wall_plug_living_room_window_south

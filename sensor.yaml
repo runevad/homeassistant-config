@@ -20,13 +20,13 @@
         friendly_name: Elförbrukning månad
         unit_of_measurement: "kWh"
         value_template: >-
-          {{ float(states.sensor.energy_tot_128.attributes.current_energy_kwh) | round(1) }}
+          {{ float(states.sensor.energy_tot.attributes.current_energy_kwh) | round(1) }}
 
       energy_car_heater:
         friendly_name: Elförbrukning motorvärmare
         unit_of_measurement: "kWh"
         value_template: >-
-          {{ float(states.switch.car_heater_149.attributes.current_energy_kwh) | round(1) }}
+          {{ float(states.switch.car_heater.attributes.current_energy_kwh) | round(1) }}
 
 # From SMHI https://www.smhi.se/polopoly_fs/1.6392!/webb_vindavkylning.pdf
 # SMHI Weather component gives wind in km/h, the calculation needs m/s >> divide by 3.6
