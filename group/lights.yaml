@@ -1,15 +1,15 @@
 #
 bedroom_lights:
   entities:
-    - light.stora_fonstret_sovrum_vuxna_e14
-    - light.stora_fonstret_ingrid_e14
-    - light.stora_fonstret_ingrid
-    - light.stora_fonstret_kerstin_e14
-    - light.stora_fonstret_kerstin
+    - light.master_bedroom_window
+    - light.ingrid_bedroom_window
+    - light.kerstin_bedroom_window
+    - light.ingrid_bedroom_color
+    - light.kerstin_bedroom_color
 
 window_lights:
   name: "Fönsterlampor"
   entities:
-    - switch.window_lights_downstairs
-    - switch.window_lights_upstairs
-    - switch.wall_plug_living_room_window_south
+    - light.window_lights_downstairs
+    - light.window_lights_upstairs
+    - light.living_room_window_south

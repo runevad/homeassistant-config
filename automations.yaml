@@ -103,7 +103,7 @@
   initial_state: 'on'
   trigger:
     - platform: numeric_state
-      entity_id: sensor.smoke_temp_forrad_127
+      entity_id: sensor.smoke_sensor_storage_temperature
       below: 10
   action:
     - service: notify.ios_lars_iphone
@@ -166,8 +166,7 @@
      entity_id:
        - person.lars
        - person.emelie
-       - device_tracker.lars_bt
-       - device_tracker.emelie_bt
+       - group.family
      to: 'home'
    - platform: state
      entity_id: input_boolean.cottage_guest_mode
@@ -192,6 +191,7 @@
      entity_id:
        - person.lars
        - person.emelie
+       - group.family
      to: 'home'
    - platform: state
      entity_id: input_boolean.cottage_guest_mode
@@ -343,9 +343,9 @@
       state: 'Away'
   trigger:
     - platform: time
-      at: '00:36:00'
+      at: '00:26:00'
   action:
-    - service: light.turn_off
+    - service: homeassistant.turn_off
       entity_id: group.all_lights
 
 ### Lights
@@ -367,9 +367,9 @@
       entity_id: sun.sun
       value_template: "{{ state.attributes.elevation }}"
       below: -4.0
-    - platform: numeric_state
-      entity_id: sensor.lux_allrum_22
-      below: 30
+    # - platform: numeric_state
+    #   entity_id: sensor.lux_allrum_22
+    #   below: 30
   action:
     - service: light.turn_on
       data:
@@ -395,9 +395,9 @@
       entity_id: sun.sun
       value_template: "{{ state.attributes.elevation }}"
       below: -4.0
-    - platform: numeric_state
-      entity_id: sensor.lux_allrum_22
-      below: 30
+    # - platform: numeric_state
+    #   entity_id: sensor.lux_allrum_22
+    #   below: 30
   action:
     - service: light.turn_on
       data:
@@ -405,7 +405,6 @@
         color_temp: 454
       entity_id:
         - group.window_lights
-        - light.stora_fonstret_sovrum_vuxna_e14
 
 - id: morning_lights_weekday
   alias: "Morning lights weekday"
@@ -420,7 +419,7 @@
           entity_id: group.family
           state: 'home'
         - condition: state
-          entity_id: light.fonsterlampor_vardagsrum_81
+          entity_id: light.window_lights_downstairs
           state: 'off'
         - condition: time
           after: '05:30:00'
@@ -433,12 +432,12 @@
             - condition: state
               entity_id: sun.sun
               state: 'below_horizon'
-            - condition: numeric_state
-              entity_id: sensor.lux_allrum_22
-              below: 30
+            # - condition: numeric_state
+            #   entity_id: sensor.lux_allrum_22
+            #   below: 30
   trigger:
     - platform: state
-      entity_id: binary_sensor.motion_allrum_20
+      entity_id: binary_sensor.motion_upstairs
       to: 'on'
   action:
     - service: light.turn_on
@@ -458,22 +457,22 @@
       conditions:
         - condition: time
           after: '23:00:00'
-        - condition: numeric_state
-          entity_id: sensor.lux_allrum_22
-          below: 30
+        # - condition: numeric_state
+        #   entity_id: sensor.lux_allrum_22
+        #   below: 30
         - condition: state
-          entity_id: light.fonsterlampor_uppe1_115
+          entity_id: light.window_lights_upstairs
           state: 'off'
   trigger:
     - platform: state
-      entity_id: binary_sensor.motion_allrum_20
+      entity_id: binary_sensor.motion_upstairs
       to: 'on'
   action:
     - service: light.turn_on
-      entity_id: light.fonsterlampor_uppe1_115
+      entity_id: light.window_lights_upstairs
     - delay: '00:04:00'
     - service: light.turn_off
-      entity_id: light.fonsterlampor_uppe1_115
+      entity_id: light.window_lights_upstairs
 
 - id: lights_on_down_night_motion
   alias: "Lights downstairs night motion"
@@ -483,42 +482,42 @@
       conditions:
         - condition: time
           after: '23:00:00'
-        - condition: numeric_state
-          entity_id: sensor.lux_hall_13
-          below: 30
+        # - condition: numeric_state
+        #   entity_id: sensor.lux_hall_13
+        #   below: 30
         - condition: state
-          entity_id: light.fonsterlampor_vardagsrum_81
+          entity_id: light.window_lights_downstairs
           state: 'off'
   trigger:
     - platform: state
-      entity_id: binary_sensor.motion_hall_11
+      entity_id: binary_sensor.motion_hallway
       to: 'on'
   action:
     - service: light.turn_on
-      entity_id: light.fonsterlampor_vardagsrum_81
+      entity_id: light.window_lights_downstairs
     - delay: '00:04:00'
     - service: light.turn_off
-      entity_id: light.fonsterlampor_vardagsrum_81
+      entity_id: light.window_lights_downstairs
 
-- id: lights_off_when_high_lux
-  alias: "Lights off during day"
-  initial_state: 'on'
-  condition:
-    - condition: and
-      conditions:
-        - condition: state
-          entity_id: input_boolean.cottage_update
-          state: 'on'
-  trigger:
-    - platform: numeric_state
-      entity_id: sensor.lux_hall_13
-      above: '30'
-    - platform: numeric_state
-      entity_id: sensor.lux_allrum_22
-      above: '30'
-  action:
-    - service: light.turn_off
-      entity_id: group.all_lights
+# - id: lights_off_when_high_lux
+#   alias: "Lights off during day"
+#   initial_state: 'on'
+#   condition:
+#     - condition: and
+#       conditions:
+#         - condition: state
+#           entity_id: input_boolean.cottage_update
+#           state: 'on'
+#   trigger:
+#     - platform: numeric_state
+#       entity_id: sensor.lux_hall_13
+#       above: '30'
+#     - platform: numeric_state
+#       entity_id: sensor.lux_allrum_22
+#       above: '30'
+#   action:
+#     - service: light.turn_off
+#       entity_id: group.all_lights
 
 - id: wake_up_lights_weekday
   alias: "Wake up light weekdays"
@@ -797,9 +796,8 @@
       entity_id: vacuum.stadstina
       to: 'cleaning'
   action:
-    - service: homeassistant.turn_off
-      data:
-        entity_id: group.motion_units
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.cottage_guest_mode
 
 - id: cleaning_robot_docked
   alias: "Neato finished"
@@ -813,9 +811,8 @@
       entity_id: vacuum.stadstina
       to: 'docked'
   action:
-    - service: homeassistant.turn_on
-      data:
-        entity_id: group.motion_units
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.cottage_guest_mode
 
 
 ##### Sonos Beam set to night mode

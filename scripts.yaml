@@ -210,8 +210,8 @@ kerstin_night:
   sequence:
     - service: light.turn_off
       entity_id:
-        - light.kerstin_fonster_stora
-        - light.kerstin_sanglampa
+        - light.kerstin_bedroom_window
+        - light.kerstin_bedroom_bed_light
     - delay: '00:00:01'
     - service: light.turn_on
       data:
@@ -219,15 +219,15 @@ kerstin_night:
         rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:
-        - light.kerstin_fonster_lilla
+        - light.kerstin_bedroom_color
 
 ingrid_night:
   alias: "Ingrid sovrum night mode"
   sequence:
     - service: light.turn_off
       entity_id:
-        - light.ingrid_fonster_stora
-        - light.ingrid_sanglampa
+        - light.ingrid_bedroom_window
+        - light.ingrid_bedroom_bed_light
     - delay: '00:00:01'
     - service: light.turn_on
       data:
@@ -235,7 +235,7 @@ ingrid_night:
         rgb_color: [255,0,0]
         # transition: 2
       entity_id:
-        - light.ingrid_fonster_lilla
+        - light.ingrid_bedroom_color
 
 kerstin_reading:
   alias: "Läslampa Kerstin"
@@ -244,7 +244,7 @@ kerstin_reading:
       data:
         brightness: 200
       entity_id:
-        - light.kerstin_sanglampa
+        - light.kerstin_bedroom_bed_light
     - delay: '00:00:01'
     - service: light.turn_on
       data:
@@ -252,11 +252,11 @@ kerstin_reading:
         rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:
-        - light.kerstin_fonster_lilla
+        - light.kerstin_bedroom_color
     - delay: '00:00:01'
     - service: light.turn_off
       entity_id:
-        - light.kerstin_fonster_stora
+        - light.kerstin_bedroom_window
 
 ingrid_reading:
   alias: "Läslampa Ingrid"
@@ -265,7 +265,7 @@ ingrid_reading:
       data:
         brightness: 200
       entity_id:
-        - light.ingrid_sanglampa
+        - light.ingrid_bedroom_bed_light
     - delay: '00:00:01'
     - service: light.turn_on
       data:
@@ -273,8 +273,8 @@ ingrid_reading:
         rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:
-        - light.ingrid_fonster_lilla
+        - light.ingrid_bedroom_color
     - delay: '00:00:01'
     - service: light.turn_off
       entity_id:
-        - light.ingrid_fonster_stora
+        - light.ingrid_bedroom_window

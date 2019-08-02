@@ -237,8 +237,14 @@ switch: !include switch.yaml
 
 light:
   - platform: switch
-    name: "Fönsterlampor tre små"
+    name: "living_room_window_south"
     entity_id: switch.wall_plug_living_room_window_south
+  - platform: switch
+    name: "window_lights_downstairs"
+    entity_id: switch.window_lights_downstairs
+  - platform: switch
+    name: "window_lights_upstairs"
+    entity_id: switch.window_lights_upstairs
 
 binary_sensor:
   - platform: template
@@ -311,3 +317,9 @@ input_datetime:
     has_date: False
     has_time: True
     initial: '07:00'
+
+panel_custom:
+  - name: zwavegraph2
+    sidebar_title: ZWave Graph2
+    sidebar_icon: mdi:access-point-network
+    url_path: zwave
