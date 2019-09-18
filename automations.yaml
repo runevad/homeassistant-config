@@ -34,18 +34,16 @@
   alias: "Sensors tripped when nobody is home"
   initial_state: 'on'
   condition:
-    condition: and
-    conditions:
-      - condition: state
-        entity_id: input_boolean.cottage_update
-        state: 'on'
-      - condition: state
-        entity_id: input_boolean.cottage_guest_mode
-        state: 'off'
-      - condition: state
-        entity_id: input_select.cottage_status
-        state: 'Away'
-        for: '00:10:00'
+    - condition: state
+      entity_id: input_boolean.cottage_update
+      state: 'on'
+    - condition: state
+      entity_id: input_boolean.cottage_guest_mode
+      state: 'off'
+    - condition: state
+      entity_id: input_select.cottage_status
+      state: 'Away'
+      for: '00:05:00'
   trigger:
     - platform: state
       entity_id:
@@ -63,7 +61,7 @@
     - service: light.turn_on
       data:
         entity_id: group.all_lights
-    - service: notify.ios_lars_iphone
+    - service: notify.mobile_app_lars_iphone
       data_template:
         title: "LARM!"
         message: "The {{ trigger.to_state.name }} was changed to {{ trigger.to_state.state }} while no one is home - {{ as_timestamp(now()) | timestamp_custom('%Y-%m-%d %H:%M:%S', True) }}"
@@ -89,7 +87,7 @@
       entity_id: input_select.cottage_status
       to: 'Away'
   action:
-    - service: notify.ios_lars_iphone
+    - service: notify.mobile_app_lars_iphone
       data_template:
         title: "Dörr öppen!"
         message: "{{ trigger.to_state.name }} är öppen!"
@@ -106,7 +104,7 @@
       entity_id: sensor.smoke_sensor_storage_temperature
       below: 10
   action:
-    - service: notify.ios_lars_iphone
+    - service: notify.mobile_app_lars_iphone
       data:
         title: "Larm"
         message: "Det är under 10°C i förrådet!"
@@ -256,7 +254,7 @@
               state: 'home'
   trigger:
     - platform: time
-      at: '05:30:00'
+      at: '05:00:00'
   action:
     - service: homeassistant.turn_on
       entity_id: script.cottage_standby
@@ -304,7 +302,7 @@
         - condition: state
           entity_id: input_select.cottage_status
           state: 'Standby'
-          for: '00:40:00'
+          for: '00:50:00'
         - condition: or
           conditions:
             - condition: state
@@ -343,10 +341,12 @@
       state: 'Away'
   trigger:
     - platform: time
-      at: '00:26:00'
+      at: '00:16:00'
   action:
-    - service: homeassistant.turn_off
-      entity_id: group.all_lights
+    - service: light.turn_off
+      entity_id:
+        - group.bedroom_lights
+        - group.window_lights
 
 ### Lights
 ###############
@@ -354,29 +354,24 @@
   alias: "Lights on pre kids bedtime"
   initial_state: 'on'
   condition:
-    - condition: and
-      conditions:
-        - condition: state
-          entity_id: input_boolean.cottage_update
-          state: 'on'
-        - condition: time
-          after: '12:00:00'
-          before: '19:30:00'
+    - condition: state
+      entity_id: input_boolean.cottage_update
+      state: 'on'
+    - condition: time
+      after: '15:00:00'
+      before: '19:00:00'
   trigger:
     - platform: numeric_state
       entity_id: sun.sun
       value_template: "{{ state.attributes.elevation }}"
-      below: -4.0
-    # - platform: numeric_state
-    #   entity_id: sensor.lux_allrum_22
-    #   below: 30
+      # Can be a positive or negative number, negative 0 to -6 = "standard" dusk
+      below: 1.0
   action:
     - service: light.turn_on
       data:
-        brightness: 180
-        color_temp: 454
-        transition: 60
-      entity_id: group.all_lights
+        entity_id: group.all_lights
+        brightness: 120
+        transition: 180
 
 - id: lights_on_evening
   alias: "Lights on evening"
@@ -388,23 +383,19 @@
           entity_id: input_boolean.cottage_update
           state: 'on'
         - condition: time
-          after: '19:30:00'
-          before: '21:00:00'
+          after: '19:00:00'
+          before: '20:30:00'
   trigger:
     - platform: numeric_state
       entity_id: sun.sun
       value_template: "{{ state.attributes.elevation }}"
-      below: -4.0
-    # - platform: numeric_state
-    #   entity_id: sensor.lux_allrum_22
-    #   below: 30
+      # Can be a positive or negative number, negative 0 to -6 = "standard" dusk
+      below: 1.0
   action:
     - service: light.turn_on
       data:
-        brightness: 5
-        color_temp: 454
-      entity_id:
-        - group.window_lights
+        brightness: 20
+        entity_id: group.window_lights
 
 - id: morning_lights_weekday
   alias: "Morning lights weekday"
@@ -443,9 +434,7 @@
     - service: light.turn_on
       data:
         brightness: 255
-        color_temp: 454
-      entity_id:
-        - group.window_lights
+        entity_id: group.window_lights
 
 ### Light triggers during nightmode
 #######################
@@ -456,7 +445,7 @@
     - condition: and
       conditions:
         - condition: time
-          after: '23:00:00'
+          after: '22:00:00'
         # - condition: numeric_state
         #   entity_id: sensor.lux_allrum_22
         #   below: 30
@@ -481,7 +470,7 @@
     - condition: and
       conditions:
         - condition: time
-          after: '23:00:00'
+          after: '22:00:00'
         # - condition: numeric_state
         #   entity_id: sensor.lux_hall_13
         #   below: 30
@@ -541,10 +530,83 @@
     - service: light.turn_on
       data:
         brightness: 255
-        color_temp: 454
         transition: 18000
-      entity_id:
-        - group.bedroom_lights
+        entity_id: group.bedroom_lights
+
+
+##### Remotes ######
+- id: 'remote_ingrid_on_off'
+  alias: 'Ingrid remote on/off'
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: ikea_of_sweden_tradfri_remote_control_fef773e0_1_1
+      event: 1002
+  action:
+    service: light.toggle
+    entity_id: group.ingrid_lights
+
+- id: 'remote_ingrid_dim_up'
+  alias: 'Ingrid remote Dim Up'
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: ikea_of_sweden_tradfri_remote_control_fef773e0_1_1
+      event: 2002
+  action:
+    - service: light.turn_on
+      data_template:
+        entity_id: group.ingrid_lights
+        brightness: >
+          {% set bri = state_attr('light.lamp', 'brightness') | int %}
+          {{ [bri+30, 249] | min }}
+
+- id: 'remote_ingrid_dim_down'
+  alias: 'Ingrid Remote Dim Down'
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: ikea_of_sweden_tradfri_remote_control_fef773e0_1_1
+      event: 3002
+  action:
+    - service: light.turn_on
+      data_template:
+        entity_id: group.ingrid_lights
+        brightness: >
+          {% set bri = state_attr('light.lamp', 'brightness') | int %}
+          {{ [bri-30, 0] | max }}
+
+- id: 'remote_bed_time'
+  alias: 'Remote all lights on/off'
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: ikea_of_sweden_tradfri_on_off_switch_fed2b62d_1_1
+      event: 2002
+  action:
+    service: light.off
+    entity_id: group.window_lights
+
+- id: 'remote_on_master_bedroom'
+  alias: 'Remote master bedroom on'
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: ikea_of_sweden_tradfri_on_off_switch_fed2b62d_1_1
+      event: 1002
+  action:
+    service: light.toggle
+    entity_id: light.master_bedroom_window
 
 #### Car heater
 - id: car_heater_start
@@ -575,7 +637,7 @@
   # then activate the heater on your selected time
   action:
     - service: switch.turn_on
-      entity_id: switch.car_heater_149
+      entity_id: switch.car_heater
 
 - id: car_heater_shut_down
   alias: "Engine heater deactivate"
@@ -586,7 +648,7 @@
     - delay:
         minutes: "{{ states('input_number.heater_delay') | int }}"
     - service: switch.turn_off
-      entity_id: switch.car_heater_149
+      entity_id: switch.car_heater
 
 #################################################################
 #Test area
@@ -621,11 +683,10 @@
       state: 'home'
   trigger:
     - platform: time
-      at: '07:30:00'
+      at: '07:00:00'
   action:
     - service: homeassistant.turn_on
-      data:
-        entity_id: switch.vvc
+      entity_id: switch.vvc
 
 #### Monnitor the price of electricity
 #### getting billed by the hourly price
@@ -640,7 +701,7 @@
       entity_id: sensor.nibe_31372_10069
       above: 80
   action:
-    - service: notify.ios_lars_iphone
+    - service: notify.mobile_app_lars_iphone
       data:
         title: "Elpris!"
         message: "Spot-pris över 80 öre!"
@@ -649,7 +710,7 @@
             category: "notis"
     - service: script.sonos_say
       data_template:
-        sonos_entity: media_player.kokvardagsrum
+        sonos_entity: media_player.kok_vardagsrum
         volume: 0.45
         delay: '00:00:15'
         message: 'Hej, tänk på att det just nu är högt elpris. Det ligger just nu på {{ states.sensor.nibe_31372_10069.state }} öre per kWh!'
@@ -665,7 +726,7 @@
       entity_id: sensor.nibe_31372_10069
       below: 20
   action:
-    - service: notify.ios_lars_iphone
+    - service: notify.mobile_app_lars_iphone
       data:
         title: "Elpris!"
         message: "Spot-pris under 20 öre!"
@@ -674,7 +735,7 @@
             category: "notis"
     - service: script.sonos_say
       data_template:
-        sonos_entity: media_player.kokvardagsrum
+        sonos_entity: media_player.kok_vardagsrum
         volume: 0.45
         delay: '00:00:15'
         message: 'Hej, just nu är det lågt elpris, {{ states.sensor.nibe_31372_10069.state }} öre per kWh närmaste timen'
@@ -695,7 +756,7 @@
 #       entity_id: binary_sensor.esp_christmas_tree_water_level_low
 #       to: 'off'
 #   action:
-#     - service: notify.ios_lars_iphone
+#     - service: notify.mobile_app_lars_iphone
 #       data:
 #         title: "Granen!"
 #         message: "Vattna granen, det är nästan slut på vatten!"
@@ -704,7 +765,7 @@
 #             category: "alarm"
 #     - service: script.sonos_say
 #       data_template:
-#         sonos_entity: media_player.kokvardagsrum
+#         sonos_entity: media_player.kok_vardagsrum
 #         volume: 0.45
 #         delay: '00:00:15'
 #         message: 'Hej, det är dags att vattna granen. Det börjar ta slut på vatten!'
@@ -719,7 +780,7 @@
     - platform: state
       entity_id: updater.updater
   action:
-    - service: notify.ios_lars_iphone
+    - service: notify.mobile_app_lars_iphone
       data:
         title: "Uppdatering!"
         message: "Ny version av Home Assistant tillgänglig!"
@@ -729,7 +790,7 @@
             category: "notis"
     - service: script.sonos_say
       data_template:
-        sonos_entity: media_player.kokvardagsrum
+        sonos_entity: media_player.kok_vardagsrum
         volume: 0.45
         delay: '00:00:15'
         message: 'Hej, det finns en ny uppdatering av Home Assistant'
@@ -751,7 +812,7 @@
         brightness: 255
         color_temp: 454
       entity_id: group.all_lights
-    - service: notify.ios_lars_iphone
+    - service: notify.mobile_app_lars_iphone
       data_template:
         title: "BRANDLARM!!"
         message: “En brandvarnare har löst ut!”

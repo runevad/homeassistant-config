@@ -4,55 +4,55 @@ sonos_doorbell:
   alias: "Sonos doorbell"
   sequence:
     - service: sonos.snapshot
-      entity_id: media_player.kokvardagsrum
+      entity_id: media_player.kok_vardagsrum
     - service: media_player.volume_set
-      entity_id: media_player.kokvardagsrum
+      entity_id: media_player.kok_vardagsrum
       data:
         volume_level: 0.6
     - service: media_player.play_media
-      entity_id: media_player.kokvardagsrum
+      entity_id: media_player.kok_vardagsrum
       data:
         media_content_id: !secret mp3_doorbell
         media_content_type: 'music'
     - delay: '00:00:15'
     - service: sonos.restore
-      entity_id: media_player.kokvardagsrum
+      entity_id: media_player.kok_vardagsrum
 
 sonos_fire_alarm:
   alias: "Sonos fire alarm"
   sequence:
     - service: sonos.snapshot
-      entity_id: media_player.kokvardagsrum
+      entity_id: media_player.kok_vardagsrum
     - service: media_player.volume_set
-      entity_id: media_player.kokvardagsrum
+      entity_id: media_player.kok_vardagsrum
       data:
         volume_level: 0.8
     - service: media_player.play_media
-      entity_id: media_player.kokvardagsrum
+      entity_id: media_player.kok_vardagsrum
       data:
         media_content_id: !secret mp3_fire_alarm
         media_content_type: 'music'
     - delay: '00:00:40'
     - service: sonos.restore
-      entity_id: media_player.kokvardagsrum
+      entity_id: media_player.kok_vardagsrum
 
 sonos_alarm:
   alias: "Sonos alarm"
   sequence:
     - service: sonos.snapshot
-      entity_id: media_player.kokvardagsrum
+      entity_id: media_player.kok_vardagsrum
     - service: media_player.volume_set
-      entity_id: media_player.kokvardagsrum
+      entity_id: media_player.kok_vardagsrum
       data:
         volume_level: 0.8
     - service: media_player.play_media
-      entity_id: media_player.kokvardagsrum
+      entity_id: media_player.kok_vardagsrum
       data:
         media_content_id: !secret mp3_alarm
         media_content_type: 'music'
     - delay: '00:03:00'
     - service: sonos.restore
-      entity_id: media_player.kokvardagsrum
+      entity_id: media_player.kok_vardagsrum
 
 ### Setting home modes
 #####################
@@ -66,11 +66,6 @@ cottage_home:
     - service: switch.turn_on
       data:
         entity_id: switch.vvc
-    - service: homeassistant.turn_off
-      data:
-        entity_id:
-          - group.door_units
-          - group.motion_units
 
 cottage_away:
   alias: "Cottage Away"
@@ -82,14 +77,11 @@ cottage_away:
     - service: switch.turn_off
       data:
         entity_id: switch.vvc
-    - service: homeassistant.turn_on
+    - service: light.turn_off
       data:
         entity_id:
-          - group.door_units
-          - group.motion_units
-    - service: switch.turn_off
-      data:
-        entity_id: group.all_lights
+          - group.bedroom_lights
+          - group.window_lights
     - service: media_player.turn_off
 
 cottage_standby:
@@ -102,11 +94,6 @@ cottage_standby:
     - service: switch.turn_off
       data:
         entity_id: switch.vvc
-    - service: homeassistant.turn_off
-      data:
-        entity_id:
-          - group.motion_units
-          - group.door_units
 
 cottage_night:
   alias: "Cottage Night"
@@ -120,17 +107,11 @@ cottage_night:
         entity_id:
           - switch.vvc
           - switch.extra_hot_water
-    - service: switch.turn_off
+    - service: light.turn_off
       data:
-        entity_id: group.window_lights
-    - service: homeassistant.turn_on
-      data:
-        entity_id: group.door_units
-
-restart_hass:
-  alias: "Restart Home Assistant"
-  sequence:
-    - service: shell_command.restart_hass
+        entity_id:
+          - group.bedroom_lights
+          - group.window_lights
 
 
 ## Other
@@ -147,7 +128,7 @@ extra_hot_water:
         entity_id: switch.extra_hot_water
 
 car_heater:
-  alias: "Motorvärmare start 2h"
+  alias: "Manuell motorvärmarstart 2h"
   sequence:
     - service: switch.turn_on
       data:
@@ -163,24 +144,24 @@ sonos_say:
   sequence:
     - service: sonos.snapshot
       data_template:
-        entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
+        entity_id: "{{ sonos_entity|default('media_player.kok_vardagsrum') }}"
     - service: sonos.unjoin
       data_template:
-        entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
+        entity_id: "{{ sonos_entity|default('media_player.kok_vardagsrum') }}"
     - service: media_player.volume_set
       data_template:
-        entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
+        entity_id: "{{ sonos_entity|default('media_player.kok_vardagsrum') }}"
         volume_level: "{{ volume|default(0.4) }}"
     - service: tts.google_say
       data_template:
-        entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
+        entity_id: "{{ sonos_entity|default('media_player.kok_vardagsrum') }}"
         message: "{{ message }}"
     - delay: "{{ delay|default('00:00:00') }}"
-    - wait_template: "{{ is_state(sonos_entity|default('media_player.kokvardagsrum'), 'playing') }}"
+    - wait_template: "{{ is_state(sonos_entity|default('media_player.kok_vardagsrum'), 'playing') }}"
       timeout: '00:00:10'
     - service: sonos.restore
       data_template:
-        entity_id: "{{ sonos_entity|default('media_player.kokvardagsrum') }}"
+        entity_id: "{{ sonos_entity|default('media_player.kok_vardagsrum') }}"
 
 #### Triggered from IFTTT automation
 dishwasher_done:
@@ -189,7 +170,7 @@ dishwasher_done:
     - condition: time
       after: '08:00:00'
       before: '21:00:00'
-    - service: notify.ios_lars_iphone
+    - service: notify.mobile_app_lars_iphone
       data:
         title: "Diskmaskinen klar!"
         message: "..."
@@ -199,7 +180,7 @@ dishwasher_done:
             category: "notis"
     - service: script.sonos_say
       data_template:
-        sonos_entity: media_player.kokvardagsrum
+        sonos_entity: media_player.kok_vardagsrum
         volume: 0.55
         delay: '00:00:15'
         message: 'Hej Hej Hej, diskmaskinen har körts klart och är redo för utplockning'
@@ -212,7 +193,7 @@ kerstin_night:
       entity_id:
         - light.kerstin_bedroom_window
         - light.kerstin_bedroom_bed_light
-    - delay: '00:00:01'
+    - delay: '00:00:02'
     - service: light.turn_on
       data:
         brightness: 1
@@ -228,7 +209,7 @@ ingrid_night:
       entity_id:
         - light.ingrid_bedroom_window
         - light.ingrid_bedroom_bed_light
-    - delay: '00:00:01'
+    - delay: '00:00:02'
     - service: light.turn_on
       data:
         brightness: 1
@@ -245,15 +226,15 @@ kerstin_reading:
         brightness: 200
       entity_id:
         - light.kerstin_bedroom_bed_light
-    - delay: '00:00:01'
+    - delay: '00:00:02'
     - service: light.turn_on
       data:
-        brightness: 1
+        brightness: 25
         rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:
         - light.kerstin_bedroom_color
-    - delay: '00:00:01'
+    - delay: '00:00:02'
     - service: light.turn_off
       entity_id:
         - light.kerstin_bedroom_window
@@ -266,15 +247,15 @@ ingrid_reading:
         brightness: 200
       entity_id:
         - light.ingrid_bedroom_bed_light
-    - delay: '00:00:01'
+    - delay: '00:00:02'
     - service: light.turn_on
       data:
-        brightness: 1
+        brightness: 25
         rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:
         - light.ingrid_bedroom_color
-    - delay: '00:00:01'
+    - delay: '00:00:02'
     - service: light.turn_off
       entity_id:
         - light.ingrid_bedroom_window

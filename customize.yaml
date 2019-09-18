@@ -145,3 +145,13 @@ binary_sensor.lumi_lumi_sensor_magnet_aq2_02529123_1_6:
   device_class: door
 binary_sensor.lumi_lumi_sensor_magnet_aq2_02529083_1_6:
   device_class: door
+binary_sensor.motion_upstairs_2:
+  device_class: motion
+binary_sensor.motion_hallway_2:
+  device_class: motion
+zwave.aeon_labs_zw120_door_window_sensor_gen5:
+  is_failed: true
+binary_sensor.lumi_lumi_sensor_magnet_aq2_025184e5_1_6:
+  device_class: door
+binary_sensor.lumi_lumi_vibration_aq1_02b23cac_1_1280:
+  device_class: vibration

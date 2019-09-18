@@ -1,11 +1,10 @@
 #
 bedroom_lights:
+  name: "Sänglampor"
   entities:
     - light.master_bedroom_window
-    - light.ingrid_bedroom_window
-    - light.kerstin_bedroom_window
-    - light.ingrid_bedroom_color
-    - light.kerstin_bedroom_color
+    - light.kerstin_bedroom_bed_light
+    - light.ingrid_bedroom_bed_light
 
 window_lights:
   name: "Fönsterlampor"
@@ -13,3 +12,24 @@ window_lights:
     - light.window_lights_downstairs
     - light.window_lights_upstairs
     - light.living_room_window_south
+    - light.laundry_window_east
+    - light.master_bedroom_window
+    - light.ingrid_bedroom_window
+    - light.kerstin_bedroom_window
+
+ingrid_lights:
+  name: "Ingrids lampor"
+  entities:
+    - light.ingrid_bedroom_window
+    - light.ingrid_bedroom_color
+    - light.ingrid_bedroom_bed_light
+
+kerstin_lights:
+  name: "Kerstins lampor"
+  entities:
+    - light.kerstin_bedroom_window
+    - light.kerstin_bedroom_color
+    - light.kerstin_bedroom_bed_light
+
+outdoor_lights:
+    - light.carport_lights

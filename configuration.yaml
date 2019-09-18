@@ -40,16 +40,10 @@ recorder:
   db_url: !secret recorder_db_url
   purge_keep_days: 30
   purge_interval: 5
-  include:
-    domains:
-      - sensor
-      - light
-      - switch
-      - device_tracker
-      - person
   exclude:
     domains:
-      - script
+      # - script
+      - weather
       - weblink
       - updater
     entities:
@@ -59,17 +53,23 @@ recorder:
       - sensor.time
       - sensor.time_utc
       - sensor.last_boot
-      - group.door_sensors
-      - group.door_units
-      - group.motion_sensors
-      - group.motion_units
-      - group.lars
-      - group.emelie
+      # - group.door_sensors
+      # - group.door_units
+      # - group.motion_sensors
+      # - group.motion_units
 
 logbook:
-  exclude:
-    domains:
-      - device_tracker
+  # exclude:
+  #   domains:
+  #     - device_tracker
+
+logger:
+  # default: info
+  # logs:
+  #   zigpy: debug
+  #   bellows: debug
+  #   zigpy_deconz: debug
+  #   homeassistant.components.zha: debug
 
 influxdb:
   host: 192.168.1.4
@@ -137,7 +137,7 @@ nibe:
             - 40008
             - 40012
             - 40033
-          climates: True
+          climates: False
           water_heaters: True
 
 utility_meter:
@@ -150,8 +150,6 @@ utility_meter:
   monthly_car_heater_energy:
     source: sensor.energy_car_heater
     cycle: monthly
-
-ffmpeg:
 
 camera:
   - platform: generic
@@ -177,53 +175,50 @@ camera:
     authentication: digest
     verify_ssl: False
 
-ios:
-  push:
-    categories:
-      - name: Alarm
-        identifier: 'alarm'
-        actions:
-          - identifier: 'SOUND_ALARM'
-            title: "Starta larmet!!"
-            activationMode: 'background'
-            authenticationRequired: no
-            destructive: yes
-            behavior: 'default'
-          - identifier: 'SILENCE_ALARM'
-            title: "Tysta larmet"
-            activationMode: 'background'
-            authenticationRequired: no
-            destructive: no
-            behavior: 'default'
-      - name: Notification
-        identifier: 'notis'
-        actions:
-
-device_tracker:
-  - platform: unifi
-    host: 192.168.1.2
-    username: !secret unifi_username
-    password: !secret unifi_password
-    verify_ssl: false
-    ssid_filter:
-      - 'RunevadHome'
-      - 'RunevadGuest'
-    monitored_conditions:
-      - ip
-      - radio
-      - _is_guest_by_uap
-      - _last_seen_by_uap
-      - _uptime_by_uap
-    consider_home: 300
-    new_device_defaults:
-      track_new_devices: False
-      hide_if_away: False
+# ios:
+#   push:
+#     categories:
+#       - name: Alarm
+#         identifier: 'alarm'
+#         actions:
+#           - identifier: 'SOUND_ALARM'
+#             title: "Starta larmet!!"
+#             activationMode: 'background'
+#             authenticationRequired: no
+#             destructive: yes
+#             behavior: 'default'
+#           - identifier: 'SILENCE_ALARM'
+#             title: "Tysta larmet"
+#             activationMode: 'background'
+#             authenticationRequired: no
+#             destructive: no
+#             behavior: 'default'
+#       - name: Notification
+#         identifier: 'notis'
+#         actions:
+#
+# device_tracker:
+#   - platform: unifi
+#     host: 192.168.1.2
+#     username: !secret unifi_username
+#     password: !secret unifi_password
+#     verify_ssl: false
+#     ssid_filter:
+#       - 'RunevadHome'
+#       - 'RunevadGuest'
+#     monitored_conditions:
+#       - ip
+#       - radio
+#       - _is_guest_by_uap
+#       - _last_seen_by_uap
+#       - _uptime_by_uap
+#     consider_home: 300
+#     new_device_defaults:
+#       track_new_devices: False
+#       hide_if_away: False
 
 owntracks:
   max_gps_accuracy: 300
-
-shell_command:
-  restart_hass: 'curl http://127.0.0.1:8126/container/homeassistant/restart'
 
 group: !include_dir_merge_named group
 
@@ -245,6 +240,16 @@ light:
   - platform: switch
     name: "window_lights_upstairs"
     entity_id: switch.window_lights_upstairs
+  - platform: switch
+    name: "laundry_window_east"
+    entity_id: switch.wall_plug_laundry_window_east
+
+  - platform: group
+    name: "Carport Lights"
+    entities:
+      - light.ikea_of_sweden_tradfri_bulb_e27_ws_clear_806lm_fe74d1de_1
+      - light.ikea_of_sweden_tradfri_bulb_e27_ws_clear_806lm_fe9451d8_1
+      - light.ikea_of_sweden_tradfri_bulb_e27_ws_clear_806lm_fe944cf0_1
 
 binary_sensor:
   - platform: template
@@ -266,9 +271,9 @@ binary_sensor:
     country: SE
     name: workday
 #### MQTT
-  - platform: mqtt
-    name: ESP32 test status
-    state_topic: upstairs_lolin32/binary_sensor/esp32_test_status/state
+  # - platform: mqtt
+  #   name: ESP32 test status
+  #   state_topic: upstairs_lolin32/binary_sensor/esp32_test_status/state
 
 input_select:
   cottage_status:

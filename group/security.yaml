@@ -48,9 +48,9 @@ door_sensors:
   icon: mdi:glassdoor
   entities:
     - binary_sensor.lumi_lumi_sensor_magnet_aq2_02529123_1_6 #Altandörr
-    - binary_sensor.door_storage
+    - binary_sensor.lumi_lumi_sensor_magnet_aq2_025184e5_1_6 #Förrådsdörr
     - binary_sensor.lumi_lumi_sensor_magnet_aq2_02529083_1_6 #Groventre
-    - binary_sensor.door_main_entrance
+#    - binary_sensor.door_main_entrance
 
 motion_sensors:
   name: "Rörelsesensorer"
@@ -58,7 +58,9 @@ motion_sensors:
   icon: mdi:run-fast
   entities:
     - binary_sensor.motion_upstairs
+    - binary_sensor.motion_upstairs_2
     - binary_sensor.motion_hallway
+    - binary_sensor.motion_hallway_2
 
 smoke_sensors:
   name: "Brandsensorer"
