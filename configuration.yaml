@@ -97,12 +97,12 @@ influxdb:
     source: hass
 
 zwave:
-  usb_path: /dev/ttyACM0
+  usb_path: /dev/ttyACM1
   device_config: !include zwave_device_config.yaml
   network_key: !secret zwave_key
 
 zha:
-  usb_path: /dev/ttyACM1
+  usb_path: /dev/ttyACM0
   database_path: /config/zigbee.db
 
 neato:
@@ -174,48 +174,6 @@ camera:
     password: !secret camera_password
     authentication: digest
     verify_ssl: False
-
-# ios:
-#   push:
-#     categories:
-#       - name: Alarm
-#         identifier: 'alarm'
-#         actions:
-#           - identifier: 'SOUND_ALARM'
-#             title: "Starta larmet!!"
-#             activationMode: 'background'
-#             authenticationRequired: no
-#             destructive: yes
-#             behavior: 'default'
-#           - identifier: 'SILENCE_ALARM'
-#             title: "Tysta larmet"
-#             activationMode: 'background'
-#             authenticationRequired: no
-#             destructive: no
-#             behavior: 'default'
-#       - name: Notification
-#         identifier: 'notis'
-#         actions:
-#
-# device_tracker:
-#   - platform: unifi
-#     host: 192.168.1.2
-#     username: !secret unifi_username
-#     password: !secret unifi_password
-#     verify_ssl: false
-#     ssid_filter:
-#       - 'RunevadHome'
-#       - 'RunevadGuest'
-#     monitored_conditions:
-#       - ip
-#       - radio
-#       - _is_guest_by_uap
-#       - _last_seen_by_uap
-#       - _uptime_by_uap
-#     consider_home: 300
-#     new_device_defaults:
-#       track_new_devices: False
-#       hide_if_away: False
 
 owntracks:
   max_gps_accuracy: 300

@@ -53,7 +53,7 @@ sensor.l3_142:
   icon: mdi:power-plug
 switch.vvc:
   icon: mdi:power
-switch.car_heater:
+switch.ikea_of_sweden_tradfri_control_outlet_fefd82b0_1:
   icon: mdi:power
 light.fonsterlampor_vardagsrum_81:
   friendly_name: Fönsterlampor nere

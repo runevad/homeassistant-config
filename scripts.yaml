@@ -132,11 +132,11 @@ car_heater:
   sequence:
     - service: switch.turn_on
       data:
-        entity_id: switch.car_heater
+        entity_id: switch.ikea_of_sweden_tradfri_control_outlet_fefd82b0_1
     - delay: '02:30:00' #30 min "overrun time"
     - service: switch.turn_off
       data:
-        entity_id: switch.car_heater
+        entity_id: switch.ikea_of_sweden_tradfri_control_outlet_fefd82b0_1
 
 #Sonos
 sonos_say:
@@ -196,7 +196,7 @@ kerstin_night:
     - delay: '00:00:02'
     - service: light.turn_on
       data:
-        brightness: 1
+        brightness: 5
         rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:
@@ -212,7 +212,7 @@ ingrid_night:
     - delay: '00:00:02'
     - service: light.turn_on
       data:
-        brightness: 1
+        brightness: 5
         rgb_color: [255,0,0]
         # transition: 2
       entity_id:
@@ -229,7 +229,7 @@ kerstin_reading:
     - delay: '00:00:02'
     - service: light.turn_on
       data:
-        brightness: 25
+        brightness: 5
         rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:
@@ -250,7 +250,7 @@ ingrid_reading:
     - delay: '00:00:02'
     - service: light.turn_on
       data:
-        brightness: 25
+        brightness: 5
         rgb_color: [255, 0, 0]
         # transition: 2
       entity_id:

@@ -529,7 +529,7 @@
   action:
     - service: light.turn_on
       data:
-        brightness: 255
+        brightness: 200
         transition: 18000
         entity_id: group.bedroom_lights
 
@@ -637,7 +637,7 @@
   # then activate the heater on your selected time
   action:
     - service: switch.turn_on
-      entity_id: switch.car_heater
+      entity_id: switch.ikea_of_sweden_tradfri_control_outlet_fefd82b0_1
 
 - id: car_heater_shut_down
   alias: "Engine heater deactivate"
@@ -648,7 +648,7 @@
     - delay:
         minutes: "{{ states('input_number.heater_delay') | int }}"
     - service: switch.turn_off
-      entity_id: switch.car_heater
+      entity_id: switch.ikea_of_sweden_tradfri_control_outlet_fefd82b0_1
 
 #################################################################
 #Test area
