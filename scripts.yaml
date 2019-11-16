@@ -72,7 +72,6 @@ cottage_away:
   - data:
       entity_id:
       - group.bedroom_lights
-      - group.window_lights
     service: light.turn_off
   - service: media_player.turn_off
 cottage_standby:
@@ -173,6 +172,7 @@ kerstin_night:
     entity_id:
     - light.kerstin_bedroom_window
     - light.kerstin_bedroom_bed_light
+    - light.innr_rb_145_01d09f3f_1
   - delay: 00:00:02
   - service: light.turn_on
     data:
@@ -181,8 +181,7 @@ kerstin_night:
       - 255
       - 0
       - 0
-    entity_id:
-    - light.kerstin_bedroom_color
+    entity_id: light.kerstin_bedroom_color
 ingrid_night:
   alias: Ingrid sovrum night mode
   sequence:
@@ -190,6 +189,7 @@ ingrid_night:
     entity_id:
     - light.ingrid_bedroom_window
     - light.ingrid_bedroom_bed_light
+    - light.innr_rb_145_01c3e036_1
   - delay: 00:00:02
   - service: light.turn_on
     data:
@@ -198,8 +198,7 @@ ingrid_night:
       - 255
       - 0
       - 0
-    entity_id:
-    - light.ingrid_bedroom_color
+    entity_id: light.ingrid_bedroom_color
 kerstin_reading:
   alias: Läslampa Kerstin
   sequence:
@@ -222,14 +221,14 @@ kerstin_reading:
   - service: light.turn_off
     entity_id:
     - light.kerstin_bedroom_window
+    - light.innr_rb_145_01d09f3f_1
 ingrid_reading:
   alias: Läslampa Ingrid
   sequence:
   - service: light.turn_on
     data:
       brightness: 200
-    entity_id:
-    - light.ingrid_bedroom_bed_light
+    entity_id: light.ingrid_bedroom_bed_light
   - delay: 00:00:02
   - service: light.turn_on
     data:
@@ -238,9 +237,9 @@ ingrid_reading:
       - 255
       - 0
       - 0
-    entity_id:
-    - light.ingrid_bedroom_color
+    entity_id: light.ingrid_bedroom_color
   - delay: 00:00:02
   - service: light.turn_off
     entity_id:
     - light.ingrid_bedroom_window
+    - light.innr_rb_145_01c3e036_1

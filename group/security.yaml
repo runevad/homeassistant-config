@@ -50,17 +50,15 @@ door_sensors:
     - binary_sensor.lumi_lumi_sensor_magnet_aq2_02529123_1_6 #Altandörr
     - binary_sensor.lumi_lumi_sensor_magnet_aq2_025184e5_1_6 #Förrådsdörr
     - binary_sensor.lumi_lumi_sensor_magnet_aq2_02529083_1_6 #Groventre
-#    - binary_sensor.door_main_entrance
+    - binary_sensor.lumi_lumi_sensor_magnet_aq2_32f43602_1_6 #Halldörr
 
 motion_sensors:
   name: "Rörelsesensorer"
   view: no
   icon: mdi:run-fast
   entities:
-    - binary_sensor.motion_upstairs
-    - binary_sensor.motion_upstairs_2
-    - binary_sensor.motion_hallway
-    - binary_sensor.motion_hallway_2
+    - binary_sensor.lumi_lumi_sensor_motion_aq2_fbc65302_1_1280 #Downstairs
+    - binary_sensor.lumi_lumi_sensor_motion_aq2_262a7502_1_1280 #Upstairs
 
 smoke_sensors:
   name: "Brandsensorer"

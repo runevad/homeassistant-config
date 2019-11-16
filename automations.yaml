@@ -367,7 +367,7 @@
         state: below_horizon
   trigger:
   - platform: state
-    entity_id: binary_sensor.motion_upstairs
+    entity_id: binary_sensor.lumi_lumi_sensor_motion_aq2_262a7502_1_1280
     to: 'on'
   action:
   - service: light.turn_on
@@ -387,7 +387,7 @@
       state: 'off'
   trigger:
   - platform: state
-    entity_id: binary_sensor.motion_upstairs
+    entity_id: binary_sensor.lumi_lumi_sensor_motion_aq2_262a7502_1_1280
     to: 'on'
   action:
   - service: light.turn_on
@@ -408,7 +408,7 @@
       state: 'off'
   trigger:
   - platform: state
-    entity_id: binary_sensor.motion_hallway
+    entity_id: binary_sensor.lumi_lumi_sensor_motion_aq2_fbc65302_1_1280
     to: 'on'
   action:
   - service: light.turn_on
@@ -418,7 +418,9 @@
     entity_id: light.window_lights_downstairs
 - id: wake_up_lights_weekday
   alias: Wake up light weekdays
-  initial_state: 'on'
+  trigger:
+  - at: 05:50
+    platform: time
   condition:
   - condition: and
     conditions:
@@ -431,61 +433,27 @@
     - condition: state
       entity_id: group.family
       state: home
-  trigger:
-  - platform: time
-    at: 05:50
   action:
-  - service: light.turn_on
-    data:
-      brightness: 200
-      transition: 18000
+  - data:
+      brightness: 10
       entity_id: group.bedroom_lights
+      transition: 18000
+    service: light.turn_on
+  initial_state: 'on'
 - id: remote_ingrid_on_off
   alias: Ingrid remote on/off
-  initial_state: 'on'
   trigger:
-    platform: event
-    event_type: deconz_event
-    event_data:
-      id: ikea_of_sweden_tradfri_remote_control_fef773e0_1_1
-      event: 1002
+  - device_id: 42d25b9aa10447179486ffe1f37ee1cd
+    domain: zha
+    platform: device
+    subtype: turn_on
+    type: remote_button_short_press
   action:
-    service: light.toggle
-    entity_id: group.ingrid_lights
-- id: remote_ingrid_dim_up
-  alias: Ingrid remote Dim Up
+  - device_id: a83fe854367e4320a30d5d357a5d8ea2
+    domain: light
+    entity_id: light.ingrid_bedroom_color
+    type: toggle
   initial_state: 'on'
-  trigger:
-    platform: event
-    event_type: deconz_event
-    event_data:
-      id: ikea_of_sweden_tradfri_remote_control_fef773e0_1_1
-      event: 2002
-  action:
-  - service: light.turn_on
-    data_template:
-      entity_id: group.ingrid_lights
-      brightness: '{% set bri = state_attr(''light.lamp'', ''brightness'') | int %}
-        {{ [bri+30, 249] | min }}
-
-        '
-- id: remote_ingrid_dim_down
-  alias: Ingrid Remote Dim Down
-  initial_state: 'on'
-  trigger:
-    platform: event
-    event_type: deconz_event
-    event_data:
-      id: ikea_of_sweden_tradfri_remote_control_fef773e0_1_1
-      event: 3002
-  action:
-  - service: light.turn_on
-    data_template:
-      entity_id: group.ingrid_lights
-      brightness: '{% set bri = state_attr(''light.lamp'', ''brightness'') | int %}
-        {{ [bri-30, 0] | max }}
-
-        '
 - id: remote_bed_time
   alias: Remote all lights on/off
   trigger:
@@ -741,3 +709,41 @@
     data:
       entity_id: media_player.sallskapsrum
       speech_enhance: false
+- id: '1572374206212'
+  alias: Kerstins fjärr on/off
+  description: ''
+  trigger:
+  - device_id: 1219587387e14c04a57b426377dbabe9
+    domain: zha
+    platform: device
+    subtype: turn_on
+    type: remote_button_short_press
+  condition: []
+  action:
+  - device_id: 36a61a6f70d245f8838ce46cf2b2d2aa
+    domain: light
+    entity_id: light.kerstin_bedroom_color
+    type: toggle
+- id: '1573683417414'
+  alias: 'Ingrid remote night mode '
+  description: ''
+  trigger:
+  - device_id: 42d25b9aa10447179486ffe1f37ee1cd
+    domain: zha
+    platform: device
+    subtype: dim_down
+    type: remote_button_short_press
+  condition: []
+  action:
+  - device_id: a711302a44c14ef2b50af13327c8d54c
+    domain: light
+    entity_id: light.ingrid_bedroom_window
+    type: turn_off
+  - device_id: f03f6625c52a4025a1eed5220bfa277c
+    domain: light
+    entity_id: light.ingrid_bedroom_bed_light
+    type: turn_off
+  - device_id: aef6fc73e81442519b874f6a6353d193
+    domain: light
+    entity_id: light.innr_rb_145_01c3e036_1
+    type: turn_off

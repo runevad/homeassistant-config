@@ -105,10 +105,6 @@ zha:
   usb_path: /dev/ttyACM0
   database_path: /config/zigbee.db
 
-neato:
-  username: !secret neato_username
-  password: !secret neato_password
-
 nibe:
     systems:
         - system: '31372'
