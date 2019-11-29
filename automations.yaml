@@ -144,7 +144,8 @@
     entity_id:
     - person.lars
     - person.emelie
-    - group.family
+    - person.guest
+    - person.gast
     to: home
   - platform: state
     entity_id: input_boolean.cottage_guest_mode
@@ -167,7 +168,8 @@
     entity_id:
     - person.lars
     - person.emelie
-    - group.family
+    - person.guest
+    - person.gast
     to: home
   - platform: state
     entity_id: input_boolean.cottage_guest_mode
@@ -293,9 +295,7 @@
     at: 00:16:00
   action:
   - service: light.turn_off
-    entity_id:
-    - group.bedroom_lights
-    - group.window_lights
+    entity_id: group.bedroom_lights
 - id: lights_on_pre_kids_bedtime
   alias: Lights on pre kids bedtime
   initial_state: 'on'
@@ -304,7 +304,7 @@
     entity_id: input_boolean.cottage_update
     state: 'on'
   - condition: time
-    after: '15:00:00'
+    after: '12:00:00'
     before: '19:00:00'
   trigger:
   - platform: numeric_state
@@ -314,7 +314,9 @@
   action:
   - service: light.turn_on
     data:
-      entity_id: group.all_lights
+      entity_id:
+      - group.window_lights
+      - group.outdoor_lights
       brightness: 120
       transition: 180
 - id: lights_on_evening
@@ -337,8 +339,10 @@
   action:
   - service: light.turn_on
     data:
-      brightness: 20
-      entity_id: group.window_lights
+      brightness: 100
+      entity_id:
+      - group.window_lights
+      - group.outdoor_lights
 - id: morning_lights_weekday
   alias: Morning lights weekday
   initial_state: 'on'
@@ -352,7 +356,7 @@
       entity_id: group.family
       state: home
     - condition: state
-      entity_id: light.window_lights_downstairs
+      entity_id: group.window_lights
       state: 'off'
     - condition: time
       after: 05:30:00
@@ -367,7 +371,7 @@
         state: below_horizon
   trigger:
   - platform: state
-    entity_id: binary_sensor.lumi_lumi_sensor_motion_aq2_262a7502_1_1280
+    entity_id: binary_sensor.family_room_motion_sensor
     to: 'on'
   action:
   - service: light.turn_on
@@ -387,7 +391,7 @@
       state: 'off'
   trigger:
   - platform: state
-    entity_id: binary_sensor.lumi_lumi_sensor_motion_aq2_262a7502_1_1280
+    entity_id: binary_sensor.family_room_motion_sensor
     to: 'on'
   action:
   - service: light.turn_on
@@ -408,7 +412,7 @@
       state: 'off'
   trigger:
   - platform: state
-    entity_id: binary_sensor.lumi_lumi_sensor_motion_aq2_fbc65302_1_1280
+    entity_id: binary_sensor.hall_motion_sensor
     to: 'on'
   action:
   - service: light.turn_on
@@ -419,7 +423,7 @@
 - id: wake_up_lights_weekday
   alias: Wake up light weekdays
   trigger:
-  - at: 05:50
+  - at: 06:00
     platform: time
   condition:
   - condition: and
@@ -437,49 +441,11 @@
   - data:
       brightness: 10
       entity_id: group.bedroom_lights
-      transition: 18000
+      transition: 1800
     service: light.turn_on
   initial_state: 'on'
-- id: remote_ingrid_on_off
-  alias: Ingrid remote on/off
-  trigger:
-  - device_id: 42d25b9aa10447179486ffe1f37ee1cd
-    domain: zha
-    platform: device
-    subtype: turn_on
-    type: remote_button_short_press
-  action:
-  - device_id: a83fe854367e4320a30d5d357a5d8ea2
-    domain: light
-    entity_id: light.ingrid_bedroom_color
-    type: toggle
-  initial_state: 'on'
-- id: remote_bed_time
-  alias: Remote all lights on/off
-  trigger:
-  - device_id: 42d25b9aa10447179486ffe1f37ee1cd
-    domain: zha
-    platform: device
-    subtype: left
-    type: remote_button_short_press
-  action:
-  - device_id: a83fe854367e4320a30d5d357a5d8ea2
-    domain: light
-    entity_id: light.ingrid_bedroom_color
-    type: toggle
-  initial_state: 'on'
-- id: remote_on_master_bedroom
-  alias: Remote master bedroom on
-  initial_state: 'on'
-  trigger:
-    platform: event
-    event_type: deconz_event
-    event_data:
-      id: ikea_of_sweden_tradfri_on_off_switch_fed2b62d_1_1
-      event: 1002
-  action:
-    service: light.toggle
-    entity_id: light.master_bedroom_window
+
+
 - id: car_heater_start
   alias: Engine heater activate
   trigger:
@@ -507,7 +473,7 @@
           state: 'on'
   action:
   - service: switch.turn_on
-    entity_id: switch.ikea_of_sweden_tradfri_control_outlet_fefd82b0_1
+    entity_id: switch.carport_car_heater
 - id: car_heater_shut_down
   alias: Engine heater deactivate
   trigger:
@@ -518,7 +484,7 @@
   - delay:
       minutes: '{{ states(''input_number.heater_delay'') | int }}'
   - service: switch.turn_off
-    entity_id: switch.ikea_of_sweden_tradfri_control_outlet_fefd82b0_1
+    entity_id: switch.carport_car_heater
 - id: ifttt_automation
   alias: IFTTT automation
   trigger:
@@ -544,7 +510,7 @@
     at: 07:00:00
   action:
   - service: homeassistant.turn_on
-    entity_id: switch.vvc
+    entity_id: switch.carport_hwc
 - id: high_electric_price
   alias: Högt elpris
   condition:
@@ -645,8 +611,12 @@
   - service: homeassistant.turn_on
     entity_id: script.sonos_fire_alarm
 - id: cleaning_robot_running
-  alias: Neato running take down sensors
+  alias: Neato running - Take down sensors
   initial_state: 'on'
+  condition:
+  - condition: state
+    entity_id: input_boolean.cottage_update
+    state: 'on'
   trigger:
   - platform: state
     entity_id: vacuum.stadstina
@@ -655,12 +625,28 @@
   - service: input_boolean.turn_on
     entity_id: input_boolean.cottage_guest_mode
 - id: cleaning_robot_docked
-  alias: Neato finished
+  alias: Neato finished - Reset sensors
   initial_state: 'on'
   condition:
-  - condition: state
-    entity_id: input_select.cottage_status
-    state: Away
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_boolean.cottage_update
+      state: 'on'
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: input_select.cottage_status
+        state: Standby
+        for: 00:05:00
+      - condition: state
+        entity_id: input_select.cottage_status
+        state: Away
+        for: 00:05:00
+      - condition: state
+        entity_id: input_select.cottage_status
+        state: Home
+        for: 00:05:00
   trigger:
   - platform: state
     entity_id: vacuum.stadstina
@@ -709,41 +695,33 @@
     data:
       entity_id: media_player.sallskapsrum
       speech_enhance: false
-- id: '1572374206212'
-  alias: Kerstins fjärr on/off
+- id: '1574533247410'
+  alias: Belysning trapp
   description: ''
   trigger:
-  - device_id: 1219587387e14c04a57b426377dbabe9
-    domain: zha
+  - device_id: bb20359b8af6459cae12d2c0540fac23
+    domain: binary_sensor
+    entity_id: binary_sensor.hall_motion_sensor
     platform: device
-    subtype: turn_on
-    type: remote_button_short_press
-  condition: []
-  action:
-  - device_id: 36a61a6f70d245f8838ce46cf2b2d2aa
-    domain: light
-    entity_id: light.kerstin_bedroom_color
-    type: toggle
-- id: '1573683417414'
-  alias: 'Ingrid remote night mode '
-  description: ''
-  trigger:
-  - device_id: 42d25b9aa10447179486ffe1f37ee1cd
-    domain: zha
+    type: motion
+  - device_id: 3ed649386c52443fbb70aebbbc307940
+    domain: binary_sensor
+    entity_id: binary_sensor.family_room_motion_sensor
     platform: device
-    subtype: dim_down
-    type: remote_button_short_press
-  condition: []
+    type: motion
+  condition:
+  - condition: device
+    device_id: 82c27edcb85548babe18b5fa9c66f551
+    domain: switch
+    entity_id: switch.hall_stairs_light
+    type: is_off
   action:
-  - device_id: a711302a44c14ef2b50af13327c8d54c
-    domain: light
-    entity_id: light.ingrid_bedroom_window
-    type: turn_off
-  - device_id: f03f6625c52a4025a1eed5220bfa277c
-    domain: light
-    entity_id: light.ingrid_bedroom_bed_light
-    type: turn_off
-  - device_id: aef6fc73e81442519b874f6a6353d193
-    domain: light
-    entity_id: light.innr_rb_145_01c3e036_1
+  - device_id: 82c27edcb85548babe18b5fa9c66f551
+    domain: switch
+    entity_id: switch.hall_stairs_light
+    type: turn_on
+  - delay: '300'
+  - device_id: 82c27edcb85548babe18b5fa9c66f551
+    domain: switch
+    entity_id: switch.hall_stairs_light
     type: turn_off

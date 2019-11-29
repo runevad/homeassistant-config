@@ -64,12 +64,10 @@ logbook:
   #     - device_tracker
 
 logger:
-  # default: info
-  # logs:
-  #   zigpy: debug
-  #   bellows: debug
-  #   zigpy_deconz: debug
-  #   homeassistant.components.zha: debug
+   default: info
+   logs:
+     pydeconz: debug
+     homeassistant.components.deconz: debug
 
 influxdb:
   host: 192.168.1.4
@@ -101,40 +99,43 @@ zwave:
   device_config: !include zwave_device_config.yaml
   network_key: !secret zwave_key
 
-zha:
-  usb_path: /dev/ttyACM0
-  database_path: /config/zigbee.db
-
+# zha:
+#   usb_path: /dev/ttyACM0
+#   database_path: /config/zigbee.db
+#
 nibe:
-    systems:
-        - system: '31372'
-          units:
-            - unit: 0
-              categories: True
-              statuses: True
-          sensors:
-            - 40067
-            - 40014
-            - 40013
-            - 40004
-            - 40083
-            - 40081
-            - 40079
-            - 43005
-            - 43416
-            - 43439
-            - 43347
-            - 40015
-            - 40016
-            - 43420
-            - 43424
-            - 43136
-            - 43009
-            - 40008
-            - 40012
-            - 40033
-          climates: False
-          water_heaters: True
+  systems:
+    - system: '31372'
+      units:
+        - unit: 0
+          categories: True
+          statuses: True
+#      climates: False
+      water_heaters: True
+      sensors:
+        - 40067 #avg outdoor temp
+        - 40015 #brine in
+        - 40016 #brine out
+        - 40012 #return temp
+        - 43439 #brine pump speed
+        - 43437 #pump heat medium speed
+        - 43009 #calculated flow temp
+        - 40072 #Flow l/s
+        - 40008 #heat medium flow
+        - 40004 #outdoor temp
+        - 40033 #indoor temp
+        - 43005 #Degree minutes (DM)
+        - 43136 #compressor hz
+        - 43416 #number of compressor starts
+        - 43420 #compressor operating time
+        - 43424 #compressor operating time hot water
+        - 44308 #heating with compressor (kWh)
+        - 44300 #heating total (kWh)
+        - 44298 #hot water (kWh)
+        - 40083 #Amps L1
+        - 40081 #Amps L2
+        - 40079 #Amps L3
+        - 10069 #electricity price
 
 utility_meter:
   daily_energy:
@@ -142,9 +143,6 @@ utility_meter:
     cycle: daily
   monthly_energy:
     source: sensor.energy_meter_energy
-    cycle: monthly
-  monthly_car_heater_energy:
-    source: sensor.energy_car_heater
     cycle: monthly
 
 camera:
@@ -184,26 +182,24 @@ sensor: !include sensor.yaml
 
 switch: !include switch.yaml
 
+scene: !include scenes.yaml
+
 light:
   - platform: switch
-    name: "living_room_window_south"
-    entity_id: switch.wall_plug_living_room_window_south
-  - platform: switch
-    name: "window_lights_downstairs"
+    name: window_lights_downstairs
     entity_id: switch.window_lights_downstairs
   - platform: switch
-    name: "window_lights_upstairs"
+    name: window_lights_upstairs
     entity_id: switch.window_lights_upstairs
   - platform: switch
-    name: "laundry_window_east"
-    entity_id: switch.wall_plug_laundry_window_east
-
-  - platform: group
-    name: "Carport Lights"
-    entities:
-      - light.ikea_of_sweden_tradfri_bulb_e27_ws_clear_806lm_fe74d1de_1
-      - light.ikea_of_sweden_tradfri_bulb_e27_ws_clear_806lm_fe9451d8_1
-      - light.ikea_of_sweden_tradfri_bulb_e27_ws_clear_806lm_fe944cf0_1
+    name: hall_stairs_light
+    entity_id: switch.hall_stairs_light
+  - platform: switch
+    name: laundry_window_light
+    entity_id: switch.laundry_window_light
+  - platform: switch
+    name: living_room_window_light
+    entity_id: switch.living_room_window_light
 
 binary_sensor:
   - platform: template
@@ -276,9 +272,8 @@ input_datetime:
     has_date: False
     has_time: True
     initial: '07:00'
-
-panel_custom:
-  - name: zwavegraph2
-    sidebar_title: ZWave Graph2
-    sidebar_icon: mdi:access-point-network
-    url_path: zwave
+  wake_up_workday:
+    name: "Wake up time!"
+    has_date: False
+    has_time: True
+    initial: '05:50'

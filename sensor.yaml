@@ -16,22 +16,23 @@
         value_template: >-
           {{ states("input_select.cottage_status") }}
 
-# From SMHI https://www.smhi.se/polopoly_fs/1.6392!/webb_vindavkylning.pdf
-# SMHI Weather component gives wind in km/h, the calculation needs m/s >> divide by 3.6
-      outdoor_feels_like_temperature:
-        friendly_name: Outdoor feels like temperature
-        unit_of_measurement: '°C'
-        icon_template: mdi:thermometer
-        value_template: >-
-          {% set tm = namespace() %}
-          {% set tm.temp = float(states.sensor.outdoor_temperature.state) %}
-          {% set tm.wind = float(states.weather.smhi_home.attributes.wind_speed) / 3.6 %}
-          {% if tm.wind > 1 %}
-          {% set tm.output = ( ( 13.12 + 0.6215 * tm.temp - 13.956 * tm.wind**0.16 + 0.48669 * tm.temp * tm.wind**0.16 ) | round(1) ) %}
-          {% else %}
-          {% set tm.output = ( states.sensor.outdoor_temperature.state ) %}
-          {% endif %}
-          {{ tm.output }}
+
+# # From SMHI https://www.smhi.se/polopoly_fs/1.6392!/webb_vindavkylning.pdf
+# # SMHI Weather component gives wind in km/h, the calculation needs m/s >> divide by 3.6
+#       outdoor_feels_like_temperature:
+#         friendly_name: Outdoor feels like temperature
+#         unit_of_measurement: '°C'
+#         icon_template: mdi:thermometer
+#         value_template: >-
+#           {% set tm = namespace() %}
+#           {% set tm.temp = float(states.sensor.outdoor_temperature.state) %}
+#           {% set tm.wind = float(states.weather.smhi_home.attributes.wind_speed) / 3.6 %}
+#           {% if tm.wind > 1 %}
+#           {% set tm.output = ( ( 13.12 + 0.6215 * tm.temp - 13.956 * tm.wind**0.16 + 0.48669 * tm.temp * tm.wind**0.16 ) | round(1) ) %}
+#           {% else %}
+#           {% set tm.output = ( states.sensor.outdoor_temperature.state ) %}
+#           {% endif %}
+#           {{ tm.output }}
 
 #NAS
   - platform: synologydsm
@@ -88,6 +89,14 @@
           {% set ha = namespace() %}
           {% set ha.dtime = states.input_datetime.heater_departuretime.attributes.timestamp %}
           {% set ha.atime = as_timestamp(states.sensor.date.state + ' ' + states.input_datetime.heater_departuretime.state) - states.sensor.heater_temptime.state|int %}
+          {{ ha.atime | timestamp_custom("%H:%M")|string }}
+
+      wake_up_workday:
+        friendly_name: 'Wake up time!'
+        icon_template: mdi:clock-start
+        value_template: >-
+          {% set ha = namespace() %}
+          {% set ha.dtime = states.input_datetime.wake_up_workday.attributes.timestamp %}
           {{ ha.atime | timestamp_custom("%H:%M")|string }}
 
 #### MQTT stuff

@@ -15,114 +15,22 @@ switch.extra_hot_water:
   icon: mdi:shower
 binary_sensor.esp_christmas_tree_water_level_low:
   icon: mdi:pine-tree
-light.living_room_south_window:
-  friendly_name: Fönsterlampor tre små
-switch.door_altan_29:
-  friendly_name: Altandörr
-  icon: mdi:door
-binary_sensor.door_altan_29:
+binary_sensor.patio_door_sensor:
   friendly_name: Altan
   device_class: door
-sensor.door_temp_altan_30:
-  friendly_name: Altandörr
-switch.door_storage_151:
-  friendly_name: Förrådsdörr
-  icon: mdi:door
-binary_sensor.door_storage_151:
+binary_sensor.storage_door_sensor:
   friendly_name: Förråd
   device_class: door
-switch.door_second_entrance:
-  icon: mdi:door
-binary_sensor.door_second_entrance:
+binary_sensor.laundry_door_sensor:
+  friendly_name: Groventré
   device_class: door
-switch.door_main_entrance:
-  icon: mdi:door
-binary_sensor.door_main_entrance:
+binary_sensor.hall_door_sensor:
+  friendly_name: Entrédörr
   device_class: door
-sensor.energy_tot_128:
-  friendly_name: Effektuttag
-  icon: mdi:power-plug
-sensor.l1_140:
-  friendly_name: Effekt L1
-  icon: mdi:power-plug
-sensor.l2_141:
-  friendly_name: Effekt L2
-  icon: mdi:power-plug
-sensor.l3_142:
-  friendly_name: Effekt L3
-  icon: mdi:power-plug
-switch.vvc:
+switch.carport_hwc:
   icon: mdi:power
-switch.ikea_of_sweden_tradfri_control_outlet_fefd82b0_1:
+switch.carport_car_heater:
   icon: mdi:power
-light.fonsterlampor_vardagsrum_81:
-  friendly_name: Fönsterlampor nere
-light.fonsterlampor_uppe1_115:
-  friendly_name: Fönsterlampor uppe
-sensor.temp_allrum_21:
-  friendly_name: Allrum
-switch.motion_allrum_20:
-  friendly_name: Rörelsesensor allrum
-  icon: mdi:run-fast
-binary_sensor.motion_allrum_20:
-  friendly_name: Rörelsesensor allrum
-  device_class: motion
-sensor.lux_allrum_22:
-  friendly_name: LUX allrum
-  icon: mdi:white-balance-sunny
-sensor.humidity_allrum_23:
-  friendly_name: Luftfuktighet allrum
-  icon: mdi:water-percent
-sensor.temp_hall_12:
-  friendly_name: Hall
-switch.motion_hall_11:
-  friendly_name: Rörelsesensor hall
-  icon: mdi:run-fast
-binary_sensor.motion_hall_11:
-  friendly_name: Rörelsesensor hall
-  device_class: motion
-sensor.lux_hall_13:
-  friendly_name: LUX hall
-  icon: mdi:white-balance-sunny
-sensor.humidity_hall_14:
-  friendly_name: Luftfuktighet hall
-  icon: mdi:water-percent
-sensor.smoke_temp_allrum_19:
-  friendly_name: Allrum tak
-sensor.smoke_temp_groventre_125:
-  friendly_name: Groventré tak
-sensor.smoke_temp_forrad_127:
-  friendly_name: Förråd tak
-sensor.smoke_temp_vardagsrum_134:
-  friendly_name: Vardagsrum tak
-binary_sensor.smokesensor_allrum_18:
-  friendly_name: Brandvarnare allrum
-  device_class: smoke
-binary_sensor.smokesensor_forrad_126:
-  friendly_name: Brandvarnare förråd
-  device_class: smoke
-binary_sensor.smoke_detector_laundry_room:
-  device_class: smoke
-binary_sensor.smokesensor_vardagsrum_133:
-  friendly_name: Brandvarnare vardagsrum
-  device_class: smoke
-switch.smokesensor_allrum_18:
-  friendly_name: Brandvarnare allrum
-  icon: mdi:fire
-switch.smokesensor_forrad_126:
-  friendly_name: Brandvarnare förråd
-  icon: mdi:fire
-switch.smokesensor_groventre_124:
-  friendly_name: Brandvarnare groventré
-  icon: mdi:fire
-switch.smokesensor_vardagsrum_133:
-  friendly_name: Brandvarnare vardagsrum
-  icon: mdi:fire
-binary_sensor.door_patio:
-  device_class: door
-switch.wall_plug_living_room_window_south:
-  device_class: outlet
-  icon: mdi:lightbulb
 switch.window_lights_downstairs:
   icon: mdi:lightbulb
 switch.window_lights_upstairs:
@@ -135,15 +43,3 @@ binary_sensor.smoke_sensor_kitchen:
   device_class: smoke
 binary_sensor.smoke_sensor_upstairs:
   device_class: smoke
-binary_sensor.lumi_lumi_sensor_magnet_aq2_025184e5_1_6:
-  device_class: door
-binary_sensor.lumi_lumi_vibration_aq1_02b23cac_1_1280:
-  device_class: vibration
-binary_sensor.lumi_lumi_sensor_motion_aq2_fbc65302_1_1280:
-  device_class: motion
-binary_sensor.lumi_lumi_sensor_magnet_aq2_32f43602_1_6:
-  device_class: door
-binary_sensor.lumi_lumi_sensor_magnet_aq2_02529083_1_6:
-  device_class: door
-binary_sensor.lumi_lumi_sensor_magnet_aq2_02529123_1_6:
-  device_class: door

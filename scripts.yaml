@@ -58,7 +58,7 @@ cottage_home:
       option: Home
   - service: switch.turn_on
     data:
-      entity_id: switch.vvc
+      entity_id: switch.carport_hwc
 cottage_away:
   alias: Cottage Away
   sequence:
@@ -67,11 +67,10 @@ cottage_away:
       option: Away
     service: input_select.select_option
   - data:
-      entity_id: switch.vvc
+      entity_id: switch.carport_hwc
     service: switch.turn_off
   - data:
-      entity_id:
-      - group.bedroom_lights
+      entity_id: group.bedroom_lights
     service: light.turn_off
   - service: media_player.turn_off
 cottage_standby:
@@ -83,7 +82,7 @@ cottage_standby:
       option: Standby
   - service: switch.turn_off
     data:
-      entity_id: switch.vvc
+      entity_id: switch.carport_hwc
 cottage_night:
   alias: Cottage Night
   sequence:
@@ -94,13 +93,18 @@ cottage_night:
   - service: switch.turn_off
     data:
       entity_id:
-      - switch.vvc
+      - switch.carport_hwc
       - switch.extra_hot_water
   - service: light.turn_off
     data:
       entity_id:
       - group.bedroom_lights
       - group.window_lights
+  - service: light.turn_on
+    data:
+      brightness: 10
+      entity_id: group.outdoor_lights
+      transition: 60
 extra_hot_water:
   alias: Extra varmvatten 2h
   sequence:
@@ -116,11 +120,11 @@ car_heater:
   sequence:
   - service: switch.turn_on
     data:
-      entity_id: switch.ikea_of_sweden_tradfri_control_outlet_fefd82b0_1
+      entity_id: switch.carport_car_heater
   - delay: 02:30:00
   - service: switch.turn_off
     data:
-      entity_id: switch.ikea_of_sweden_tradfri_control_outlet_fefd82b0_1
+      entity_id: switch.carport_car_heater
 sonos_say:
   alias: Sonos TTS script
   sequence:
@@ -165,81 +169,81 @@ dishwasher_done:
       volume: 0.55
       delay: 00:00:15
       message: Hej Hej Hej, diskmaskinen har körts klart och är redo för utplockning
-kerstin_night:
-  alias: Kerstins sovrum night mode
-  sequence:
-  - service: light.turn_off
-    entity_id:
-    - light.kerstin_bedroom_window
-    - light.kerstin_bedroom_bed_light
-    - light.innr_rb_145_01d09f3f_1
-  - delay: 00:00:02
-  - service: light.turn_on
-    data:
-      brightness: 5
-      rgb_color:
-      - 255
-      - 0
-      - 0
-    entity_id: light.kerstin_bedroom_color
-ingrid_night:
-  alias: Ingrid sovrum night mode
-  sequence:
-  - service: light.turn_off
-    entity_id:
-    - light.ingrid_bedroom_window
-    - light.ingrid_bedroom_bed_light
-    - light.innr_rb_145_01c3e036_1
-  - delay: 00:00:02
-  - service: light.turn_on
-    data:
-      brightness: 5
-      rgb_color:
-      - 255
-      - 0
-      - 0
-    entity_id: light.ingrid_bedroom_color
-kerstin_reading:
-  alias: Läslampa Kerstin
-  sequence:
-  - service: light.turn_on
-    data:
-      brightness: 200
-    entity_id:
-    - light.kerstin_bedroom_bed_light
-  - delay: 00:00:02
-  - service: light.turn_on
-    data:
-      brightness: 5
-      rgb_color:
-      - 255
-      - 0
-      - 0
-    entity_id:
-    - light.kerstin_bedroom_color
-  - delay: 00:00:02
-  - service: light.turn_off
-    entity_id:
-    - light.kerstin_bedroom_window
-    - light.innr_rb_145_01d09f3f_1
-ingrid_reading:
-  alias: Läslampa Ingrid
-  sequence:
-  - service: light.turn_on
-    data:
-      brightness: 200
-    entity_id: light.ingrid_bedroom_bed_light
-  - delay: 00:00:02
-  - service: light.turn_on
-    data:
-      brightness: 5
-      rgb_color:
-      - 255
-      - 0
-      - 0
-    entity_id: light.ingrid_bedroom_color
-  - delay: 00:00:02
-  - service: light.turn_off
-    entity_id:
-    - light.ingrid_bedroom_window
-    - light.innr_rb_145_01c3e036_1
+# kerstin_night:
+#   alias: Kerstins sovrum night mode
+#   sequence:
+#   - service: light.turn_off
+#     entity_id:
+#     - light.fonsterlampa_kerstin
+#     - light.sanglampa_kerstin
+#     - light.angel_kerstin
+#   - delay: 00:00:02
+#   - service: light.turn_on
+#     data:
+#       brightness: 5
+#       rgb_color:
+#       - 255
+#       - 0
+#       - 0
+#     entity_id: light.farglampa_kerstin
+# ingrid_night:
+#   alias: Ingrid sovrum night mode
+#   sequence:
+#   - service: light.turn_off
+#     entity_id:
+#     - light.fonsterlampa_ingrid
+#     - light.sanglampa_ingrid
+#     - light.angel_ingrid
+#   - delay: 00:00:02
+#   - service: light.turn_on
+#     data:
+#       brightness: 5
+#       rgb_color:
+#       - 255
+#       - 0
+#       - 0
+#     entity_id: light.farglampa_ingrid
+# kerstin_reading:
+#   alias: Läslampa Kerstin
+#   sequence:
+#   - service: light.turn_on
+#     data:
+#       brightness: 200
+#     entity_id:
+#     - light.sanglampa_kerstin
+#   - delay: 00:00:02
+#   - service: light.turn_on
+#     data:
+#       brightness: 5
+#       rgb_color:
+#       - 255
+#       - 0
+#       - 0
+#     entity_id:
+#     - light.farglampa_kerstin
+#   - delay: 00:00:02
+#   - service: light.turn_off
+#     entity_id:
+#     - light.fonsterlampa_kerstin
+#     - light.angel_kerstin
+# ingrid_reading:
+#   alias: Läslampa Ingrid
+#   sequence:
+#   - service: light.turn_on
+#     data:
+#       brightness: 200
+#     entity_id: light.sanglampa_ingrid
+#   - delay: 00:00:02
+#   - service: light.turn_on
+#     data:
+#       brightness: 5
+#       rgb_color:
+#       - 255
+#       - 0
+#       - 0
+#     entity_id: light.farglampa_ingrid
+#   - delay: 00:00:02
+#   - service: light.turn_off
+#     entity_id:
+#     - light.fonsterlampa_ingrid
+#     - light.angel_ingrid
