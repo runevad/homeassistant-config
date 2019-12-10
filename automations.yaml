@@ -289,6 +289,8 @@
   - service: light.turn_off
     entity_id:
       - group.bedroom_lights
+      - group.ingrid_lights
+      - group.kerstin_lights
 - id: lights_on_pre_kids_bedtime
   alias: Lights on pre kids bedtime
   initial_state: 'on'
@@ -497,7 +499,7 @@
     state: home
   trigger:
   - platform: time
-    at: 07:00:00
+    at: 06:30:00
   action:
   - service: homeassistant.turn_on
     entity_id: switch.storage_hwc
@@ -564,7 +566,7 @@
   - service: notify.mobile_app_lars_iphone
     data:
       title: Uppdatering!
-      message: Ny version av Home Assistant tillgänglig!
+      message: "Ny version av Home Assistant tillgänglig!"
       data:
         push:
           badge: 10
@@ -574,14 +576,13 @@
       sonos_entity: media_player.kok_2
       volume: 0.45
       delay: 00:00:15
-      message: Hej, det finns en ny uppdatering av Home Assistant
+      message: "Hej, det finns en ny uppdatering av Home Assistant"
 - id: fire_alarm
   alias: Smoke detectors tripped
   initial_state: 'on'
   trigger:
   - platform: state
-    entity_id:
-    - group.smoke_sensors
+    entity_id: group.smoke_sensors
     from: 'off'
     to: 'on'
   action:

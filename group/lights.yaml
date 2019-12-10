@@ -32,6 +32,7 @@ window_lights_bedroom:
 #    - light.kerstin_window_light
     - light.kerstin_angel_light
     - light.ingrid_angel_light
+    - light.kerstin_color_light
     - light.ingrid_color_light
 
 ingrid_lights:
