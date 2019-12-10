@@ -1,0 +1,139 @@
+- id: '1575067986724'
+  name: ingrid sleep
+  entities:
+    light.ingrid_angel_light:
+      state: 'off'
+    light.ingrid_bed_light:
+      state: 'off'
+    light.ingrid_color_light:
+      brightness: 1
+      hs_color:
+      - 0
+      - 100
+      rgb_color:
+      - 255
+      - 0
+      - 0
+      state: 'on'
+      xy_color:
+      - 0.701
+      - 0.299
+    light.ingrid_window_light:
+      state: 'off'
+- id: '1575068454615'
+  name: ingrid read
+  entities:
+    light.ingrid_angel_light:
+      state: 'off'
+    light.ingrid_bed_light:
+      brightness: 138
+      state: 'on'
+    light.ingrid_color_light:
+      brightness: 119
+      hs_color:
+      - 30.119
+      - 99.216
+      rgb_color:
+      - 255
+      - 129
+      - 1
+      state: 'on'
+      xy_color:
+      - 0.61
+      - 0.376
+    light.ingrid_window_light:
+      state: 'off'
+- id: '1575068524563'
+  name: ingrid study
+  entities:
+    light.ingrid_angel_light:
+      brightness: 186
+      state: 'on'
+    light.ingrid_bed_light:
+      state: 'off'
+    light.ingrid_color_light:
+      brightness: 118
+      hs_color:
+      - 242.588
+      - 100
+      rgb_color:
+      - 10
+      - 0
+      - 255
+      state: 'on'
+      xy_color:
+      - 0.137
+      - 0.041
+    light.ingrid_window_light:
+      brightness: 255
+      state: 'on'
+- id: '1575068575405'
+  name: kerstin sleep
+  entities:
+    light.kerstin_angel_light:
+      state: 'off'
+    light.kerstin_bed_light:
+      state: 'off'
+    light.kerstin_color_light:
+      brightness: 1
+      hs_color:
+      - 0
+      - 100
+      rgb_color:
+      - 255
+      - 0
+      - 0
+      state: 'on'
+      xy_color:
+      - 0.701
+      - 0.299
+    light.kerstin_window_light:
+      state: 'off'
+- id: '1575068609507'
+  name: kerstin read
+  entities:
+    light.kerstin_angel_light:
+      state: 'off'
+    light.kerstin_bed_light:
+      brightness: 152
+      state: 'on'
+    light.kerstin_color_light:
+      brightness: 124
+      hs_color:
+      - 30.119
+      - 99.216
+      rgb_color:
+      - 255
+      - 129
+      - 1
+      state: 'on'
+      xy_color:
+      - 0.61
+      - 0.376
+    light.kerstin_window_light:
+      state: 'off'
+- id: '1575068659150'
+  name: kerstin study
+  entities:
+    light.kerstin_angel_light:
+      brightness: 174
+      state: 'on'
+    light.kerstin_bed_light:
+      state: 'off'
+    light.kerstin_color_light:
+      brightness: 130
+      hs_color:
+      - 242.588
+      - 100
+      rgb_color:
+      - 10
+      - 0
+      - 255
+      state: 'on'
+      xy_color:
+      - 0.137
+      - 0.041
+    light.kerstin_window_light:
+      brightness: 255
+      color_temp: 322
+      state: 'on'

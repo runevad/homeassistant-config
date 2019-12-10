@@ -2,53 +2,53 @@ sonos_doorbell:
   alias: Sonos doorbell
   sequence:
   - service: sonos.snapshot
-    entity_id: media_player.kok_vardagsrum
+    entity_id: media_player.kok_2
   - service: media_player.volume_set
-    entity_id: media_player.kok_vardagsrum
+    entity_id: media_player.kok_2
     data:
       volume_level: 0.6
   - service: media_player.play_media
-    entity_id: media_player.kok_vardagsrum
+    entity_id: media_player.kok_2
     data:
       media_content_id: https://runevad.synology.me:8123/local/doorbell.mp3
       media_content_type: music
   - delay: 00:00:15
   - service: sonos.restore
-    entity_id: media_player.kok_vardagsrum
+    entity_id: media_player.kok_2
 sonos_fire_alarm:
   alias: Sonos fire alarm
   sequence:
   - service: sonos.snapshot
-    entity_id: media_player.kok_vardagsrum
+    entity_id: media_player.kok_2
   - service: media_player.volume_set
-    entity_id: media_player.kok_vardagsrum
+    entity_id: media_player.kok_2
     data:
       volume_level: 0.8
   - service: media_player.play_media
-    entity_id: media_player.kok_vardagsrum
+    entity_id: media_player.kok_2
     data:
       media_content_id: https://runevad.synology.me:8123/local/fire_alarm.mp3
       media_content_type: music
   - delay: 00:00:40
   - service: sonos.restore
-    entity_id: media_player.kok_vardagsrum
+    entity_id: media_player.kok_2
 sonos_alarm:
   alias: Sonos alarm
   sequence:
   - service: sonos.snapshot
-    entity_id: media_player.kok_vardagsrum
+    entity_id: media_player.kok_2
   - service: media_player.volume_set
-    entity_id: media_player.kok_vardagsrum
+    entity_id: media_player.kok_2
     data:
       volume_level: 0.8
   - service: media_player.play_media
-    entity_id: media_player.kok_vardagsrum
+    entity_id: media_player.kok_2
     data:
       media_content_id: https://runevad.synology.me:8123/local/alarm.mp3
       media_content_type: music
   - delay: 00:03:00
   - service: sonos.restore
-    entity_id: media_player.kok_vardagsrum
+    entity_id: media_player.kok_2
 cottage_home:
   alias: Cottage Home
   sequence:
@@ -58,7 +58,7 @@ cottage_home:
       option: Home
   - service: switch.turn_on
     data:
-      entity_id: switch.vvc
+      entity_id: switch.storage_hwc
 cottage_away:
   alias: Cottage Away
   sequence:
@@ -67,11 +67,10 @@ cottage_away:
       option: Away
     service: input_select.select_option
   - data:
-      entity_id: switch.vvc
+      entity_id: switch.storage_hwc
     service: switch.turn_off
   - data:
-      entity_id:
-      - group.bedroom_lights
+      entity_id: group.bedroom_lights
     service: light.turn_off
   - service: media_player.turn_off
 cottage_standby:
@@ -83,7 +82,7 @@ cottage_standby:
       option: Standby
   - service: switch.turn_off
     data:
-      entity_id: switch.vvc
+      entity_id: switch.storage_hwc
 cottage_night:
   alias: Cottage Night
   sequence:
@@ -94,13 +93,19 @@ cottage_night:
   - service: switch.turn_off
     data:
       entity_id:
-      - switch.vvc
+      - switch.storage_hwc
       - switch.extra_hot_water
   - service: light.turn_off
     data:
       entity_id:
       - group.bedroom_lights
       - group.window_lights
+      - group.window_lights_bedroom
+  - service: light.turn_on
+    data:
+      brightness: 10
+      entity_id: group.outdoor_lights
+      transition: 60
 extra_hot_water:
   alias: Extra varmvatten 2h
   sequence:
@@ -116,35 +121,35 @@ car_heater:
   sequence:
   - service: switch.turn_on
     data:
-      entity_id: switch.ikea_of_sweden_tradfri_control_outlet_fefd82b0_1
+      entity_id: switch.carport_car_heater
   - delay: 02:30:00
   - service: switch.turn_off
     data:
-      entity_id: switch.ikea_of_sweden_tradfri_control_outlet_fefd82b0_1
+      entity_id: switch.carport_car_heater
 sonos_say:
   alias: Sonos TTS script
   sequence:
   - service: sonos.snapshot
     data_template:
-      entity_id: '{{ sonos_entity|default(''media_player.kok_vardagsrum'') }}'
+      entity_id: '{{ sonos_entity|default(''media_player.kok_2'') }}'
   - service: sonos.unjoin
     data_template:
-      entity_id: '{{ sonos_entity|default(''media_player.kok_vardagsrum'') }}'
+      entity_id: '{{ sonos_entity|default(''media_player.kok_2'') }}'
   - service: media_player.volume_set
     data_template:
-      entity_id: '{{ sonos_entity|default(''media_player.kok_vardagsrum'') }}'
+      entity_id: '{{ sonos_entity|default(''media_player.kok_2'') }}'
       volume_level: '{{ volume|default(0.4) }}'
   - service: tts.google_say
     data_template:
-      entity_id: '{{ sonos_entity|default(''media_player.kok_vardagsrum'') }}'
+      entity_id: '{{ sonos_entity|default(''media_player.kok_2'') }}'
       message: '{{ message }}'
   - delay: '{{ delay|default(''00:00:00'') }}'
-  - wait_template: '{{ is_state(sonos_entity|default(''media_player.kok_vardagsrum''),
+  - wait_template: '{{ is_state(sonos_entity|default(''media_player.kok_2''),
       ''playing'') }}'
     timeout: 00:00:10
   - service: sonos.restore
     data_template:
-      entity_id: '{{ sonos_entity|default(''media_player.kok_vardagsrum'') }}'
+      entity_id: '{{ sonos_entity|default(''media_player.kok_2'') }}'
 dishwasher_done:
   alias: Diskmaskinen klar
   sequence:
@@ -161,85 +166,7 @@ dishwasher_done:
           category: notis
   - service: script.sonos_say
     data_template:
-      sonos_entity: media_player.kok_vardagsrum
+      sonos_entity: media_player.kok_2
       volume: 0.55
       delay: 00:00:15
       message: Hej Hej Hej, diskmaskinen har körts klart och är redo för utplockning
-kerstin_night:
-  alias: Kerstins sovrum night mode
-  sequence:
-  - service: light.turn_off
-    entity_id:
-    - light.kerstin_bedroom_window
-    - light.kerstin_bedroom_bed_light
-    - light.innr_rb_145_01d09f3f_1
-  - delay: 00:00:02
-  - service: light.turn_on
-    data:
-      brightness: 5
-      rgb_color:
-      - 255
-      - 0
-      - 0
-    entity_id: light.kerstin_bedroom_color
-ingrid_night:
-  alias: Ingrid sovrum night mode
-  sequence:
-  - service: light.turn_off
-    entity_id:
-    - light.ingrid_bedroom_window
-    - light.ingrid_bedroom_bed_light
-    - light.innr_rb_145_01c3e036_1
-  - delay: 00:00:02
-  - service: light.turn_on
-    data:
-      brightness: 5
-      rgb_color:
-      - 255
-      - 0
-      - 0
-    entity_id: light.ingrid_bedroom_color
-kerstin_reading:
-  alias: Läslampa Kerstin
-  sequence:
-  - service: light.turn_on
-    data:
-      brightness: 200
-    entity_id:
-    - light.kerstin_bedroom_bed_light
-  - delay: 00:00:02
-  - service: light.turn_on
-    data:
-      brightness: 5
-      rgb_color:
-      - 255
-      - 0
-      - 0
-    entity_id:
-    - light.kerstin_bedroom_color
-  - delay: 00:00:02
-  - service: light.turn_off
-    entity_id:
-    - light.kerstin_bedroom_window
-    - light.innr_rb_145_01d09f3f_1
-ingrid_reading:
-  alias: Läslampa Ingrid
-  sequence:
-  - service: light.turn_on
-    data:
-      brightness: 200
-    entity_id: light.ingrid_bedroom_bed_light
-  - delay: 00:00:02
-  - service: light.turn_on
-    data:
-      brightness: 5
-      rgb_color:
-      - 255
-      - 0
-      - 0
-    entity_id: light.ingrid_bedroom_color
-  - delay: 00:00:02
-  - service: light.turn_off
-    entity_id:
-    - light.ingrid_bedroom_window
-    - light.innr_rb_145_01c3e036_1
