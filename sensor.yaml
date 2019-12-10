@@ -73,6 +73,14 @@
           {% set ha.atime = as_timestamp(states.sensor.date.state + ' ' + states.input_datetime.heater_departuretime.state) - states.sensor.heater_temptime.state|int %}
           {{ ha.atime | timestamp_custom("%H:%M")|string }}
 
+      wake_up_workday:
+        friendly_name: 'Wake up time!'
+        icon_template: mdi:clock-start
+        value_template: >-
+          {% set ha = namespace() %}
+          {% set ha.dtime = states.input_datetime.wake_up_workday.attributes.timestamp %}
+          {{ ha.atime | timestamp_custom("%H:%M")|string }}
+
 #### MQTT stuff
 #### Weather station
   - platform: mqtt

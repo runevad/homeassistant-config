@@ -375,8 +375,8 @@
 - id: lights_on_up_night_motion
   alias: Lights upstairs night motion
   trigger:
-  - entity_id: group.motion_sensors
-    platform: state
+  - platform: state
+    entity_id: binary_sensor.family_room_motion_sensor
     to: 'on'
   condition:
   - after: sunset

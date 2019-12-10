@@ -27,6 +27,8 @@ binary_sensor.laundry_door_sensor:
 binary_sensor.hall_door_sensor:
   friendly_name: Entrédörr
   device_class: door
+switch.carport_hwc:
+  icon: mdi:power
 switch.carport_car_heater:
   icon: mdi:power
 switch.window_lights_downstairs:

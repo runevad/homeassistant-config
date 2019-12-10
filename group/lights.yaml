@@ -41,7 +41,6 @@ ingrid_lights:
     - light.ingrid_color_light
     - light.ingrid_bed_light
     - light.ingrid_angel_light
-    - light.kerstin_color_light
 
 kerstin_lights:
   name: "Kerstins lampor"
