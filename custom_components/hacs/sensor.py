@@ -22,10 +22,6 @@ class HACSSensor(Entity):
         """Initialize."""
         self._state = None
         self.logger = Logger("hacs.sensor")
-<<<<<<< HEAD
-=======
-        self.has_update = []
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         self.repositories = []
 
     async def async_update(self):

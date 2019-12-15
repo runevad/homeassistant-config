@@ -10,11 +10,7 @@ from homeassistant import config_entries
 from homeassistant.const import EVENT_HOMEASSISTANT_START
 from homeassistant.const import __version__ as HAVERSION
 from homeassistant.components.lovelace import system_health_info
-<<<<<<< HEAD
 from homeassistant.exceptions import ConfigEntryNotReady, ServiceNotFound
-=======
-from homeassistant.exceptions import ConfigEntryNotReady
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.event import async_call_later
 
@@ -92,7 +88,6 @@ async def startup_wrapper_for_yaml(hacs):
 
 async def hacs_startup(hacs):
     """HACS startup tasks."""
-<<<<<<< HEAD
     if hacs.configuration.debug:
         try:
             await hacs.hass.services.async_call(
@@ -103,8 +98,6 @@ async def hacs_startup(hacs):
                 "Could not set logging level to debug, logger is not enabled"
             )
 
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
     lovelace_info = await system_health_info(hacs.hass)
     hacs.logger.debug(f"Configuration type: {hacs.configuration.config_type}")
     hacs.version = VERSION
@@ -120,11 +113,7 @@ async def hacs_startup(hacs):
     hacs.data = HacsData()
 
     # Check HACS Constrains
-<<<<<<< HEAD
     if not await hacs.hass.async_add_executor_job(check_constans, hacs):
-=======
-    if not check_constans(hacs):
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         if hacs.configuration.config_type == "flow":
             if hacs.configuration.config_entry is not None:
                 await async_remove_entry(hacs.hass, hacs.configuration.config_entry)

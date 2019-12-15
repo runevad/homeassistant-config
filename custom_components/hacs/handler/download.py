@@ -24,11 +24,7 @@ async def async_download_file(hass, url):
     if "tags/" in url:
         url = url.replace("tags/", "")
 
-<<<<<<< HEAD
     logger.debug(f"Downloading {url}")
-=======
-    logger.debug(f"Donwloading {url}")
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
 
     result = None
 
@@ -77,11 +73,7 @@ async def async_save_file(location, content):
 
     except Exception as error:  # pylint: disable=broad-except
         msg = "Could not write data to {} - {}".format(location, error)
-<<<<<<< HEAD
         logger.error(msg)
         return False
-=======
-        logger.debug(msg)
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
 
     return os.path.exists(location)

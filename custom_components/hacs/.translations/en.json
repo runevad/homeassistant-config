@@ -97,10 +97,7 @@
     "settings": {
         "add_custom_repository": "ADD CUSTOM REPOSITORY",
         "category": "Category",
-<<<<<<< HEAD
         "compact_mode": "Compact mode",
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "custom_repositories": "CUSTOM REPOSITORIES",
         "delete": "Delete",
         "display": "Display",
@@ -110,24 +107,16 @@
         "reload_data": "Reload data",
         "save": "Save",
         "table": "Table",
-<<<<<<< HEAD
         "table_view": "Table view",
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "unhide": "unhide",
         "upgrade_all": "Upgrade all"
     },
     "store": {
         "clear_new": "Clear all new repositories",
-<<<<<<< HEAD
         "name": "Name",
         "new_repositories": "New Repositories",
         "placeholder_search": "Please enter a search term...",
         "sort": "sort",
         "status": "Status"
-=======
-        "new_repositories": "New Repositories",
-        "placeholder_search": "Please enter a search term..."
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
     }
 }

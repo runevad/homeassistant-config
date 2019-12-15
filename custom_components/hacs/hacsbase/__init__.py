@@ -39,10 +39,7 @@ class System:
 
     status = HacsStatus()
     config_path = None
-<<<<<<< HEAD
     new = False
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
     ha_version = None
     disabled = False
     lovelace_mode = "storage"
@@ -144,11 +141,8 @@ class Hacs:
         if check:
             try:
                 await repository.registration()
-<<<<<<< HEAD
                 if self.system.new:
                     repository.status.new = False
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
                 if repository.validate.errors:
                     self.common.skip.append(repository.information.full_name)
                     if not self.system.status.startup:

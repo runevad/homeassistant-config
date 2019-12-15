@@ -13,10 +13,7 @@ THEME = "theme"
 
 # Options:
 COUNTRY = "country"
-<<<<<<< HEAD
 DEBUG = "debug"
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
 RELEASE_LIMIT = "release_limit"
 EXPERIMENTAL = "experimental"
 
@@ -45,16 +42,10 @@ def hacs_base_config_schema(config: dict = {}) -> dict:
 def hacs_config_option_schema(options: dict = {}) -> dict:
     """Return a shcema for HACS configuration options."""
     if not options:
-<<<<<<< HEAD
         options = {COUNTRY: "ALL", DEBUG: False, RELEASE_LIMIT: 5, EXPERIMENTAL: False}
     return {
         vol.Optional("country", default=options.get(COUNTRY)): vol.In(LOCALE),
         vol.Optional(DEBUG, default=options.get(DEBUG)): bool,
-=======
-        options = {COUNTRY: "ALL", RELEASE_LIMIT: 5, EXPERIMENTAL: False}
-    return {
-        vol.Optional("country", default=options.get(COUNTRY)): vol.In(LOCALE),
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         vol.Optional(RELEASE_LIMIT, default=options.get(RELEASE_LIMIT)): int,
         vol.Optional(EXPERIMENTAL, default=options.get(EXPERIMENTAL)): bool,
     }

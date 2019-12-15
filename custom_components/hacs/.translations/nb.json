@@ -97,10 +97,7 @@
     "settings": {
         "add_custom_repository": "LEGG TIL REPOSITORY",
         "category": "Kategori",
-<<<<<<< HEAD
         "compact_mode": "Kompakt modus",
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "custom_repositories": "TILPASSEDE REPOSITORIER",
         "delete": "Slett",
         "display": "Vise",
@@ -110,24 +107,16 @@
         "reload_data": "Last inn data på nytt",
         "save": "Lagre",
         "table": "Tabell",
-<<<<<<< HEAD
         "table_view": "Tabellvisning",
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "unhide": "Vis igjen",
         "upgrade_all": "Oppgradere alle"
     },
     "store": {
         "clear_new": "Tøm nye repositories",
-<<<<<<< HEAD
         "name": "Navn",
         "new_repositories": "Nye repositories",
         "placeholder_search": "Skriv inn et søkeord ...",
         "sort": "sorter",
         "status": "Status"
-=======
-        "new_repositories": "Nye repositories",
-        "placeholder_search": "Skriv inn et søkeord ..."
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
     }
 }

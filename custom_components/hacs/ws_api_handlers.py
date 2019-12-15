@@ -123,7 +123,6 @@ async def hacs_repositories(hass, connection, msg):
     repositories = Hacs().repositories
     content = []
     for repo in repositories:
-<<<<<<< HEAD
         data = {
             "name": repo.display_name,
             "description": repo.information.description,
@@ -161,44 +160,6 @@ async def hacs_repositories(hass, connection, msg):
         }
 
         content.append(data)
-=======
-        content.append(
-            {
-                "name": repo.display_name,
-                "description": repo.information.description,
-                "category": repo.information.category,
-                "installed": repo.status.installed,
-                "id": repo.information.uid,
-                "can_install": repo.can_install,
-                "homeassistant": repo.repository_manifest.homeassistant,
-                "hide": repo.status.hide,
-                "new": repo.status.new,
-                "beta": repo.status.show_beta,
-                "status": repo.display_status,
-                "status_description": repo.display_status_description,
-                "additional_info": repo.information.additional_info,
-                "info": repo.information.info,
-                "updated_info": repo.status.updated_info,
-                "version_or_commit": repo.display_version_or_commit,
-                "custom": repo.custom,
-                "domain": repo.manifest.get("domain"),
-                "state": repo.state,
-                "installed_version": repo.display_installed_version,
-                "available_version": repo.display_available_version,
-                "main_action": repo.main_action,
-                "pending_upgrade": repo.pending_upgrade,
-                "full_name": repo.information.full_name,
-                "file_name": repo.information.file_name,
-                "javascript_type": repo.information.javascript_type,
-                "authors": repo.information.authors,
-                "local_path": repo.content.path.local,
-                "topics": repo.information.topics,
-                "releases": repo.releases.published_tags,
-                "selected_tag": repo.status.selected_tag,
-                "default_branch": repo.information.default_branch,
-            }
-        )
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
 
     connection.send_message(websocket_api.result_message(msg["id"], content))
 
@@ -299,6 +260,11 @@ async def hacs_repository_data(hass, connection, msg):
             if result is not None:
                 result = {"message": str(result), "action": "add_repository"}
                 hass.bus.async_fire("hacs/error", result)
+        else:
+            hass.bus.async_fire(
+                "hacs/error",
+                {"message": f"Repository '{repo_id}' exsist in the store."},
+            )
 
         repository = Hacs().get_by_name(repo_id)
     else:
@@ -308,11 +274,7 @@ async def hacs_repository_data(hass, connection, msg):
         hass.bus.async_fire("hacs/repository", {})
         return
 
-<<<<<<< HEAD
     Hacs().logger.debug(f"Running {action} for {repository.information.full_name}")
-=======
-    Hacs().logger.info(f"Running {action} for {repository.information.full_name}")
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
 
     if action == "set_state":
         repository.state = data

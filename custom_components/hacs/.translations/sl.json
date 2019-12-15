@@ -97,10 +97,7 @@
     "settings": {
         "add_custom_repository": "DODAJTE SVOJ REPOZITORIJ",
         "category": "Kategorija",
-<<<<<<< HEAD
         "compact_mode": "Kompaktni način",
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "custom_repositories": "VAŠI REPOZITORIJI",
         "delete": "Izbriši",
         "display": "Prikaz",
@@ -110,24 +107,16 @@
         "reload_data": "Ponovno naloži podatke",
         "save": "Shranite",
         "table": "Tabela",
-<<<<<<< HEAD
         "table_view": "Pogled tabele",
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "unhide": "Razkrij",
         "upgrade_all": "Nadgradite vse"
     },
     "store": {
         "clear_new": "Počisti vse nove repozitorije",
-<<<<<<< HEAD
         "name": "Ime",
         "new_repositories": "Novi repozitoriji",
         "placeholder_search": "Prosim vnesite iskalni izraz ...",
         "sort": "razvrsti",
         "status": "Stanje"
-=======
-        "new_repositories": "Novi repozitoriji",
-        "placeholder_search": "Prosim vnesite iskalni izraz ..."
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
     }
 }

@@ -21,11 +21,7 @@
             "single_instance_allowed": "Es ist nur eine einzelne HACS-Instanz erlaubt."
         },
         "error": {
-<<<<<<< HEAD
             "auth": "Persönliches Zugriffstoken ist falsch."
-=======
-            "auth": "Persönlicher Zugriffstoken ist falsch."
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         },
         "step": {
             "user": {
@@ -35,11 +31,7 @@
                     "sidepanel_icon": "Sidepanel Symbol",
                     "sidepanel_title": "Sidepanel Titel",
                     "theme": "Theme-Discovery & Tracking aktivieren",
-<<<<<<< HEAD
                     "token": "Persönliches GitHub Zugriffstoken"
-=======
-                    "token": "Persönlicher GitHub Zugriffstoken"
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
                 },
                 "description": "Wenn du Hilfe mit den Einstellungen brauchst, kannst du hier nachsehen: https:\/\/hacs.xyz\/docs\/configuration\/start\/",
                 "title": "HACS (Home Assistant Community Store)"
@@ -68,11 +60,7 @@
         }
     },
     "repository_banner": {
-<<<<<<< HEAD
         "integration_not_loaded": "Diese Integration ist in Home Assistant nicht geladen.",
-=======
-        "integration_not_loaded": "Diese Integration ist nicht in Home Assistant geladen.",
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "not_loaded": "Nicht geladen",
         "plugin_not_loaded": "Dieses Plugin wurde deinen Lovelace-Ressourcen nicht hinzugefügt.",
         "restart": "Du musst Home Assistant neu starten.",
@@ -84,17 +72,12 @@
         "available": "Verfügbar",
         "back_to": "Zurück zu",
         "changelog": "Änderungsprotokoll",
-<<<<<<< HEAD
         "flag_this": "Melden",
-=======
-        "flag_this": "Markieren",
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "hide": "Verstecken",
         "hide_beta": "Beta verstecken",
         "install": "Installieren",
         "installed": "Installiert",
         "lovelace_copy_example": "Beispiel in die Zwischenablage kopieren",
-<<<<<<< HEAD
         "lovelace_instruction": "Zum Hinzufügen zu deinen Lovelace-Einstellungen, benutze Folgendes",
         "lovelace_no_js_type": "Konnte die Art dieses Plugins nicht erkennen. Prüfe das Repository.",
         "newest": "neueste",
@@ -103,16 +86,6 @@
         "note_integration": "du musst es dann noch in die Datei 'configuration.yaml' hinzufügen",
         "note_plugin": "du musst es dann noch in deine Lovelace-Einstellungen ('ui-lovelace.yaml' oder im Raw-Konfigurationseditor) hinzufügen",
         "open_issue": "Problem melden",
-=======
-        "lovelace_instruction": "Wenn du dies in deine Lovelace-Config hinzufügst, benutze dies",
-        "lovelace_no_js_type": "Konnte die Art dieses Plugins nicht erkennen. Prüfe die Repository.",
-        "newest": "neueste",
-        "note_appdaemon": "Du musst deine Apps noch in deine 'apps.yaml' einfügen",
-        "note_installed": "Nach der Installation wird dies zu finden sein in",
-        "note_integration": "Du musst dies noch deiner 'configuration.yaml' hinzufügen",
-        "note_plugin": "Du musst dies noch in deine Lovelace-Einstellungen ('ui-lovelace.yaml' oder Raw-Konfigurationseditor) hinzufügen",
-        "open_issue": "Problem eröffnen",
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "open_plugin": "Plugin öffnen",
         "reinstall": "Neu installieren",
         "repository": "Repository",
@@ -124,10 +97,7 @@
     "settings": {
         "add_custom_repository": "CUSTOM REPOSITORY HINZUFÜGEN",
         "category": "Kategorie",
-<<<<<<< HEAD
         "compact_mode": "Kompakter Modus",
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "custom_repositories": "CUSTOM REPOSITORIES",
         "delete": "Löschen",
         "display": "Anzeige",
@@ -137,7 +107,6 @@
         "reload_data": "Daten neu laden",
         "save": "Speichern",
         "table": "Tabelle",
-<<<<<<< HEAD
         "table_view": "Tabellenansicht",
         "unhide": "einblenden",
         "upgrade_all": "Alles aktualisieren"
@@ -149,14 +118,5 @@
         "placeholder_search": "Suchbegriff eingeben…",
         "sort": "Sortieren",
         "status": "Status"
-=======
-        "unhide": "einblenden",
-        "upgrade_all": "Alle aktualisieren"
-    },
-    "store": {
-        "clear_new": "Leeren sie alle neuen Repositories",
-        "new_repositories": "Neue Repositories",
-        "placeholder_search": "Suchbegriff eingeben…"
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
     }
 }

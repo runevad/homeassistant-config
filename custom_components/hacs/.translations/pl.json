@@ -97,10 +97,7 @@
     "settings": {
         "add_custom_repository": "DODAJ REPOZYTORIUM NIESTANDARDOWE",
         "category": "Kategoria",
-<<<<<<< HEAD
         "compact_mode": "Tryb kompaktowy",
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "custom_repositories": "REPOZYTORIA NIESTANDARDOWE",
         "delete": "Usuń",
         "display": "Sposób wyświetlania",
@@ -110,24 +107,16 @@
         "reload_data": "Wczytaj ponownie dane",
         "save": "Zapisz",
         "table": "tabela",
-<<<<<<< HEAD
         "table_view": "Widok tabeli",
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "unhide": "pokaż",
         "upgrade_all": "Uaktualnij wszystkie"
     },
     "store": {
         "clear_new": "Wyczyść wszystkie nowe repozytoria",
-<<<<<<< HEAD
         "name": "Nazwa",
         "new_repositories": "Nowe repozytoria",
         "placeholder_search": "Wprowadź wyszukiwane hasło...",
         "sort": "sortowanie",
         "status": "Status"
-=======
-        "new_repositories": "Nowe repozytoria",
-        "placeholder_search": "Wprowadź wyszukiwane hasło..."
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
     }
 }

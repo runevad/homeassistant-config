@@ -40,7 +40,6 @@
         "title": "HACS (Home Assistant Community Store)"
     },
     "confirm": {
-<<<<<<< HEAD
         "add_to_lovelace": "Er du sikker på at du vil legge til dette i Lovelace-ressursane dine?",
         "continue": "Er du sikker på at du vil halde fram?",
         "delete": "Er du sikker på at du vil slette \"{item}\"?",
@@ -48,9 +47,6 @@
         "generic": "Er du sikker?",
         "overwrite": "Ved å gjere dette kjem du til å overskrive. ",
         "uninstall": "Er du sikker på at du vil avinstallere \"{item}\"?"
-=======
-        "delete": "Er du sikker på at du vil slette \"{item}\"?"
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
     },
     "options": {
         "step": {
@@ -63,7 +59,6 @@
             }
         }
     },
-<<<<<<< HEAD
     "repository_banner": {
         "integration_not_loaded": "Integrasjonen er ikkje lasta inn i Home Assistant.",
         "not_loaded": "Ikkje lasta",
@@ -73,9 +68,6 @@
     },
     "repository": {
         "add_to_lovelace": "Legg til i Lovelace",
-=======
-    "repository": {
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "authors": "Forfatter(e)",
         "available": "Tilgjengeleg",
         "back_to": "Tilbake til",
@@ -105,16 +97,12 @@
     "settings": {
         "add_custom_repository": "LEGG TIL EIN ANNAN REPOSITORY",
         "category": "Kategori",
-<<<<<<< HEAD
         "compact_mode": "Kompaktmodus",
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         "custom_repositories": "VANLEG REPOSITORY",
         "delete": "Slett",
         "display": "Vis",
         "grid": "rutenett",
         "hacs_repo": "HACS repo",
-<<<<<<< HEAD
         "hidden_repositories": "gøymde repositories",
         "reload_data": "Last om dataa",
         "save": "Lagre",
@@ -130,14 +118,5 @@
         "placeholder_search": "Ver vennleg og skriv inn ei søkefrase",
         "sort": "Sorter",
         "status": "Status"
-=======
-        "reload_data": "Last om dataa",
-        "save": "Lagre",
-        "table": "Tavle",
-        "upgrade_all": "Oppdater alle"
-    },
-    "store": {
-        "placeholder_search": "Ver vennleg og skriv inn ei søkefrase"
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
     }
 }

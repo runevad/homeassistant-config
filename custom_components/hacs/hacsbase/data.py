@@ -47,10 +47,7 @@ class HacsData(Hacs):
                 "hide": repository.status.hide,
                 "installed_commit": repository.versions.installed_commit,
                 "installed": repository.status.installed,
-<<<<<<< HEAD
                 "stars": repository.information.stars,
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
                 "last_commit": repository.versions.available_commit,
                 "last_release_tag": repository.versions.available,
                 "repository_manifest": repository_manifest,
@@ -72,10 +69,7 @@ class HacsData(Hacs):
         try:
             if not hacs and not repositories:
                 # Assume new install
-<<<<<<< HEAD
                 self.system.new = True
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
                 return True
             self.logger.info("Restore started")
 
@@ -86,11 +80,7 @@ class HacsData(Hacs):
             # Repositories
             for entry in repositories:
                 repo = repositories[entry]
-<<<<<<< HEAD
                 if repo["full_name"] == "hacs/integration":
-=======
-                if repo["full_name"] == "custom-components/hacs":
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
                     # Skip the old repo location
                     continue
                 if not self.is_known(repo["full_name"]):
@@ -123,10 +113,7 @@ def restore_repository_data(
     repository.information.description = repository_data.get("description")
     repository.information.name = repository_data.get("name")
     repository.information.topics = repository_data.get("topics", [])
-<<<<<<< HEAD
     repository.information.stars = repository_data.get("stars", 0)
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
     repository.releases.last_release = repository_data.get("last_release_tag")
     repository.status.hide = repository_data.get("hide", False)
     repository.status.installed = repository_data.get("installed", False)

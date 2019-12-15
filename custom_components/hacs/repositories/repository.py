@@ -12,7 +12,7 @@ from ..helpers.misc import get_repository_name
 from ..hacsbase import Hacs
 from ..hacsbase.backup import Backup
 from ..handler.download import async_download_file, async_save_file
-from ..helpers.misc import version_is_newer_than_version
+from ..helpers.misc import version_left_higher_then_right
 
 
 RERPOSITORY_CLASSES = {}
@@ -62,10 +62,7 @@ class RepositoryInformation:
     homeassistant_version = None
     last_updated = None
     uid = None
-<<<<<<< HEAD
     stars = 0
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
     info = None
     name = None
     topics = []
@@ -165,7 +162,7 @@ class HacsRepository(Hacs):
 
         if target is not None:
             if self.releases.releases:
-                if version_is_newer_than_version(target, self.system.ha_version):
+                if not version_left_higher_then_right(self.system.ha_version, target):
                     return False
         return True
 
@@ -313,14 +310,11 @@ class HacsRepository(Hacs):
         # Set topics
         self.information.topics = self.repository_object.topics
 
-<<<<<<< HEAD
         # Set stargazers_count
         self.information.stars = self.repository_object.attributes.get(
             "stargazers_count", 0
         )
 
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         # Set description
         if self.repository_object.description:
             self.information.description = self.repository_object.description
@@ -340,14 +334,11 @@ class HacsRepository(Hacs):
         if self.repository_object.description:
             self.information.description = self.repository_object.description
 
-<<<<<<< HEAD
         # Set stargazers_count
         self.information.stars = self.repository_object.attributes.get(
             "stargazers_count", 0
         )
 
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
         # Update default branch
         self.information.default_branch = self.repository_object.default_branch
 
@@ -581,43 +572,19 @@ class HacsRepository(Hacs):
             for file in root:
                 if file.name.lower() in info_files:
 
-<<<<<<< HEAD
                     info = await self.repository_object.get_contents(
-=======
-                    info = await self.repository_object.get_rendered_contents(
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
                         file.name, self.ref
                     )
                     break
             if info is None:
                 self.information.additional_info = ""
             else:
-<<<<<<< HEAD
                 info = info.content.replace("<svg", "<disabled").replace(
                     "</svg", "</disabled"
                 )
                 info = info.replace(
                     '<a href="http', '<a rel="noreferrer" target="_blank" href="http'
                 )
-=======
-                info = info.replace("&lt;", "<")
-                info = info.replace("<svg", "<disabled").replace("</svg", "</disabled")
-                info = info.replace("<h3>", "<h6>").replace("</h3>", "</h6>")
-                info = info.replace("<h2>", "<h5>").replace("</h2>", "</h5>")
-                info = info.replace("<h1>", "<h4>").replace("</h1>", "</h4>")
-                info = info.replace("<code>", "<code class='codeinfo'>")
-                info = info.replace(
-                    '<a href="http', '<a rel="noreferrer" target="_blank" href="http'
-                )
-                info = info.replace("<li>", "<li style='list-style-type: initial;'>")
-
-                # Special changes that needs to be done:
-                info = info.replace(
-                    "<your", "<&#8205;your"
-                )  # for thomasloven/hass-favicon
-
-                info += "</br>"
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
 
                 self.information.additional_info = render_template(info, self)
 

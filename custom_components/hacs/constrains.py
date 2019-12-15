@@ -4,16 +4,13 @@ import os
 import json
 
 from .const import CUSTOM_UPDATER_LOCATIONS, CUSTOM_UPDATER_WARNING
-from .helpers.misc import version_is_newer_than_version
+from .helpers.misc import version_left_higher_then_right
 
 
 def check_constans(hacs):
     """Check HACS constrains."""
-<<<<<<< HEAD
     if not constrain_translations(hacs):
         return False
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
     if not constrain_custom_updater(hacs):
         return False
     if not constrain_version(hacs):
@@ -43,13 +40,12 @@ def constrain_version(hacs):
     # Check if HA is the required version.
     installed = hacs.system.ha_version
     minimum = manifest["homeassistant"]
-    if not version_is_newer_than_version(installed, minimum):
+    if not version_left_higher_then_right(installed, minimum):
         hacs.logger.critical(
             f"You need HA version {manifest['homeassistant']} or newer to use this integration."
         )
         return False
     return True
-<<<<<<< HEAD
 
 
 def constrain_translations(hacs):
@@ -62,5 +58,3 @@ def constrain_translations(hacs):
 
     return True
 
-=======
->>>>>>> 2d310d52fb4db0329ba3cad99ef1641f8c170705
