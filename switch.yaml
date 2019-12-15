@@ -1,9 +1,9 @@
 ## Switches
 
   - platform: mqtt
-    name: Weather station restart switch
-    state_topic: wemos_weather_station/switch/weather_station_restart_switch/state
-    command_topic: wemos_weather_station/switch/weather_station_restart_switch/command
+    name: outdoor temp station restart switch
+    state_topic: outdoor_temp_station/switch/outdoor_temp_station_restart_switch/state
+    command_topic: outdoor_temp_station/switch/outdoor_temp_station_restart_switch/command
     icon: mdi:restart
 
 ## HA-Dockermon

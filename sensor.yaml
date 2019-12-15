@@ -76,37 +76,31 @@
 #### MQTT stuff
 #### Weather station
   - platform: mqtt
-    name: Outdoor temperature
-    state_topic: wemos_weather_station/sensor/outdoor_temperature/state
+    name: outdoor temperature
+    state_topic: outdoor_temp_station/sensor/temp1/state
     unit_of_measurement: '°C'
     icon: mdi:thermometer
 
-  # - platform: mqtt
-  #   name: Outdoor pressure
-  #   state_topic: wemos_weather_station/sensor/outdoor_pressure/state
-  #   unit_of_measurement: 'hPa'
-  #   icon: mdi:gauge
-  #
-  # - platform: mqtt
-  #   name: Outdoor humidity
-  #   state_topic: wemos_weather_station/sensor/outdoor_humidity/state
-  #   unit_of_measurement: '%'
-  #   icon: mdi:water-percent
+  - platform: mqtt
+    name: outdoor_temperature 2
+    state_topic: outdoor_temp_station/sensor/temp2/state
+    unit_of_measurement: '°C'
+    icon: mdi:thermometer
 
   - platform: mqtt
     name: Weather station signal strength
-    state_topic: wemos_weather_station/sensor/weather_station_signal_strength/state
+    state_topic: outdoor_temp_station/sensor/outdoor_temp_station_signal_strength/state
     unit_of_measurement: 'dB'
     icon: mdi:wifi
 
   - platform: mqtt
     name: Weather station battery level
-    state_topic: wemos_weather_station/sensor/weather_station_battery_level/state
+    state_topic: outdoor_temp_station/sensor/weather_station_battery_level/state
     unit_of_measurement: '%'
     icon: mdi:battery
 
   - platform: mqtt
     name: Weather station run time
-    state_topic: wemos_weather_station/sensor/weather_station_run_time/state
+    state_topic: outdoor_temp_station/sensor/weather_station_run_time/state
     unit_of_measurement: 'ms'
     icon: mdi:timer
