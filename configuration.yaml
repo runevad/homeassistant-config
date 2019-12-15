@@ -188,6 +188,16 @@ light:
   - platform: switch
     name: master_bedroom_window_light_2
     entity_id: switch.master_bedroom_window_light_2
+  - platform: switch
+    name: outdoor_porch_lights
+    entity_id: switch.outdoor_porch_lights
+  - platform: group
+    name: outdoor_carport_lights
+    entities:
+      - light.outdoor_carport_light_1
+      - light.outdoor_carport_light_2
+      - light.outdoor_carport_light_3
+
 
 binary_sensor:
   - platform: template

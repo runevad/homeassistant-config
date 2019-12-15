@@ -52,4 +52,12 @@ kerstin_lights:
     - light.kerstin_angel_light
 
 outdoor_lights:
-    - light.carport_lights #deconz group
+    - light.outdoor_carport_light_1
+    - light.outdoor_carport_light_2
+    - light.outdoor_carport_light_3
+    - light.outdoor_porch_lights
+
+carport_lights:
+    - light.outdoor_carport_light_1
+    - light.outdoor_carport_light_2
+    - light.outdoor_carport_light_3

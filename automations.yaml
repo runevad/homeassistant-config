@@ -84,22 +84,6 @@
         push:
           badge: 100
           category: notis
-- id: storage_cold
-  alias: Kallt i förråd
-  initial_state: 'on'
-  trigger:
-  - platform: numeric_state
-    entity_id: sensor.storage_floor_temp_sensor
-    below: 10
-  action:
-  - service: notify.mobile_app_lars_iphone
-    data:
-      title: Larm
-      message: Det är under 10°C i förrådet!
-      data:
-        push:
-          badge: 500
-          category: notis
 - id: arm_cottage
   alias: Arm the house
   trigger:
@@ -276,72 +260,76 @@
   action:
   - service: script.cottage_night
 - id: turn_off_lights_when_away
-  alias: Lights off when Away
-  initial_state: 'on'
+  alias: lights off when away
+  trigger:
+  - at: 00:16:00
+    platform: time
   condition:
   - condition: state
     entity_id: input_select.cottage_status
     state: Away
-  trigger:
-  - platform: time
-    at: 00:16:00
   action:
-  - service: light.turn_off
-    entity_id:
+  - data:
+      entity_id:
       - group.bedroom_lights
       - group.ingrid_lights
       - group.kerstin_lights
-- id: lights_on_pre_kids_bedtime
-  alias: Lights on pre kids bedtime
+    service: light.turn_off
   initial_state: 'on'
+- id: lights_on_pre_kids_bedtime
+  alias: lights on if time is before kids bedtime
+  trigger:
+  - below: '1'
+    entity_id: sun.sun
+    platform: numeric_state
+    value_template: '{{ state.attributes.elevation }}'
   condition:
   - condition: state
     entity_id: input_boolean.cottage_update
     state: 'on'
-  - condition: time
-    after: '12:00:00'
+  - after: '12:00:00'
     before: '18:00:00'
-  trigger:
-  - platform: numeric_state
-    entity_id: sun.sun
-    value_template: '{{ state.attributes.elevation }}'
-    below: 1.0
+    condition: time
   action:
-  - service: light.turn_on
-    data:
+  - data:
+      brightness: 120
       entity_id:
       - group.window_lights
       - group.window_lights_bedroom
       - group.outdoor_lights
-      brightness: 120
       transition: 180
-- id: lights_on_evening
-  alias: Lights on evening
+    service: light.turn_on
   initial_state: 'on'
+- id: lights_on_evening
+  alias: lights on evening
+  trigger:
+  - below: '1'
+    entity_id: sun.sun
+    platform: numeric_state
+    value_template: '{{ state.attributes.elevation }}'
   condition:
   - condition: and
     conditions:
     - condition: state
       entity_id: input_boolean.cottage_update
       state: 'on'
-    - condition: time
-      after: '18:00:00'
+    - after: '18:00:00'
       before: '20:30:00'
-  trigger:
-  - platform: numeric_state
-    entity_id: sun.sun
-    value_template: '{{ state.attributes.elevation }}'
-    below: 1.0
+      condition: time
   action:
-  - service: light.turn_on
-    data:
+  - data:
       brightness: 100
       entity_id:
       - group.window_lights_excl_kids
       - group.outdoor_lights
-- id: morning_lights_weekday
-  alias: Morning lights weekday
+    service: light.turn_on
   initial_state: 'on'
+- id: morning_lights_weekday
+  alias: lights on morning weekday
+  trigger:
+  - entity_id: binary_sensor.family_room_motion_sensor
+    platform: state
+    to: 'on'
   condition:
   - condition: and
     conditions:
@@ -354,9 +342,9 @@
     - condition: state
       entity_id: group.window_lights
       state: 'off'
-    - condition: time
-      after: 05:30:00
+    - after: 05:30:00
       before: 09:30:00
+      condition: time
     - condition: state
       entity_id: binary_sensor.workday
       state: 'on'
@@ -365,24 +353,22 @@
       - condition: state
         entity_id: sun.sun
         state: below_horizon
-  trigger:
-  - platform: state
-    entity_id: binary_sensor.family_room_motion_sensor
-    to: 'on'
   action:
-  - service: light.turn_on
-    data:
+  - data:
       brightness: 255
       entity_id: group.window_lights
+    service: light.turn_on
+  initial_state: 'on'
 - id: lights_on_up_night_motion
-  alias: Lights upstairs night motion
+  alias: lights on at night upstairs when motion detected
   trigger:
-  - platform: state
-    entity_id: binary_sensor.family_room_motion_sensor
+  - entity_id: binary_sensor.family_room_motion_sensor
+    platform: state
     to: 'on'
   condition:
-  - after: sunset
-    condition: sun
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
   - condition: state
     entity_id: light.window_lights_upstairs
     state: 'off'
@@ -394,28 +380,28 @@
     service: light.turn_off
   initial_state: 'on'
 - id: lights_on_down_night_motion
-  alias: Lights downstairs night motion
-  initial_state: 'on'
+  alias: lights on at night downstairs when motion detected
+  trigger:
+  - entity_id: binary_sensor.hall_motion_sensor
+    platform: state
+    to: 'on'
   condition:
   - condition: and
     conditions:
-    - condition: time
-      after: '22:00:00'
+    - after: '22:00:00'
+      condition: time
     - condition: state
       entity_id: light.window_lights_downstairs
       state: 'off'
-  trigger:
-  - platform: state
-    entity_id: binary_sensor.hall_motion_sensor
-    to: 'on'
   action:
-  - service: light.turn_on
-    entity_id: light.window_lights_downstairs
-  - delay: 00:04:00
-  - service: light.turn_off
-    entity_id: light.window_lights_downstairs
+  - entity_id: light.window_lights_downstairs
+    service: light.turn_on
+  - delay: 00:10:00
+  - entity_id: light.window_lights_downstairs
+    service: light.turn_off
+  initial_state: 'on'
 - id: wake_up_lights_weekday
-  alias: Wake up light weekdays
+  alias: light wake up weekdays
   trigger:
   - at: 06:00
     platform: time
@@ -566,7 +552,7 @@
   - service: notify.mobile_app_lars_iphone
     data:
       title: Uppdatering!
-      message: "Ny version av Home Assistant tillgänglig!"
+      message: Ny version av Home Assistant tillgänglig!
       data:
         push:
           badge: 10
@@ -576,7 +562,7 @@
       sonos_entity: media_player.kok_2
       volume: 0.45
       delay: 00:00:15
-      message: "Hej, det finns en ny uppdatering av Home Assistant"
+      message: Hej, det finns en ny uppdatering av Home Assistant
 - id: fire_alarm
   alias: Smoke detectors tripped
   initial_state: 'on'
@@ -645,61 +631,40 @@
   - service: input_boolean.turn_off
     entity_id: input_boolean.cottage_guest_mode
 - id: '1574533247410'
-  alias: Belysning trapp on
+  alias: light stairs on when motion detected
   description: ''
   trigger:
   - entity_id: group.motion_sensors
     platform: state
     to: 'on'
   condition:
-  - condition: device
-    device_id: 57899f5289404e3b93062c540207d5df
-    domain: switch
-    entity_id: switch.hall_stairs_light
-    type: is_off
+  - condition: state
+    entity_id: light.hall_stairs_light
+    state: 'off'
   - condition: state
     entity_id: sun.sun
     state: below_horizon
   action:
-  - device_id: 57899f5289404e3b93062c540207d5df
-    domain: switch
-    entity_id: switch.hall_stairs_light
-    type: turn_on
+  - alias: ''
+    data: {}
+    entity_id: light.hall_stairs_light
+    service: light.turn_on
 - id: '1575229526062'
-  alias: Increase outdoor lights when door opens
+  alias: light increase outdoor lights when door opens
   description: ''
   trigger:
-  - device_id: 69cacf6e2562425c9a417ef39617aae9
-    domain: binary_sensor
-    entity_id: binary_sensor.laundry_door_sensor
-    platform: device
-    type: opened
-  - device_id: 66ca085979c04f1997530a72b73fc85d
-    domain: binary_sensor
-    entity_id: binary_sensor.hall_door_sensor
-    platform: device
-    type: opened
-  - device_id: d19db574b5de4116aa12f46dbc4696c9
-    domain: binary_sensor
-    entity_id: binary_sensor.storage_door_sensor
-    platform: device
-    type: opened
+  - entity_id: group.door_sensors
+    from: 'off'
+    platform: state
+    to: 'on'
   condition:
   - condition: state
     entity_id: sun.sun
     state: below_horizon
   action:
-  - data:
-      brightness: 255
-      entity_id: light.carport_lights
-    service: light.turn_on
-  - delay: 00:10:00
-  - data:
-      brightness: 100
-      entity_id: light.carport_lights
-    service: light.turn_on
+  - scene: scene.outdoor_lights_max
 - id: '1575235004195'
-  alias: Belysning trapp off
+  alias: light stairs off when no motion detected
   description: ''
   trigger:
   - entity_id: group.motion_sensors
@@ -707,13 +672,59 @@
     platform: state
     to: 'off'
   condition:
-  - condition: device
-    device_id: 57899f5289404e3b93062c540207d5df
-    domain: switch
-    entity_id: switch.hall_stairs_light
-    type: is_on
+  - condition: state
+    entity_id: light.hall_stairs_light
+    state: 'on'
   action:
-  - device_id: 57899f5289404e3b93062c540207d5df
-    domain: switch
-    entity_id: switch.hall_stairs_light
-    type: turn_off
+  - alias: ''
+    data: {}
+    entity_id: light.hall_stairs_light
+    service: light.turn_off
+- id: '1576351177046'
+  alias: light turn down outdoor lights when no door opened for one hour
+  description: ''
+  trigger:
+  - entity_id: group.door_sensors
+    for: 01:00:00
+    platform: state
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  action:
+  - scene: scene.outdoor_lights_min
+- id: '1576351426270'
+  alias: light turn off outdoor lights when door closed during night
+  description: ''
+  trigger:
+  - entity_id: group.door_sensors
+    for: 03:00:00
+    platform: state
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  - condition: state
+    entity_id: binary_sensor.cottage_status_home
+    state: 'on'
+  action:
+  - entity_id: group.outdoor_lights
+    service: light.turn_off
+- id: '1576406786036'
+  alias: light turn off lights when sun is up
+  description: ''
+  trigger:
+  - event: sunrise
+    offset: 00:30:00
+    platform: sun
+  condition: []
+  action:
+  - alias: ''
+    data:
+      entity_id:
+      - group.window_lights
+      - group.window_lights_bedroom
+      - group.outdoor_lights
+    service: light.turn_off

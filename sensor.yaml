@@ -73,14 +73,6 @@
           {% set ha.atime = as_timestamp(states.sensor.date.state + ' ' + states.input_datetime.heater_departuretime.state) - states.sensor.heater_temptime.state|int %}
           {{ ha.atime | timestamp_custom("%H:%M")|string }}
 
-      wake_up_workday:
-        friendly_name: 'Wake up time!'
-        icon_template: mdi:clock-start
-        value_template: >-
-          {% set ha = namespace() %}
-          {% set ha.dtime = states.input_datetime.wake_up_workday.attributes.timestamp %}
-          {{ ha.atime | timestamp_custom("%H:%M")|string }}
-
 #### MQTT stuff
 #### Weather station
   - platform: mqtt
@@ -89,17 +81,17 @@
     unit_of_measurement: '°C'
     icon: mdi:thermometer
 
-  - platform: mqtt
-    name: Outdoor pressure
-    state_topic: wemos_weather_station/sensor/outdoor_pressure/state
-    unit_of_measurement: 'hPa'
-    icon: mdi:gauge
-
-  - platform: mqtt
-    name: Outdoor humidity
-    state_topic: wemos_weather_station/sensor/outdoor_humidity/state
-    unit_of_measurement: '%'
-    icon: mdi:water-percent
+  # - platform: mqtt
+  #   name: Outdoor pressure
+  #   state_topic: wemos_weather_station/sensor/outdoor_pressure/state
+  #   unit_of_measurement: 'hPa'
+  #   icon: mdi:gauge
+  #
+  # - platform: mqtt
+  #   name: Outdoor humidity
+  #   state_topic: wemos_weather_station/sensor/outdoor_humidity/state
+  #   unit_of_measurement: '%'
+  #   icon: mdi:water-percent
 
   - platform: mqtt
     name: Weather station signal strength

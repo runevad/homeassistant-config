@@ -86,26 +86,26 @@ cottage_standby:
 cottage_night:
   alias: Cottage Night
   sequence:
-  - service: input_select.select_option
-    data:
+  - data:
       entity_id: input_select.cottage_status
       option: Night
-  - service: switch.turn_off
-    data:
+    service: input_select.select_option
+  - data:
       entity_id:
       - switch.storage_hwc
       - switch.extra_hot_water
-  - service: light.turn_off
-    data:
+    service: switch.turn_off
+  - data:
       entity_id:
       - group.bedroom_lights
       - group.window_lights
       - group.window_lights_bedroom
-  - service: light.turn_on
-    data:
-      brightness: 10
-      entity_id: group.outdoor_lights
-      transition: 60
+      - light.outdoor_porch_lights
+    service: light.turn_off
+  - data:
+      brightness: 1
+      entity_id: group.carport_lights
+    service: light.turn_on
 extra_hot_water:
   alias: Extra varmvatten 2h
   sequence:
@@ -144,8 +144,8 @@ sonos_say:
       entity_id: '{{ sonos_entity|default(''media_player.kok_2'') }}'
       message: '{{ message }}'
   - delay: '{{ delay|default(''00:00:00'') }}'
-  - wait_template: '{{ is_state(sonos_entity|default(''media_player.kok_2''),
-      ''playing'') }}'
+  - wait_template: '{{ is_state(sonos_entity|default(''media_player.kok_2''), ''playing'')
+      }}'
     timeout: 00:00:10
   - service: sonos.restore
     data_template:
