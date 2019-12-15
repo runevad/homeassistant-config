@@ -170,3 +170,19 @@ dishwasher_done:
       volume: 0.55
       delay: 00:00:15
       message: Hej Hej Hej, diskmaskinen har körts klart och är redo för utplockning
+esp_ota_mode_on:
+  alias: ESP OTA mode on
+  sequence:
+  - data:
+      payload: 'ON'
+      retain: true
+      topic: wemos_weather_station/ota_mode
+    service: mqtt.publish
+esp_ota_mode_off:
+  alias: ESP OTA mode off
+  sequence:
+  - data:
+      payload: 'OFF'
+      retain: true
+      topic: wemos_weather_station/ota_mode
+    service: mqtt.publish

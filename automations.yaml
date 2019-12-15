@@ -728,3 +728,21 @@
       - group.window_lights_bedroom
       - group.outdoor_lights
     service: light.turn_off
+- id: '1576449718169'
+  alias: 'ESP low battery '
+  description: below 3.3V
+  trigger:
+  - below: '3.3'
+    entity_id: sensor.weather_station_battery_voltage
+    for: 01:00:00
+    platform: numeric_state
+  condition: []
+  action:
+  - data_template:
+      data:
+        push:
+          badge: 1
+          category: notis
+      message: Weather station is below 3.3V
+      title: ESP low battery!
+    service: notify.mobile_app_lars_iphone
