@@ -17,7 +17,7 @@ door_sensors:
   icon: mdi:glassdoor
   entities:
     - binary_sensor.patio_door_sensor #Altandörr
-    - binary_sensor.storage_door_sensor #Förrådsdörr
+    # - binary_sensor.storage_door_sensor #Förrådsdörr
     - binary_sensor.laundry_door_sensor #Groventre
     - binary_sensor.hall_door_sensor #Halldörr
 
@@ -41,3 +41,6 @@ smoke_sensors:
     - binary_sensor.ingrid_smoke_detector
     - binary_sensor.kerstin_smoke_detector
     - binary_sensor.master_bedroom_smoke_detector
+
+storage_carport_sensors:
+    - binary_sensor.storage_door_sensor #Förrådsdörr
