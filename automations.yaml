@@ -322,6 +322,7 @@
       entity_id:
       - group.window_lights_excl_kids
       - group.outdoor_lights
+      - light.storage_window_light
     service: light.turn_on
   initial_state: 'on'
 - id: morning_lights_weekday
@@ -509,7 +510,7 @@
           category: notis
   - service: script.sonos_say
     data_template:
-      sonos_entity: media_player.kok_2
+      sonos_entity: media_player.allrum_2
       volume: 0.45
       delay: 00:00:15
       message: Hej, tänk på att det just nu är högt elpris. Det ligger just nu på
@@ -534,7 +535,7 @@
           category: notis
   - service: script.sonos_say
     data_template:
-      sonos_entity: media_player.kok_2
+      sonos_entity: media_player.allrum_2
       volume: 0.45
       delay: 00:00:15
       message: Hej, just nu är det lågt elpris, {{ states.sensor.nibe_31372_10069.state
@@ -559,7 +560,7 @@
           category: notis
   - service: script.sonos_say
     data_template:
-      sonos_entity: media_player.kok_2
+      sonos_entity: media_player.allrum_2
       volume: 0.45
       delay: 00:00:15
       message: Hej, det finns en ny uppdatering av Home Assistant
@@ -727,6 +728,7 @@
       - group.window_lights
       - group.window_lights_bedroom
       - group.outdoor_lights
+      - light.storage_window_light
     service: light.turn_off
 - id: '1576449718169'
   alias: 'ESP low battery '

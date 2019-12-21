@@ -1,5 +1,5 @@
 family:
-  name: "Household"
+  name: "Family"
   entities:
   - person.lars
   - person.emelie

@@ -1,0 +1,12 @@
+#######################
+## Sonos groups
+#######################
+
+sonos:
+  name: "Sonos"
+  view: no
+  entities:
+    - media_player.kok_2
+    - media_player.allrum_2
+    - media_player.ingrids_rum
+    - media_player.kerstins_rum
