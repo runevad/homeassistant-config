@@ -6,9 +6,9 @@ sonos_doorbell:
     data:
       master: media_player.allrum_2
     entity_id:
-      - media_player.allrum_2
-      - media_player.ingrids_rum
-      - media_player.kerstins_rum
+    - media_player.allrum_2
+    - media_player.ingrids_rum
+    - media_player.kerstins_rum
   - service: media_player.volume_set
     data:
       volume_level: 0.7
@@ -29,9 +29,9 @@ sonos_fire_alarm:
     data:
       master: media_player.allrum_2
     entity_id:
-      - media_player.allrum_2
-      - media_player.ingrids_rum
-      - media_player.kerstins_rum
+    - media_player.allrum_2
+    - media_player.ingrids_rum
+    - media_player.kerstins_rum
   - service: media_player.volume_set
     data:
       volume_level: 0.95
@@ -69,9 +69,9 @@ sonos_alarm:
     data:
       master: media_player.allrum_2
     entity_id:
-      - media_player.allrum_2
-      - media_player.ingrids_rum
-      - media_player.kerstins_rum
+    - media_player.allrum_2
+    - media_player.ingrids_rum
+    - media_player.kerstins_rum
   - service: media_player.volume_set
     data:
       volume_level: 0.8
@@ -135,17 +135,7 @@ cottage_night:
       - switch.storage_hwc
       - switch.extra_hot_water
     service: switch.turn_off
-  - data:
-      entity_id:
-      - group.bedroom_lights
-      - group.window_lights
-      - group.window_lights_bedroom
-      - light.outdoor_porch_lights
-    service: light.turn_off
-  - data:
-      brightness: 1
-      entity_id: group.carport_lights
-    service: light.turn_on
+  - scene: scene.night
 extra_hot_water:
   alias: Extra varmvatten 2h
   sequence:
@@ -174,9 +164,9 @@ sonos_say:
     data:
       master: media_player.allrum_2
     entity_id:
-      - media_player.allrum_2
-      - media_player.ingrids_rum
-      - media_player.kerstins_rum
+    - media_player.allrum_2
+    - media_player.ingrids_rum
+    - media_player.kerstins_rum
   - service: media_player.volume_set
     data_template:
       entity_id: media_player.allrum_2
@@ -197,13 +187,12 @@ dishwasher_done:
   - condition: time
     after: 08:00:00
     before: '21:00:00'
-  - service: notify.mobile_app_lars_iphone
+  - service: notify.all_devices
     data:
       title: Diskmaskinen klar!
       message: '...'
       data:
         push:
-          badge:
           category: notis
   - service: script.sonos_say
     data_template:
@@ -227,3 +216,19 @@ esp_ota_mode_off:
       retain: true
       topic: wemos_weather_station/ota_mode
     service: mqtt.publish
+light_flash:
+  alias: Flash lights when alarm
+  sequence:
+  - entity_id: group.all_lights
+    service: light.turn_on
+  - delay: 00:00:01
+  - entity_id: group.all_lights
+    service: light.turn_off
+  - entity_id: script.flash_loop
+    service: homeassistant.turn_on
+flash_loop:
+  alias: Flash loop
+  sequence:
+  - delay: 00:00:01
+  - service: script.turn_on
+    entity_id: script.light_flash

@@ -215,24 +215,6 @@
       is_deconz_group: false
       state: 'off'
       supported_features: 41
-    light.ingrid_color_light:
-      brightness: 9
-      effect_list:
-      - colorloop
-      friendly_name: ingrid color light
-      hs_color:
-      - 0
-      - 100
-      is_deconz_group: false
-      rgb_color:
-      - 255
-      - 0
-      - 0
-      state: 'on'
-      supported_features: 61
-      xy_color:
-      - 0.701
-      - 0.299
     light.ingrid_window_light:
       friendly_name: ingrid window light
       is_deconz_group: false
@@ -250,24 +232,6 @@
       is_deconz_group: false
       state: 'off'
       supported_features: 41
-    light.kerstin_color_light:
-      brightness: 7
-      effect_list:
-      - colorloop
-      friendly_name: kerstin color light
-      hs_color:
-      - 0
-      - 100
-      is_deconz_group: false
-      rgb_color:
-      - 255
-      - 0
-      - 0
-      state: 'on'
-      supported_features: 61
-      xy_color:
-      - 0.701
-      - 0.299
     light.kerstin_window_light:
       friendly_name: kerstin window light
       is_deconz_group: false
