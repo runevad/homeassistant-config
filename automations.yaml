@@ -481,7 +481,7 @@
       action: call_service
   action:
   - service_template: '{{ trigger.event.data.service }}'
-    data:
+    data_template:
       entity_id: '{{ trigger.event.data.entity_id }}'
 - id: extra_vvc_weekend
   alias: VVC on weekend earlier
@@ -517,7 +517,7 @@
         push:
           category: notis
   - service: script.sonos_say
-    data:
+    data_template:
       sonos_entity: media_player.allrum_2
       volume: 0.45
       delay: 00:00:15
@@ -542,7 +542,7 @@
         push:
           category: notis
   - service: script.sonos_say
-    data:
+    data_template:
       sonos_entity: media_player.allrum_2
       volume: 0.45
       delay: 00:00:15
@@ -566,7 +566,7 @@
         push:
           category: notis
   - service: script.sonos_say
-    data:
+    data_template:
       sonos_entity: media_player.allrum_2
       volume: 0.45
       delay: 00:00:15
