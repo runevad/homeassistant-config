@@ -157,6 +157,35 @@ camera:
     authentication: digest
     verify_ssl: False
 
+ios:
+  push:
+    categories:
+      - name: Alarm
+        identifier: 'alarm'
+        actions:
+          - identifier: 'SOUND_ALARM'
+            title: 'Starta larmet!!'
+            activationMode: 'background'
+            authenticationRequired: no
+            destructive: yes
+            behavior: 'default'
+          - identifier: 'SILENCE_ALARM'
+            title: 'Tysta larmet'
+            activationMode: 'background'
+            authenticationRequired: no
+            destructive: no
+            behavior: 'default'
+      - name: Notification
+        identifier: 'notis'
+        actions:
+
+notify:
+  - name: all_devices
+    platform: group
+    services:
+      - service: mobile_app_lars_iphone
+      - service: mobile_app_vtr_l29
+
 group: !include_dir_merge_named group
 
 automation: !include automations.yaml
