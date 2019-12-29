@@ -50,17 +50,22 @@
   - service: light.turn_on
     data:
       entity_id: group.all_lights
-  - service: notify.mobile_app_lars_iphone
-    data_template:
+  - service: notify.all_devices
+    data:
       title: LARM!
-      message: The {{ trigger.to_state.name }} was changed to {{ trigger.to_state.state
-        }} while no one is home - {{ as_timestamp(now()) | timestamp_custom('%Y-%m-%d
-        %H:%M:%S', True) }}
+      message: The {{ trigger.to_state.name }} was changed to {{ trigger.to_state.state}}
+        while no one is home - {{ as_timestamp(now()) | timestamp_custom('%Y-%m-%d%H:%M:%S',
+        True) }}
       data:
         push:
           badge: 666
           category: alarm
+          sound:
+            name: default
+            critical: 1
+            volume: 1.0
   - service: script.sonos_alarm
+  - service: script.light_alarm
 - id: door_open
   alias: Door open if night or away
   initial_state: 'on'
@@ -76,8 +81,8 @@
     entity_id: input_select.cottage_status
     to: Away
   action:
-  - service: notify.mobile_app_lars_iphone
-    data_template:
+  - service: notify.all_devices
+    data:
       title: Dörr öppen!
       message: '{{ trigger.to_state.name }} är öppen!'
       data:
@@ -386,6 +391,9 @@
   - entity_id: binary_sensor.hall_motion_sensor
     platform: state
     to: 'on'
+  - entity_id: binary_sensor.living_room_motion_sensor
+    platform: state
+    to: 'on'
   condition:
   - condition: and
     conditions:
@@ -473,7 +481,7 @@
       action: call_service
   action:
   - service_template: '{{ trigger.event.data.service }}'
-    data_template:
+    data:
       entity_id: '{{ trigger.event.data.entity_id }}'
 - id: extra_vvc_weekend
   alias: VVC on weekend earlier
@@ -501,7 +509,7 @@
     entity_id: sensor.nibe_31372_10069
     above: 80
   action:
-  - service: notify.mobile_app_lars_iphone
+  - service: notify.all_devices
     data:
       title: Elpris!
       message: Spot-pris över 80 öre!
@@ -509,7 +517,7 @@
         push:
           category: notis
   - service: script.sonos_say
-    data_template:
+    data:
       sonos_entity: media_player.allrum_2
       volume: 0.45
       delay: 00:00:15
@@ -526,7 +534,7 @@
     entity_id: sensor.nibe_31372_10069
     below: 20
   action:
-  - service: notify.mobile_app_lars_iphone
+  - service: notify.all_devices
     data:
       title: Elpris!
       message: Spot-pris under 20 öre!
@@ -534,7 +542,7 @@
         push:
           category: notis
   - service: script.sonos_say
-    data_template:
+    data:
       sonos_entity: media_player.allrum_2
       volume: 0.45
       delay: 00:00:15
@@ -550,16 +558,15 @@
   - platform: state
     entity_id: updater.updater
   action:
-  - service: notify.mobile_app_lars_iphone
+  - service: notify.all_devices
     data:
       title: Uppdatering!
       message: Ny version av Home Assistant tillgänglig!
       data:
         push:
-          badge: 10
           category: notis
   - service: script.sonos_say
-    data_template:
+    data:
       sonos_entity: media_player.allrum_2
       volume: 0.45
       delay: 00:00:15
@@ -578,14 +585,18 @@
       brightness: 255
       color_temp: 454
     entity_id: group.all_lights
-  - service: notify.mobile_app_lars_iphone
-    data_template:
+  - service: notify.all_devices
+    data:
       title: BRANDLARM!!
       message: “En brandvarnare har löst ut!”
       data:
         push:
           badge: 999
           category: alarm
+          sound:
+            name: default
+            critical: 1
+            volume: 1.0
   - service: script.sonos_fire_alarm
 - id: cleaning_robot_running
   alias: Neato running - Take down sensors
@@ -603,7 +614,13 @@
     entity_id: input_boolean.cottage_guest_mode
 - id: cleaning_robot_docked
   alias: Neato finished - Reset sensors
-  initial_state: 'on'
+  trigger:
+  - entity_id: vacuum.stadstina
+    platform: state
+    to: docked
+  - entity_id: vacuum.stadstina
+    platform: state
+    to: idle
   condition:
   - condition: and
     conditions:
@@ -614,23 +631,20 @@
       conditions:
       - condition: state
         entity_id: input_select.cottage_status
+        for: 00:05:00
         state: Standby
-        for: 00:05:00
       - condition: state
         entity_id: input_select.cottage_status
+        for: 00:05:00
         state: Away
-        for: 00:05:00
       - condition: state
         entity_id: input_select.cottage_status
-        state: Home
         for: 00:05:00
-  trigger:
-  - platform: state
-    entity_id: vacuum.stadstina
-    to: docked
+        state: Home
   action:
-  - service: input_boolean.turn_off
-    entity_id: input_boolean.cottage_guest_mode
+  - entity_id: input_boolean.cottage_guest_mode
+    service: input_boolean.turn_off
+  initial_state: 'on'
 - id: '1574533247410'
   alias: light stairs on when motion detected
   description: ''
@@ -740,11 +754,34 @@
     platform: numeric_state
   condition: []
   action:
-  - data_template:
+  - data:
       data:
         push:
-          badge: 1
           category: notis
       message: Weather station is below 3.3V
       title: ESP low battery!
-    service: notify.mobile_app_lars_iphone
+    service: notify.all_devices
+- id: '1577656157721'
+  alias: motion detected in carport when away
+  description: ''
+  trigger:
+  - device_id: ff2e733bac234d60b1312f644e6eefdc
+    domain: binary_sensor
+    entity_id: binary_sensor.carport_motion_sensor
+    platform: device
+    type: motion
+  condition:
+  - condition: state
+    entity_id: input_select.cottage_status
+    state: Away
+  action:
+  - data:
+      data:
+        attachment:
+          content-type: jpeg
+        entity_id: camera.front
+        push:
+          category: camera
+      message: Motion detected in carport
+      title: Motion detected!
+    service: notify.all_devices
