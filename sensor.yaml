@@ -2,105 +2,126 @@
 ### Sensors
 ##############
 
-  - platform: time_date
-    display_options:
-      - 'time'
-      - 'date'
-      - 'date_time'
-      - 'time_utc'
+- platform: time_date
+  display_options:
+    - 'time'
+    - 'date'
+    - 'date_time'
+    - 'time_utc'
 
-  - platform: template
-    sensors:
-      cottage_status:
-        friendly_name: "Cottage status"
-        value_template: >-
-          {{ states("input_select.cottage_status") }}
+- platform: template
+  sensors:
+    cottage_status:
+      friendly_name: "Cottage status"
+      value_template: >-
+        {{ states("input_select.cottage_status") }}
 
 #NAS
-  - platform: synologydsm
-    host: 192.168.1.4
-    port: 5000
-    username: !secret synology_user
-    password: !secret synology_pass
-    ssl: False
-    monitored_conditions:
-      - cpu_total_load
-      - memory_real_usage
-      - volume_percentage_used
-      - disk_status
-      - volume_status
-      - disk_temp
+- platform: synologydsm
+  host: 192.168.1.4
+  port: 5000
+  username: !secret synology_user
+  password: !secret synology_pass
+  ssl: False
+  monitored_conditions:
+    - cpu_total_load
+    - memory_real_usage
+    - volume_percentage_used
+    - disk_status
+    - volume_status
+    - disk_temp
 
 ### Heater for the car
-  - platform: template
-    sensors:
-      heater_forecast:
-        entity_id:
-          - weather.smhi_home
-          - sensor.outdoor_temperature
-        friendly_name: 'Temperature'
-        icon_template: mdi:temperature-celsius
-        value_template: >-
-          {% set hf = namespace() %}
-          {% if states.weather.smhi_home.attributes.temperature == None %}
-          {% set hf.forecast = states.sensor.outdoor_temperature.state %}
-          {% else %}
-          {% set hf.forecast = states.weather.smhi_home.attributes.forecast[0].templow %}
-          {% endif %}
-          {{ hf.forecast }}
+- platform: template
+  sensors:
+    heater_forecast:
+      entity_id:
+        - weather.smhi_home
+        - sensor.outdoor_temperature
+      friendly_name: 'Temperature'
+      icon_template: mdi:temperature-celsius
+      value_template: >-
+        {% set hf = namespace() %}
+        {% if states.weather.smhi_home.attributes.temperature == None %}
+        {% set hf.forecast = states.sensor.outdoor_temperature.state %}
+        {% else %}
+        {% set hf.forecast = states.weather.smhi_home.attributes.forecast[0].templow %}
+        {% endif %}
+        {{ hf.forecast }}
 
 # 150^0,3 * 60 maximun time, gives ~90 min runtime when -10 and ~ 60 min when 0 degrees C
-      heater_temptime:
-        friendly_name: 'Temperature adjusted runtime'
-        unit_of_measurement: 's'
-        icon_template: mdi:timer
-        value_template: >-
-          {% set ht = namespace() %}
-          {% set ht.temp = states.sensor.heater_forecast.state|int %}
-          {% if ht.temp <= -15 %} {% set ht.t = 1 %}
-          {% elif ht.temp > 5 %} {% set ht.t = 20 %}
-          {% else %}
-          {% set ht.t = (15 + ht.temp) %}
-          {% endif %}
-          {{ (150 / (ht.t**0.3))|int*60 }}
+    heater_temptime:
+      friendly_name: 'Temperature adjusted runtime'
+      unit_of_measurement: 's'
+      icon_template: mdi:timer
+      value_template: >-
+        {% set ht = namespace() %}
+        {% set ht.temp = states.sensor.heater_forecast.state|int %}
+        {% if ht.temp <= -15 %} {% set ht.t = 1 %}
+        {% elif ht.temp > 5 %} {% set ht.t = 20 %}
+        {% else %}
+        {% set ht.t = (15 + ht.temp) %}
+        {% endif %}
+        {{ (150 / (ht.t**0.3))|int*60 }}
 
-      heater_activationtime:
-        friendly_name: 'Calculated activation time'
-        icon_template: mdi:clock-start
-        value_template: >-
-          {% set ha = namespace() %}
-          {% set ha.dtime = states.input_datetime.heater_departuretime.attributes.timestamp %}
-          {% set ha.atime = as_timestamp(states.sensor.date.state + ' ' + states.input_datetime.heater_departuretime.state) - states.sensor.heater_temptime.state|int %}
-          {{ ha.atime | timestamp_custom("%H:%M")|string }}
+    heater_activationtime:
+      friendly_name: 'Calculated activation time'
+      icon_template: mdi:clock-start
+      value_template: >-
+        {% set ha = namespace() %}
+        {% set ha.dtime = states.input_datetime.heater_departuretime.attributes.timestamp %}
+        {% set ha.atime = as_timestamp(states.sensor.date.state + ' ' + states.input_datetime.heater_departuretime.state) - states.sensor.heater_temptime.state|int %}
+        {{ ha.atime | timestamp_custom("%H:%M")|string }}
 
 #### MQTT stuff
 #### Weather station
-  - platform: mqtt
-    name: Outdoor temperature
-    state_topic: wemos_weather_station/sensor/temp1/state
-    unit_of_measurement: '°C'
-    icon: mdi:thermometer
+- platform: mqtt
+  name: Outdoor temperature
+  state_topic: wemos_weather_station/sensor/temp1/state
+  unit_of_measurement: '°C'
+  icon: mdi:thermometer
 
-  - platform: mqtt
-    name: Outdoor temperature 2
-    state_topic: wemos_weather_station/sensor/temp2/state
-    unit_of_measurement: '°C'
-    icon: mdi:thermometer
+- platform: mqtt
+  name: Outdoor temperature 2
+  state_topic: wemos_weather_station/sensor/temp2/state
+  unit_of_measurement: '°C'
+  icon: mdi:thermometer
 
-  - platform: mqtt
-    name: Weather station signal strength
-    state_topic: wemos_weather_station/sensor/weather_station_signal_strength/state
-    unit_of_measurement: 'dB'
-    icon: mdi:wifi
+- platform: mqtt
+  name: Weather station signal strength
+  state_topic: wemos_weather_station/sensor/weather_station_signal_strength/state
+  unit_of_measurement: 'dB'
+  icon: mdi:wifi
 
-  - platform: mqtt
-    name: Weather station battery voltage
-    state_topic: wemos_weather_station/sensor/weather_station_battery_voltage/state
-    unit_of_measurement: 'V'
-    icon: mdi:battery
+- platform: mqtt
+  name: Weather station battery voltage
+  state_topic: wemos_weather_station/sensor/weather_station_battery_voltage/state
+  unit_of_measurement: 'V'
+  icon: mdi:battery
 
-  - platform: mqtt
-    name: Weather station run time
-    state_topic: wemos_weather_station/sensor/weather_station_run_time/state
-    unit_of_measurement: 'ms'
-    icon: mdi:timer
+- platform: mqtt
+  name: Weather station run time
+  state_topic: wemos_weather_station/sensor/weather_station_run_time/state
+  unit_of_measurement: 'ms'
+  icon: mdi:timer
+
+
+# #### MQTT stuff
+# #### Christmas tree water level
+#   - platform: mqtt
+#     name: Weather station signal strength
+#     state_topic: wemos_christmas_tree_water_alarm/sensor/christmas_tree_signal_strength/state
+#     unit_of_measurement: 'dB'
+#     icon: mdi:wifi
+#
+#   - platform: mqtt
+#     name: Weather station battery voltage
+#     state_topic: wemos_christmas_tree_water_alarm/sensor/christmas_tree_battery_voltage/state
+#     unit_of_measurement: 'V'
+#     icon: mdi:battery
+#
+#   - platform: mqtt
+#     name: Weather station run time
+#     state_topic: wemos_christmas_tree_water_alarm/sensor/christmas_tree_run_time/state
+#     unit_of_measurement: 'ms'
+#     icon: mdi:timer
