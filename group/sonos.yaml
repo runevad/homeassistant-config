@@ -10,3 +10,4 @@ sonos:
     - media_player.allrum_2
     - media_player.ingrids_rum
     - media_player.kerstins_rum
+    - media_player.sew_room
