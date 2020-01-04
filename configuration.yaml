@@ -134,28 +134,34 @@ nibe:
         - 10069 #electricity price
 
 camera:
-  - platform: generic
-    name: front
-    still_image_url: !secret front_camera_still_url
-    stream_source: !secret front_camera_stream_url
-    username: !secret camera_username
-    password: !secret camera_password
-    authentication: digest
-    verify_ssl: False
-  # - platform: onvif
-  #   name: carport
-  #   host: !secret carport_camera_url
-  #   port: !secret camera_port
+  - platform: synology
+    url: https://192.168.1.4:5001
+    username: !secret synology_user
+    password: !secret synology_pass
+    timeout: 15
+    verify_ssl: false
+  # - platform: generic
+  #   name: front
+  #   still_image_url: !secret front_camera_still_url
+  #   stream_source: !secret front_camera_stream_url
   #   username: !secret camera_username
   #   password: !secret camera_password
-  - platform: generic
-    name: indoor
-    still_image_url: !secret indoor_camera_still_url
-    stream_source: !secret indoor_camera_stream_url
-    username: !secret camera_username
-    password: !secret camera_password
-    authentication: digest
-    verify_ssl: False
+  #   authentication: digest
+  #   verify_ssl: False
+  # # - platform: onvif
+  # #   name: carport
+  # #   host: !secret carport_camera_url
+  # #   port: !secret camera_port
+  # #   username: !secret camera_username
+  # #   password: !secret camera_password
+  # - platform: generic
+  #   name: indoor
+  #   still_image_url: !secret indoor_camera_still_url
+  #   stream_source: !secret indoor_camera_stream_url
+  #   username: !secret camera_username
+  #   password: !secret camera_password
+  #   authentication: digest
+  #   verify_ssl: False
 
 ios:
   push:
@@ -188,15 +194,18 @@ notify:
 
 group: !include_dir_merge_named group
 
-automation: !include automations.yaml
+automation: !include automation.yaml
 
-script: !include scripts.yaml
+script: !include script.yaml
 
 sensor: !include sensor.yaml
 
 switch: !include switch.yaml
 
-scene: !include scenes.yaml
+scene: !include scene.yaml
+
+shell_command:
+  restart_hass: 'curl http://127.0.0.1:8126/container/homeassistant/restart'
 
 light:
   - platform: switch
@@ -247,10 +256,14 @@ binary_sensor:
   - platform: workday
     country: SE
     name: workday
+
 #### MQTT
   # - platform: mqtt
   #   name: ESP32 test status
   #   state_topic: upstairs_lolin32/binary_sensor/esp32_test_status/state
+  # - platform: mqtt
+  #   name: Christmas water level
+  #   state_topic: wemos_christmas_tree_water_alarm/sensor/christmas_tree_water_level/state
 
 input_select:
   cottage_status:
