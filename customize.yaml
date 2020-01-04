@@ -1,6 +1,3 @@
-zone.home:
-  beacon:
-    uuid: c0a8a66d-df60-0893-0dac-125688b01d42
 switch.grafana:
   icon: mdi:chart-bar-stacked
 switch.hass:
@@ -51,3 +48,5 @@ binary_sensor.storage_cat_door_vibration:
 binary_sensor.storage_cat_door_sensor:
   device_class: vibration
 sensor.nibe_31372_40071: {}
+binary_sensor.christmas_tree_water_level:
+  icon: mdi:pine-tree
