@@ -785,3 +785,72 @@
       message: Motion detected in carport
       title: Motion detected!
     service: notify.all_devices
+- id: '1577728352853'
+  alias: Christmas tree is dry
+  description: ''
+  trigger:
+  - device_id: 2f5dc490fbe5404aaaa651637c7c047e
+    domain: binary_sensor
+    entity_id: binary_sensor.christmas_tree_water_level
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+    platform: device
+    type: not_moist
+  condition:
+  - after: 07:00
+    before: '19:00'
+    condition: time
+  action:
+  - alias: ''
+    data_template:
+      delay: 00:00:15
+      message: Jag är torr i min fot. Jag behöver vattnas nu! Vattna mig!   Vattna
+        mig!   Vattna mig!   Vattna mig!
+      sonos_entity: media_player.allrum_2
+      volume: 0.6
+    service: script.sonos_say
+  - data:
+      data:
+        push:
+          category: notis
+      message: Granen behöver vatten.
+      title: Vattna granen!
+    service: notify.all_devices
+- id: '1577993231197'
+  alias: remote kerstin sleep
+  description: ''
+  trigger:
+  - device_id: 2a26e26d90254777adc162030833dd96
+    domain: deconz
+    platform: device
+    subtype: turn_on
+    type: remote_button_long_press
+  condition: []
+  action:
+  - scene: scene.kerstin_sleep
+- id: '1577993300289'
+  alias: remote ingrid sleep
+  description: ''
+  trigger:
+  - device_id: 5ac3776f13f14671aaaa514ccf755d15
+    domain: deconz
+    platform: device
+    subtype: turn_on
+    type: remote_button_long_press
+  condition: []
+  action:
+  - scene: scene.ingrid_sleep
+- id: '1578163443054'
+  alias: remote kerstin reading light
+  description: ''
+  trigger:
+  - device_id: 2a26e26d90254777adc162030833dd96
+    domain: deconz
+    platform: device
+    subtype: dim_up
+    type: remote_button_short_press
+  condition: []
+  action:
+  - scene: scene.kerstin_read

@@ -2,22 +2,23 @@ sonos_doorbell:
   alias: Sonos doorbell
   sequence:
   - service: sonos.snapshot
-  - service: sonos.join
-    data:
+  - data:
       master: media_player.allrum_2
     entity_id:
-    - media_player.allrum_2
+    - media_player.kok_2
     - media_player.ingrids_rum
     - media_player.kerstins_rum
-  - service: media_player.volume_set
-    data:
-      volume_level: 0.7
+    - media_player.sew_room
+    service: sonos.join
+  - data:
+      volume_level: 0.9
     entity_id: media_player.allrum_2
-  - service: media_player.play_media
-    data:
+    service: media_player.volume_set
+  - data:
       media_content_id: https://runevad.synology.me:8080/local/doorbell.mp3
       media_content_type: music
     entity_id: media_player.allrum_2
+    service: media_player.play_media
   - delay: 00:00:15
   - service: sonos.unjoin
   - service: sonos.restore
@@ -29,9 +30,10 @@ sonos_fire_alarm:
     data:
       master: media_player.allrum_2
     entity_id:
-    - media_player.allrum_2
+    - media_player.kok_2
     - media_player.ingrids_rum
     - media_player.kerstins_rum
+    - media_player.sew_room
   - service: media_player.volume_set
     data:
       volume_level: 0.95
@@ -69,9 +71,10 @@ sonos_alarm:
     data:
       master: media_player.allrum_2
     entity_id:
-    - media_player.allrum_2
+    - media_player.kok_2
     - media_player.ingrids_rum
     - media_player.kerstins_rum
+    - media_player.sew_room
   - service: media_player.volume_set
     data:
       volume_level: 0.8
@@ -164,9 +167,10 @@ sonos_say:
     data:
       master: media_player.allrum_2
     entity_id:
-    - media_player.allrum_2
+    - media_player.kok_2
     - media_player.ingrids_rum
     - media_player.kerstins_rum
+    - media_player.sew_room
   - service: media_player.volume_set
     data_template:
       entity_id: media_player.allrum_2
@@ -206,7 +210,7 @@ esp_ota_mode_on:
   - data:
       payload: 'ON'
       retain: true
-      topic: wemos_weather_station/ota_mode
+      topic: esp/ota_mode
     service: mqtt.publish
 esp_ota_mode_off:
   alias: ESP OTA mode off
@@ -214,7 +218,7 @@ esp_ota_mode_off:
   - data:
       payload: 'OFF'
       retain: true
-      topic: wemos_weather_station/ota_mode
+      topic: esp/ota_mode
     service: mqtt.publish
 light_flash:
   alias: Flash lights when alarm
@@ -232,3 +236,7 @@ flash_loop:
   - delay: 00:00:01
   - service: script.turn_on
     entity_id: script.light_flash
+restart_hass:
+  alias: Restart Home Assistant container
+  sequence:
+  - service: shell_command.restart_hass
