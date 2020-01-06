@@ -376,13 +376,13 @@
     entity_id: sun.sun
     state: below_horizon
   - condition: state
-    entity_id: light.window_lights_upstairs
+    entity_id: light.family_room_window_light
     state: 'off'
   action:
-  - entity_id: light.window_lights_upstairs
+  - entity_id: light.family_room_window_light
     service: light.turn_on
   - delay: 00:20:00
-  - entity_id: light.window_lights_upstairs
+  - entity_id: light.family_room_window_light
     service: light.turn_off
   initial_state: 'on'
 - id: lights_on_down_night_motion
@@ -400,13 +400,13 @@
     - after: '22:00:00'
       condition: time
     - condition: state
-      entity_id: light.window_lights_downstairs
+      entity_id: light.living_room_window_light
       state: 'off'
   action:
-  - entity_id: light.window_lights_downstairs
+  - entity_id: light.living_room_window_light
     service: light.turn_on
   - delay: 00:10:00
-  - entity_id: light.window_lights_downstairs
+  - entity_id: light.living_room_window_light
     service: light.turn_off
   initial_state: 'on'
 - id: wake_up_lights_weekday
@@ -472,17 +472,6 @@
       minutes: '{{ states(''input_number.heater_delay'') | int }}'
   - service: switch.turn_off
     entity_id: switch.carport_car_heater
-- id: ifttt_automation
-  alias: IFTTT automation
-  trigger:
-  - platform: event
-    event_type: ifttt_webhook_received
-    event_data:
-      action: call_service
-  action:
-  - service_template: '{{ trigger.event.data.service }}'
-    data_template:
-      entity_id: '{{ trigger.event.data.entity_id }}'
 - id: extra_vvc_weekend
   alias: VVC on weekend earlier
   condition:
@@ -806,8 +795,7 @@
   - alias: ''
     data_template:
       delay: 00:00:15
-      message: Jag är torr i min fot. Jag behöver vattnas nu! Vattna mig!   Vattna
-        mig!   Vattna mig!   Vattna mig!
+      message: "Jag är torr i min fot. Jag behöver vattnas nu! Vattna mig! Vattna mig! Vattna mig! Vattna mig!"
       sonos_entity: media_player.allrum_2
       volume: 0.6
     service: script.sonos_say

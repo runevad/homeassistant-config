@@ -281,11 +281,11 @@
       is_deconz_group: false
       state: 'on'
       supported_features: 41
-    light.window_lights_downstairs:
+    light.living_room_window_light:
       friendly_name: window_lights_downstairs
       state: 'off'
       supported_features: 0
-    light.window_lights_upstairs:
+    light.family_room_window_light:
       friendly_name: window_lights_upstairs
       state: 'off'
       supported_features: 0
