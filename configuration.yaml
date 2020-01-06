@@ -22,8 +22,18 @@ http:
   ssl_certificate: !secret ssl_certificate
   ssl_key: !secret ssl_key
   base_url: !secret base_url
-#  ip_ban_enabled: True
-#  login_attempts_threshold: 5
+
+group: !include groups.yaml
+
+automation: !include automations.yaml
+
+script: !include scripts.yaml
+
+sensor: !include sensor.yaml
+
+switch: !include switch.yaml
+
+scene: !include scenes.yaml
 
 updater:
   include_used_components: true
@@ -98,6 +108,10 @@ zwave:
   usb_path: /dev/ttyACM1
   device_config: !include zwave_device_config.yaml
   network_key: !secret zwave_key
+
+homeconnect:
+  client_id: !secret homeconnect_client_id
+  client_secret: !secret homeconnect_client_secret
 
 nibe:
   systems:
@@ -192,28 +206,10 @@ notify:
       - service: mobile_app_lars_iphone
       - service: mobile_app_vtr_l29
 
-group: !include_dir_merge_named group
-
-automation: !include automation.yaml
-
-script: !include script.yaml
-
-sensor: !include sensor.yaml
-
-switch: !include switch.yaml
-
-scene: !include scene.yaml
-
 shell_command:
   restart_hass: 'curl http://127.0.0.1:8126/container/homeassistant/restart'
 
 light:
-  - platform: switch
-    name: window_lights_downstairs
-    entity_id: switch.qubino_goap_zmnhnd1_flush_1d_relay_switch
-  - platform: switch
-    name: window_lights_upstairs
-    entity_id: switch.qubino_goap_zmnhbdx_flush_2_relays_switch_2
   - platform: switch
     name: hall_stairs_light
     entity_id: switch.hall_stairs_light
@@ -221,8 +217,14 @@ light:
     name: laundry_window_light
     entity_id: switch.laundry_window_light
   - platform: switch
+    name: family_room_window_light
+    entity_id: switch.family_room_window_light
+  - platform: switch
     name: living_room_window_light
     entity_id: switch.living_room_window_light
+  - platform: switch
+    name: living_room_window_light_2
+    entity_id: switch.living_room_window_light_2
   - platform: switch
     name: master_bedroom_window_light_2
     entity_id: switch.master_bedroom_window_light_2
@@ -235,7 +237,6 @@ light:
       - light.outdoor_carport_light_1
       - light.outdoor_carport_light_2
       - light.outdoor_carport_light_3
-
 
 binary_sensor:
   - platform: template
