@@ -10,6 +10,8 @@ switch.mqtt:
   icon: mdi:message
 switch.extra_hot_water:
   icon: mdi:shower
+switch.mqtt:
+  icon: mdi:zigbee
 binary_sensor.esp_christmas_tree_water_level_low:
   icon: mdi:pine-tree
 binary_sensor.patio_door_sensor:
