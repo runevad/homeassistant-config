@@ -1,7 +1,0 @@
-
-default_view:
-  view: yes
-  icon: mdi:home-assistant
-  entities:
-    - sensor.cottage_status
-    - group.family

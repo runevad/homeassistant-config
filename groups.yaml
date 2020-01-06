@@ -1,0 +1,134 @@
+####################
+## People
+####################
+family:
+  name: "Family"
+  entities:
+  - person.lars
+  - person.emelie
+#  - person.kerstin
+#  - person.ingrid
+  - person.guest
+
+####################
+## Lights
+####################
+bedroom_lights:
+  name: "Sänglampor"
+  entities:
+    - light.master_bedroom_bed_light
+    - light.kerstin_bed_light
+    - light.ingrid_bed_light
+
+window_lights:
+  name: "Fönsterlampor"
+  entities:
+    - light.living_room_window_light
+    - light.living_room_window_light_2
+    - light.family_room_window_light
+    - light.laundry_window_light
+
+window_lights_excl_kids:
+  name: "Fönsterlampor"
+  entities:
+    - light.living_room_window_light
+    - light.living_room_window_light_2
+    - light.family_room_window_light
+    - light.laundry_window_light
+    - light.master_bedroom_window_light
+    - light.master_bedroom_window_light_2
+
+window_lights_bedroom:
+  name: "Fönsterlampor"
+  entities:
+    - light.master_bedroom_window_light
+    - light.master_bedroom_window_light_2
+#    - light.ingrid_window_light
+#    - light.kerstin_window_light
+    - light.kerstin_angel_light
+    - light.ingrid_angel_light
+    - light.kerstin_color_light
+    - light.ingrid_color_light
+
+ingrid_lights:
+  name: "Ingrids lampor"
+  entities:
+    - light.ingrid_window_light
+    - light.ingrid_color_light
+    - light.ingrid_bed_light
+    - light.ingrid_angel_light
+
+kerstin_lights:
+  name: "Kerstins lampor"
+  entities:
+    - light.kerstin_window_light
+    - light.kerstin_color_light
+    - light.kerstin_bed_light
+    - light.kerstin_angel_light
+
+outdoor_lights:
+    - light.outdoor_carport_light_1
+    - light.outdoor_carport_light_2
+    - light.outdoor_carport_light_3
+    - light.outdoor_porch_lights
+
+
+####################
+## Sonos groups
+####################
+sonos:
+  name: "Sonos"
+  view: no
+  entities:
+    - media_player.kok_2
+    - media_player.allrum_2
+    - media_player.ingrids_rum
+    - media_player.kerstins_rum
+    - media_player.sew_room
+
+####################
+## Security groups
+####################
+security:
+  name: "Security"
+  view: no
+  icon: mdi:security
+  entities:
+    - group.door_sensors
+    - group.motion_sensors
+    - group.smoke_sensors
+
+door_sensors:
+  name: "Dörrsensorer"
+  view: no
+  icon: mdi:glassdoor
+  entities:
+    - binary_sensor.patio_door_sensor #Altandörr
+    # - binary_sensor.storage_door_sensor #Förrådsdörr
+    - binary_sensor.laundry_door_sensor #Groventre
+    - binary_sensor.hall_door_sensor #Halldörr
+
+motion_sensors:
+  name: "Rörelsesensorer"
+  view: no
+  icon: mdi:run-fast
+  entities:
+    - binary_sensor.hall_motion_sensor #Hall
+    - binary_sensor.family_room_motion_sensor #Allrum
+    - binary_sensor.living_room_motion_sensor #Vardagsrum (IKEA)
+
+smoke_sensors:
+  name: "Brandsensorer"
+  view: no
+  icon: mdi:fire
+  entities:
+    - binary_sensor.family_room_smoke_detector
+    - binary_sensor.storage_smoke_detector
+    - binary_sensor.laundry_smoke_detector
+    - binary_sensor.kitchen_smoke_detector
+    - binary_sensor.ingrid_smoke_detector
+    - binary_sensor.kerstin_smoke_detector
+    - binary_sensor.master_bedroom_smoke_detector
+
+storage_carport_sensors:
+    - binary_sensor.storage_door_sensor #Förrådsdörr

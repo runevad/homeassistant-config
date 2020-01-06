@@ -1,8 +1,0 @@
-family:
-  name: "Family"
-  entities:
-  - person.lars
-  - person.emelie
-#  - person.kerstin
-#  - person.ingrid
-  - person.guest
