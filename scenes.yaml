@@ -251,44 +251,21 @@
       is_deconz_group: false
       state: 'off'
       supported_features: 41
-    light.outdoor_carport_light_1:
+    light.outdoor_carport_lights:
       brightness: 1
-      friendly_name: outdoor carport light 1
-      is_deconz_group: false
-      max_mireds: 500
-      min_mireds: 153
-      state: 'on'
-      supported_features: 43
-    light.outdoor_carport_light_2:
-      brightness: 1
-      friendly_name: outdoor carport light 2
-      is_deconz_group: false
-      max_mireds: 500
-      min_mireds: 153
-      state: 'on'
-      supported_features: 43
-    light.outdoor_carport_light_3:
-      brightness: 1
-      friendly_name: outdoor carport light 3
-      is_deconz_group: false
+      color_temp: 421
+      friendly_name: outdoor_carport_lights
       max_mireds: 500
       min_mireds: 153
       state: 'on'
       supported_features: 43
     light.storage_window_light:
-      brightness: 8
       friendly_name: storage window light
-      is_deconz_group: false
-      state: 'on'
+      state: unavailable
       supported_features: 41
-    light.living_room_window_light:
-      friendly_name: window_lights_downstairs
+    switch.family_room_window_light:
+      friendly_name: family room window light
       state: 'off'
-      supported_features: 0
-    light.family_room_window_light:
-      friendly_name: window_lights_upstairs
-      state: 'off'
-      supported_features: 0
     switch.hall_stairs_light:
       friendly_name: hall stairs light
       icon: mdi:lightbulb
@@ -298,6 +275,9 @@
       state: 'off'
     switch.living_room_window_light:
       friendly_name: living room window light
+      state: 'off'
+    switch.living_room_window_light_2:
+      friendly_name: living room window light 2
       state: 'off'
     switch.master_bedroom_window_light_2:
       friendly_name: master bedroom window light 2
