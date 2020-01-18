@@ -10,7 +10,7 @@
     entity_id: script.sonos_alarm
   - service: light.turn_on
     data:
-      entity_id: group.all_lights
+      entity_id: all
 - id: alarm_off_from_notification
   alias: Turn alarm off from notification
   trigger:
@@ -49,7 +49,7 @@
     state: not_home
   - service: light.turn_on
     data:
-      entity_id: group.all_lights
+      entity_id: all
   - service: notify.all_devices
     data:
       title: LARM!
@@ -573,7 +573,7 @@
     data:
       brightness: 255
       color_temp: 454
-    entity_id: group.all_lights
+    entity_id: all
   - service: notify.all_devices
     data:
       title: BRANDLARM!!
@@ -654,13 +654,18 @@
     entity_id: light.hall_stairs_light
     service: light.turn_on
 - id: '1575229526062'
-  alias: light increase outdoor lights when door opens
-  description: ''
+  alias: light increase outdoor lights
+  description: when door opens or motion detected in carport
   trigger:
   - entity_id: group.door_sensors
     from: 'off'
     platform: state
     to: 'on'
+  - device_id: ff2e733bac234d60b1312f644e6eefdc
+    domain: binary_sensor
+    entity_id: binary_sensor.carport_motion_sensor
+    platform: device
+    type: motion
   condition:
   - condition: state
     entity_id: sun.sun
@@ -795,7 +800,8 @@
   - alias: ''
     data_template:
       delay: 00:00:15
-      message: "Jag är torr i min fot. Jag behöver vattnas nu! Vattna mig! Vattna mig! Vattna mig! Vattna mig!"
+      message: Jag är torr i min fot. Jag behöver vattnas nu! Vattna mig! Vattna mig!
+        Vattna mig! Vattna mig!
       sonos_entity: media_player.allrum_2
       volume: 0.6
     service: script.sonos_say
@@ -842,3 +848,24 @@
   condition: []
   action:
   - scene: scene.kerstin_read
+- id: '1578771607733'
+  alias: Storage fridge shut down
+  description: Monitor voltage and power usage, notify if it goes down
+  trigger:
+  - below: '200'
+    entity_id: sensor.storage_fridge_power_meter_voltage
+    for: 00:10:00
+    platform: numeric_state
+  - below: '10'
+    entity_id: sensor.storage_fridge_power_meter
+    for: 02:00:00
+    platform: numeric_state
+  condition: []
+  action:
+  - data:
+      data:
+        push:
+          category: notis
+      message: Kyl/Frys i förråd har inte gått på minst 1h eller är spänningslös.
+      title: Kyl/Frys i förråd!
+    service: notify.all_devices
