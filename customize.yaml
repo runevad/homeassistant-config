@@ -10,8 +10,12 @@ switch.mqtt:
   icon: mdi:message
 switch.extra_hot_water:
   icon: mdi:shower
-switch.mqtt:
+switch.deconz:
   icon: mdi:zigbee
+switch.esphome:
+  icon: mdi:cpu-32-bit
+switch.handbrake:
+  icon: mdi:fruit-pineapple
 binary_sensor.esp_christmas_tree_water_level_low:
   icon: mdi:pine-tree
 binary_sensor.patio_door_sensor:
@@ -52,3 +56,7 @@ binary_sensor.storage_cat_door_sensor:
 sensor.nibe_31372_40071: {}
 binary_sensor.christmas_tree_water_level:
   icon: mdi:pine-tree
+switch.surveillance_station_home_mode:
+  friendly_name: Home Mode (Surveillance)
+sensor.nibe_inside_pressure:
+  icon: mdi:gauge
