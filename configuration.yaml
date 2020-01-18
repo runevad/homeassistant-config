@@ -1,4 +1,5 @@
 homeassistant:
+  customize: !include customize.yaml
   auth_providers:
     - type: homeassistant
     - type: trusted_networks
@@ -8,13 +9,6 @@ homeassistant:
       trusted_users:
         192.168.1.0/24:
           - 133b31aeea5c4e379a03a3c2f6d7adfd
-  #Customize
-  customize: !include customize.yaml
-  # customize_domain:
-  #   automation:
-  #     initial_state: 'on'
-  # #Packages
-  # packages: !include_dir_named packages
 
 default_config:
 
@@ -147,6 +141,10 @@ nibe:
         - 40079 #Amps L3
         - 10069 #electricity price
 
+stream:
+
+ffmpeg:
+
 camera:
   - platform: synology
     url: https://192.168.1.4:5001
@@ -162,20 +160,14 @@ camera:
   #   password: !secret camera_password
   #   authentication: digest
   #   verify_ssl: False
-  # # - platform: onvif
-  # #   name: carport
-  # #   host: !secret carport_camera_url
-  # #   port: !secret camera_port
-  # #   username: !secret camera_username
-  # #   password: !secret camera_password
-  # - platform: generic
-  #   name: indoor
-  #   still_image_url: !secret indoor_camera_still_url
-  #   stream_source: !secret indoor_camera_stream_url
-  #   username: !secret camera_username
-  #   password: !secret camera_password
-  #   authentication: digest
-  #   verify_ssl: False
+  - platform: generic
+    name: carport
+    still_image_url: !secret carport_camera_still_url
+    stream_source: !secret carport_camera_stream_url
+    username: !secret camera_username
+    password: !secret camera_password
+    authentication: basic
+    verify_ssl: False
 
 ios:
   push:
