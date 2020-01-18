@@ -95,13 +95,15 @@ sonos_alarm:
 cottage_home:
   alias: Cottage Home
   sequence:
-  - service: input_select.select_option
-    data:
+  - data:
       entity_id: input_select.cottage_status
       option: Home
-  - service: switch.turn_on
-    data:
-      entity_id: switch.storage_hwc
+    service: input_select.select_option
+  - data:
+      entity_id:
+      - switch.storage_hwc
+      - switch.surveillance_station_home_mode
+    service: switch.turn_on
 cottage_away:
   alias: Cottage Away
   sequence:
@@ -110,7 +112,9 @@ cottage_away:
       option: Away
     service: input_select.select_option
   - data:
-      entity_id: switch.storage_hwc
+      entity_id:
+      - switch.storage_hwc
+      - switch.surveillance_station_home_mode
     service: switch.turn_off
   - data:
       entity_id: group.bedroom_lights
@@ -119,13 +123,15 @@ cottage_away:
 cottage_standby:
   alias: Cottage Standby
   sequence:
-  - service: input_select.select_option
-    data:
+  - data:
       entity_id: input_select.cottage_status
       option: Standby
-  - service: switch.turn_off
-    data:
-      entity_id: switch.storage_hwc
+    service: input_select.select_option
+  - data:
+      entity_id:
+      - switch.storage_hwc
+      - switch.surveillance_station_home_mode
+    service: switch.turn_off
 cottage_night:
   alias: Cottage Night
   sequence:
@@ -137,6 +143,7 @@ cottage_night:
       entity_id:
       - switch.storage_hwc
       - switch.extra_hot_water
+      - switch.surveillance_station_home_mode
     service: switch.turn_off
   - scene: scene.night
 extra_hot_water:
@@ -223,10 +230,10 @@ esp_ota_mode_off:
 light_flash:
   alias: Flash lights when alarm
   sequence:
-  - entity_id: group.all_lights
+  - entity_id: all
     service: light.turn_on
   - delay: 00:00:01
-  - entity_id: group.all_lights
+  - entity_id: all
     service: light.turn_off
   - entity_id: script.flash_loop
     service: homeassistant.turn_on
