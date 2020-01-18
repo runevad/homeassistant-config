@@ -13,8 +13,10 @@
   sensors:
     cottage_status:
       friendly_name: "Cottage status"
-      value_template: >-
-        {{ states("input_select.cottage_status") }}
+      value_template: "{{ states('input_select.cottage_status') }}"
+    storage_fridge_power_meter_voltage:
+      friendly_name: "Spänningsmatning förråd"
+      value_template: "{{ state_attr('sensor.storage_fridge_power_meter', 'voltage') }}"
 
 #NAS
 - platform: synologydsm
