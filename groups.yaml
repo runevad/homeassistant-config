@@ -78,7 +78,6 @@ outdoor_lights:
 ####################
 sonos:
   name: "Sonos"
-  view: no
   entities:
     - media_player.kok_2
     - media_player.allrum_2
@@ -91,7 +90,6 @@ sonos:
 ####################
 security:
   name: "Security"
-  view: no
   icon: mdi:security
   entities:
     - group.door_sensors
@@ -100,7 +98,6 @@ security:
 
 door_sensors:
   name: "Dörrsensorer"
-  view: no
   icon: mdi:glassdoor
   entities:
     - binary_sensor.patio_door_sensor #Altandörr
@@ -110,7 +107,6 @@ door_sensors:
 
 motion_sensors:
   name: "Rörelsesensorer"
-  view: no
   icon: mdi:run-fast
   entities:
     - binary_sensor.hall_motion_sensor #Hall
@@ -119,7 +115,6 @@ motion_sensors:
 
 smoke_sensors:
   name: "Brandsensorer"
-  view: no
   icon: mdi:fire
   entities:
     - binary_sensor.family_room_smoke_detector
