@@ -167,50 +167,26 @@ car_heater:
     data:
       entity_id: switch.carport_car_heater
 sonos_say:
-  alias: Sonos TTS script
+  alias: "Sonos TTS script"
   sequence:
-  - service: sonos.snapshot
-  - service: sonos.join
-    data:
-      master: media_player.allrum_2
-    entity_id:
-    - media_player.kok_2
-    - media_player.ingrids_rum
-    - media_player.kerstins_rum
-    - media_player.sew_room
-  - service: media_player.volume_set
-    data_template:
-      entity_id: media_player.allrum_2
-      volume_level: '{{ volume|default(0.4) }}'
-  - service: tts.google_say
-    data_template:
-      entity_id: '{{ sonos_entity|default(''media_player.allrum_2'') }}'
-      message: '{{ message }}'
-  - delay: '{{ delay|default(''00:00:00'') }}'
-  - wait_template: '{{ is_state(sonos_entity|default(''media_player.allrum_2''), ''playing'')
-      }}'
-    timeout: 00:00:10
-  - service: sonos.unjoin
-  - service: sonos.restore
-dishwasher_done:
-  alias: Diskmaskinen klar
-  sequence:
-  - condition: time
-    after: 08:00:00
-    before: '21:00:00'
-  - service: notify.all_devices
-    data:
-      title: Diskmaskinen klar!
-      message: '...'
-      data:
-        push:
-          category: notis
-  - service: script.sonos_say
-    data_template:
-      sonos_entity: media_player.allrum_2
-      volume: 0.6
-      delay: 00:00:15
-      message: Hej Hej Hej, diskmaskinen har körts klart och är redo för utplockning
+   - service: sonos.snapshot
+     data_template:
+       entity_id: "{{ sonos_entity }}"
+   - service: sonos.unjoin
+     data_template:
+       entity_id: "{{ sonos_entity }}"
+   - service: media_player.volume_set
+     data_template:
+       entity_id: "{{ sonos_entity }}"
+       volume_level: "{{ volume }}"
+   - service: tts.google_say
+     data_template:
+       entity_id: "{{ sonos_entity }}"
+       message: "{{ message }}"
+   - delay: "{{ delay }}"
+   - service: sonos.restore
+     data_template:
+       entity_id: "{{ sonos_entity }}"
 esp_ota_mode_on:
   alias: ESP OTA mode on
   sequence:
