@@ -68,10 +68,12 @@ logbook:
   #     - device_tracker
 
 logger:
-   default: info
-   # logs:
-   #   pydeconz: debug
-   #   homeassistant.components.deconz: debug
+  default: warning
+  logs:
+    homeassistant.core: fatal
+    homeassistant.components.mqtt: warning
+    homeassistant.components.deconz: warning
+    aiohttp: error
 
 influxdb:
   host: 192.168.1.4
@@ -112,11 +114,10 @@ nibe:
     - system: '31372'
       units:
         - unit: 0
-          categories: True
-          statuses: True
-#      climates: False
-      water_heaters: True
+      climates: True
       sensors:
+        - 10069 #electricity price
+        - 10070 #Temporary Lux
         - 40067 #avg outdoor temp
         - 40015 #brine in
         - 40016 #brine out
@@ -128,18 +129,22 @@ nibe:
         - 40008 #heat medium flow
         - 40004 #outdoor temp
         - 40033 #indoor temp
+        - 40014 #indoor temp
+        - 40013 #indoor temp
         - 43005 #Degree minutes (DM)
         - 43136 #compressor hz
         - 43416 #number of compressor starts
         - 43420 #compressor operating time
         - 43424 #compressor operating time hot water
         - 44308 #heating with compressor (kWh)
+        - 44306 #heating with compressor (kWh)
         - 44300 #heating total (kWh)
         - 44298 #hot water (kWh)
         - 40083 #Amps L1
         - 40081 #Amps L2
         - 40079 #Amps L3
-        - 10069 #electricity price
+        - 44896 #smart temp status
+        - 44897 #smart hot water status
 
 stream:
 
