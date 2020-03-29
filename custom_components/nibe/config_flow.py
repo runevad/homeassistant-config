@@ -7,8 +7,9 @@ from aiohttp.web import Request, Response, HTTPBadRequest
 
 from homeassistant import config_entries, data_entry_flow
 from homeassistant.components.http import HomeAssistantView
+import homeassistant.helpers.config_validation as cv
 
-from nibeuplink import UplinkSession
+from nibeuplink import UplinkSession, Uplink
 
 from .const import (
     AUTH_CALLBACK_NAME,
@@ -19,6 +20,7 @@ from .const import (
     CONF_REDIRECT_URI,
     CONF_UPLINK_APPLICATION_URL,
     CONF_WRITEACCESS,
+    CONF_SYSTEMS,
     DATA_NIBE,
     DOMAIN,
 )
@@ -55,6 +57,7 @@ class NibeConfigFlow(config_entries.ConfigFlow):
                 scope=scope,
             )
 
+            self.uplink = Uplink(session, throttle=0.0)
             self.session = session
             self.user_data = user_input
             return await self.async_step_auth()
@@ -100,7 +103,7 @@ class NibeConfigFlow(config_entries.ConfigFlow):
                 errors["base"] = "code"
             else:
                 self.user_data[CONF_ACCESS_DATA] = self.session.access_data
-                return self.async_external_step_done(next_step_id="finish")
+                return self.async_external_step_done(next_step_id="systems")
 
         global _view
         if not _view:
@@ -112,12 +115,33 @@ class NibeConfigFlow(config_entries.ConfigFlow):
 
         return self.async_external_step(step_id="auth", url=url)
 
-    async def async_step_finish(self, user_data=None):
-        """Just to finish up the external step."""
-        if user_data is not None:
-            return self.async_create_entry(title="Nibe Uplink", data=self.user_data)
+    async def async_step_systems(self, user_input=None):
+        """Configure selected systems."""
+        if user_input is not None:
+            self.user_data[CONF_SYSTEMS] = {
+                key: {}
+                for key in user_input[CONF_SYSTEMS]
+            }
 
-        return self.async_show_form(step_id="finish", data_schema=vol.Schema({}))
+            return self.async_create_entry(title="", data=self.user_data)
+
+        systems = await self.uplink.get_systems()
+        systems_dict = {
+            str(x["systemId"]): f"{x['name']} ({x['productName']})" for x in systems
+        }
+        systems_sel = list(systems_dict.keys())
+
+        return self.async_show_form(
+            step_id="systems",
+            description_placeholders={},
+            data_schema=vol.Schema(
+                {
+                    vol.Required(
+                        CONF_SYSTEMS, default=systems_sel
+                    ): cv.multi_select(systems_dict)
+                }
+            ),
+        )
 
 
 class NibeAuthView(HomeAssistantView):
