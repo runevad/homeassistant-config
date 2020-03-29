@@ -520,15 +520,11 @@
         push:
           category: notis
   - service: script.sonos_say
-    data_template:
-      sonos_entity:
-        - media_player.kok_2
-        - media_player.allrum_2
-        - media_player.sew_room
-      volume: 0.45
-      delay: 00:00:15
-      message: Hej, tänk på att det just nu är högt elpris. Det ligger just nu på
-        {{ states.sensor.nibe_31372_10069.state }} öre per kWh!
+    data:
+      sonos_entity: media_player.kok_2, media_player.allrum_2, media_player.sew_room
+      volume: 0.5
+      message: 'Hej, tänk på att det just nu är högt elpris. Det ligger just nu på {{ states.sensor.nibe_31372_10069.state }} öre per kWh!'
+      delay: '00:00:15'
 - id: low_electric_price
   alias: Lågt elpris
   condition:
@@ -548,41 +544,11 @@
         push:
           category: notis
   - service: script.sonos_say
-    data_template:
-      sonos_entity:
-        - media_player.kok_2
-        - media_player.allrum_2
-        - media_player.sew_room
-      volume: 0.45
-      delay: 00:00:15
-      message: Hej, just nu är det lågt elpris, {{ states.sensor.nibe_31372_10069.state
-        }} öre per kWh närmaste timen
-- id: update_of_hass
-  alias: Notification Update Hass Available
-  condition:
-  - condition: time
-    after: 08:00:00
-    before: '20:00:00'
-  trigger:
-  - platform: state
-    entity_id: updater.updater
-  action:
-  - service: notify.all_devices
     data:
-      title: Uppdatering!
-      message: Ny version av Home Assistant tillgänglig!
-      data:
-        push:
-          category: notis
-  - service: script.sonos_say
-    data_template:
-      sonos_entity:
-        - media_player.kok_2
-        - media_player.allrum_2
-        - media_player.sew_room
-      volume: 0.45
-      delay: 00:00:15
-      message: Hej, det finns en ny uppdatering av Home Assistant
+      sonos_entity: media_player.kok_2, media_player.allrum_2, media_player.sew_room
+      volume: 0.5
+      message: 'Hej, just nu är det lågt elpris, {{ states.sensor.nibe_31372_10069.state }} öre per kWh närmaste timen'
+      delay: '00:00:15'
 - id: fire_alarm
   alias: Smoke detectors tripped
   initial_state: 'on'
@@ -820,24 +786,19 @@
     before: '19:00'
     condition: time
   action:
-  - alias: ''
-    data_template:
-      delay: 00:00:15
-      message: Jag är torr i min fot. Jag behöver vattnas nu! Vattna mig! Vattna mig!
-        Vattna mig! Vattna mig!
-      sonos_entity:
-        - media_player.kok_2
-        - media_player.allrum_2
-        - media_player.sew_room
-      volume: 0.6
-    service: script.sonos_say
-  - data:
+  - service: script.sonos_say
+    data:
+      sonos_entity: media_player.kok_2, media_player.allrum_2, media_player.sew_room
+      volume: 0.5
+      message: Jag är torr i min fot. Jag behöver vattnas nu! Vattna mig! Vattna mig! Vattna mig! Vattna mig!
+      delay: '00:00:15'
+  - service: notify.all_devices
+    data:
       data:
         push:
           category: notis
       message: Granen behöver vatten.
       title: Vattna granen!
-    service: notify.all_devices
 - id: '1577993231197'
   alias: remote kerstin sleep
   description: ''
@@ -920,12 +881,12 @@
       message: Dags att plocka ur diskmaskinen
       title: Diskmaskinen klar!
     service: notify.all_devices
-  - data_template:
-      delay: 00:00:08
-      message: Hej, diskmaskinen är klar! Dags att plocka ut!
-      sonos_entity: media_player.allrum_2
-      volume: 0.45
-    service: script.sonos_say
+  - service: script.sonos_say
+    data:
+      sonos_entity: media_player.kok_2, media_player.allrum_2, media_player.sew_room
+      volume: 0.5
+      message: 'Hej Hej Hej, diskmaskinen har körts klart och är redo för utplockning'
+      delay: '00:00:15'
 - id: '1580067157762'
   alias: remote kerstin study
   description: ''
