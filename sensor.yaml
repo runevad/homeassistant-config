@@ -2,6 +2,14 @@
 ### Sensors
 ##############
 
+- platform: krisinformation
+  radius: 150
+
+# - platform: krisinformation
+#   name: "Krisinformation Dalarna"
+#   county: "Dalarnas län"
+#   radius: 100
+
 - platform: time_date
   display_options:
     - 'time'
