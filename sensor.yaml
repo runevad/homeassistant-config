@@ -26,20 +26,20 @@
       friendly_name: "Spänningsmatning förråd"
       value_template: "{{ state_attr('sensor.storage_fridge_power_meter', 'voltage') }}"
 
-#NAS
-- platform: synologydsm
-  host: 192.168.1.4
-  port: 5000
-  username: !secret synology_user
-  password: !secret synology_pass
-  ssl: False
-  monitored_conditions:
-    - cpu_total_load
-    - memory_real_usage
-    - volume_percentage_used
-    - disk_status
-    - volume_status
-    - disk_temp
+# #NAS
+# - platform: synologydsm
+#   host: 192.168.1.4
+#   port: 5000
+#   username: !secret synology_user
+#   password: !secret synology_pass
+#   ssl: False
+#   monitored_conditions:
+#     - cpu_total_load
+#     - memory_real_usage
+#     - volume_percentage_used
+#     - disk_status
+#     - volume_status
+#     - disk_temp
 
 ### Heater for the car
 - platform: template
