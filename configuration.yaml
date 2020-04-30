@@ -111,10 +111,9 @@ homeconnect:
 
 nibe:
   systems:
-    - system: '31372'
+    - system: 31372
       units:
         - unit: 0
-      climates: True
       sensors:
         - 10069 #electricity price
         - 10070 #Temporary Lux
@@ -201,7 +200,7 @@ notify:
     platform: group
     services:
       - service: mobile_app_lars_iphone
-      - service: mobile_app_vtr_l29
+      - service: mobile_app_emelie_iphone
 
 shell_command:
   restart_hass: 'curl http://127.0.0.1:8126/container/homeassistant/restart'
