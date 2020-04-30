@@ -440,6 +440,8 @@
     - condition: state
       entity_id: group.family
       state: home
+    - before: sunrise
+      condition: sun
   action:
   - data:
       brightness: 100
@@ -523,8 +525,9 @@
     data:
       sonos_entity: media_player.kok_2, media_player.allrum_2, media_player.sew_room
       volume: 0.5
-      message: 'Hej, tänk på att det just nu är högt elpris. Det ligger just nu på {{ states.sensor.nibe_31372_10069.state }} öre per kWh!'
-      delay: '00:00:15'
+      message: Hej, tänk på att det just nu är högt elpris. Det ligger just nu på
+        {{ states.sensor.nibe_31372_10069.state }} öre per kWh!
+      delay: 00:00:15
 - id: low_electric_price
   alias: Lågt elpris
   condition:
@@ -547,8 +550,9 @@
     data:
       sonos_entity: media_player.kok_2, media_player.allrum_2, media_player.sew_room
       volume: 0.5
-      message: 'Hej, just nu är det lågt elpris, {{ states.sensor.nibe_31372_10069.state }} öre per kWh närmaste timen'
-      delay: '00:00:15'
+      message: Hej, just nu är det lågt elpris, {{ states.sensor.nibe_31372_10069.state
+        }} öre per kWh närmaste timen
+      delay: 00:00:15
 - id: fire_alarm
   alias: Smoke detectors tripped
   initial_state: 'on'
@@ -790,8 +794,9 @@
     data:
       sonos_entity: media_player.kok_2, media_player.allrum_2, media_player.sew_room
       volume: 0.5
-      message: Jag är torr i min fot. Jag behöver vattnas nu! Vattna mig! Vattna mig! Vattna mig! Vattna mig!
-      delay: '00:00:15'
+      message: Jag är torr i min fot. Jag behöver vattnas nu! Vattna mig! Vattna mig!
+        Vattna mig! Vattna mig!
+      delay: 00:00:15
   - service: notify.all_devices
     data:
       data:
@@ -885,8 +890,8 @@
     data:
       sonos_entity: media_player.kok_2, media_player.allrum_2, media_player.sew_room
       volume: 0.5
-      message: 'Hej Hej Hej, diskmaskinen har körts klart och är redo för utplockning'
-      delay: '00:00:15'
+      message: Hej Hej Hej, diskmaskinen har körts klart och är redo för utplockning
+      delay: 00:00:15
 - id: '1580067157762'
   alias: remote kerstin study
   description: ''
