@@ -1,11 +1,12 @@
 - id: temperatur_nu_automation
-  alias: Rapportera Temperatur
-  initial_state: true
+  alias: Rapportera temperatur.nu
   trigger:
   - platform: time_pattern
     minutes: /3
   action:
-    service: shell_command.temperatur_nu
+  - service: shell_command.temperatur_nu
+  initial_state: true
+  mode: single
 - id: Krisinformation Alert
   alias: Krisinformation Alert
   initial_state: 'on'
