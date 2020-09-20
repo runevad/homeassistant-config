@@ -63,7 +63,7 @@
     heater_temptime:
       friendly_name: 'Temperature adjusted runtime'
       unit_of_measurement: 's'
-      icon_template: mdi:timer
+      icon_template: mdi:timer-outline
       value_template: >-
         {% set ht = namespace() %}
         {% set ht.temp = states.sensor.heater_forecast.state|int %}
@@ -113,7 +113,7 @@
   name: Weather station run time
   state_topic: wemos_weather_station/sensor/weather_station_run_time/state
   unit_of_measurement: 'ms'
-  icon: mdi:timer
+  icon: mdi:timer-outline
 
 
 # #### MQTT stuff
@@ -134,4 +134,4 @@
 #     name: Weather station run time
 #     state_topic: wemos_christmas_tree_water_alarm/sensor/christmas_tree_run_time/state
 #     unit_of_measurement: 'ms'
-#     icon: mdi:timer
+#     icon: mdi:timer-outline
