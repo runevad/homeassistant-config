@@ -15,7 +15,7 @@ default_config:
 http:
   ssl_certificate: !secret ssl_certificate
   ssl_key: !secret ssl_key
-  base_url: !secret base_url
+  # base_url: !secret base_url
 
 group: !include groups.yaml
 
@@ -41,9 +41,7 @@ tts:
     time_memory: 21600
 
 recorder:
-  db_url: !secret recorder_db_url
   purge_keep_days: 30
-  purge_interval: 5
   exclude:
     domains:
       # - script
@@ -68,9 +66,9 @@ logbook:
   #     - device_tracker
 
 logger:
-  default: warning
+  default: warn
   logs:
-    homeassistant.core: fatal
+    homeassistant.core: warning
     homeassistant.components.mqtt: warning
     homeassistant.components.deconz: warning
     aiohttp: error
@@ -100,12 +98,12 @@ influxdb:
   tags:
     source: hass
 
-zwave:
-  usb_path: /dev/ttyACM1
-  device_config: !include zwave_device_config.yaml
-  network_key: !secret zwave_key
+#zwave:
+#  usb_path: /dev/ttyACM1
+#  device_config: !include zwave_device_config.yaml
+#  network_key: !secret zwave_key
 
-homeconnect:
+home_connect:
   client_id: !secret homeconnect_client_id
   client_secret: !secret homeconnect_client_secret
 
@@ -204,6 +202,7 @@ notify:
 
 shell_command:
   restart_hass: 'curl http://127.0.0.1:8126/container/homeassistant/restart'
+  temperatur_nu: "/usr/bin/curl http://www.temperatur.nu/rapportera.php?hash=464a10e1028c5618296cb0bf4955561c&t={{ states.sensor.outdoor_temperature_2.state }}"
 
 light:
   - platform: switch
@@ -276,7 +275,7 @@ input_select:
 input_number:
   heater_delay:
     name: "Time to overrun"
-    icon: mdi:timer
+    icon: mdi:timer-outline
     initial: 30
     min: 0
     max: 60

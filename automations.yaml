@@ -1,3 +1,11 @@
+- id: temperatur_nu_automation
+  alias: Rapportera Temperatur
+  initial_state: true
+  trigger:
+  - platform: time_pattern
+    minutes: /3
+  action:
+    service: shell_command.temperatur_nu
 - id: Krisinformation Alert
   alias: Krisinformation Alert
   initial_state: 'on'
@@ -8,10 +16,9 @@
   action:
   - service: notify.all_devices
     data_template:
-      message: '{{states.sensor.krisinformation.attributes.messages[0].Headline}}
-        - {{states.sensor.krisinformation.attributes.messages[0].Message}} {{states.sensor.krisinformation.attributes.messages[0].Web}}
-
-        '
+      message: '{{ states.sensor.krisinformation.attributes.messages[0].Headline }}
+        - {{ states.sensor.krisinformation.attributes.messages[0].Message }} {{ states.sensor.krisinformation.attributes.messages[0].Web
+        }}'
 - id: sound_alarm_from_notification
   alias: Sound alarm from notification
   trigger:
@@ -65,11 +72,10 @@
     data:
       entity_id: all
   - service: notify.all_devices
-    data:
+    data_template:
       title: LARM!
-      message: The {{ trigger.to_state.name }} was changed to {{ trigger.to_state.state}}
-        while no one is home - {{ as_timestamp(now()) | timestamp_custom('%Y-%m-%d%H:%M:%S',
-        True) }}
+      message: The {{ trigger.entity_id }} löste ut när ingen är hemma - {{ as_timestamp(now())
+        | timestamp_custom('%Y-%m-%d %H:%M:%S',True) }}
       data:
         push:
           badge: 666
@@ -96,9 +102,9 @@
     to: Away
   action:
   - service: notify.all_devices
-    data:
+    data_template:
       title: Dörr öppen!
-      message: '{{ trigger.to_state.name }} är öppen!'
+      message: '{{ trigger.entity_id }} är öppen!'
       data:
         push:
           badge: 100
@@ -505,29 +511,29 @@
     entity_id: switch.storage_hwc
 - id: high_electric_price
   alias: Högt elpris
-  condition:
-  - condition: time
-    after: 08:00:00
-    before: '21:00:00'
   trigger:
-  - platform: numeric_state
+  - above: '70'
     entity_id: sensor.nibe_31372_10069
-    above: 80
+    platform: numeric_state
+  condition:
+  - after: 08:00:00
+    before: '21:00:00'
+    condition: time
   action:
-  - service: notify.all_devices
-    data:
-      title: Elpris!
-      message: Spot-pris över 80 öre!
+  - data_template:
       data:
         push:
           category: notis
-  - service: script.sonos_say
-    data:
+      message: Spot-pris just nu på {{ states.sensor.nibe_31372_10069.state }} öre/kWh.
+      title: Högt elpris!
+    service: notify.all_devices
+  - data_template:
+      delay: 00:00:15
+      message: Hej, tänk på att det just nu är högt elpris. Det ligger just nu på
+        {{ states.sensor.nibe_31372_10069.state }}  öre närmaste timmen!
       sonos_entity: media_player.kok_2, media_player.allrum_2, media_player.sew_room
       volume: 0.5
-      message: Hej, tänk på att det just nu är högt elpris. Det ligger just nu på
-        {{ states.sensor.nibe_31372_10069.state }} öre per kWh!
-      delay: 00:00:15
+    service: script.sonos_say
 - id: low_electric_price
   alias: Lågt elpris
   condition:
@@ -540,46 +546,52 @@
     below: 20
   action:
   - service: notify.all_devices
-    data:
-      title: Elpris!
-      message: Spot-pris under 20 öre!
+    data_template:
+      title: Lågt elpris!
+      message: Spot-pris just nu på {{ states.sensor.nibe_31372_10069.state }} öre/kWh.
       data:
         push:
           category: notis
   - service: script.sonos_say
-    data:
+    data_template:
       sonos_entity: media_player.kok_2, media_player.allrum_2, media_player.sew_room
       volume: 0.5
       message: Hej, just nu är det lågt elpris, {{ states.sensor.nibe_31372_10069.state
-        }} öre per kWh närmaste timen
+        }} öre närmaste timmen
       delay: 00:00:15
 - id: fire_alarm
   alias: Smoke detectors tripped
-  initial_state: 'on'
   trigger:
-  - platform: state
-    entity_id: group.smoke_sensors
+  - entity_id: group.smoke_sensors
     from: 'off'
+    platform: state
     to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_boolean.cottage_update
+    state: 'on'
   action:
-  - service: light.turn_on
-    data:
+  - data:
       brightness: 255
       color_temp: 454
     entity_id: all
-  - service: notify.all_devices
-    data:
-      title: BRANDLARM!!
-      message: “En brandvarnare har löst ut!”
+    service: light.turn_on
+  - data_template:
       data:
         push:
           badge: 999
           category: alarm
           sound:
-            name: default
             critical: 1
-            volume: 1.0
-  - service: script.sonos_fire_alarm
+            name: default
+            volume: 1
+      message: Brand detekterad i {{ trigger.entity_id }} löste ut - {{ as_timestamp(now())
+        | timestamp_custom('%Y-%m-%d %H:%M:%S',True) }}
+      title: BRANDLARM!
+    service: notify.all_devices
+  - service: script.sonos_alarm
+  - service: script.light_alarm
+  initial_state: 'on'
 - id: cleaning_robot_running
   alias: Neato running - Take down sensors
   initial_state: 'on'
@@ -804,50 +816,10 @@
           category: notis
       message: Granen behöver vatten.
       title: Vattna granen!
-- id: '1577993231197'
-  alias: remote kerstin sleep
-  description: ''
-  trigger:
-  - device_id: 2a26e26d90254777adc162030833dd96
-    domain: deconz
-    platform: device
-    subtype: dim_down
-    type: remote_button_short_press
-  condition: []
-  action:
-  - scene: scene.kerstin_sleep
-- id: '1577993300289'
-  alias: remote ingrid sleep
-  description: ''
-  trigger:
-  - device_id: 5ac3776f13f14671aaaa514ccf755d15
-    domain: deconz
-    platform: device
-    subtype: turn_on
-    type: remote_button_long_press
-  condition: []
-  action:
-  - scene: scene.ingrid_sleep
-- id: '1578163443054'
-  alias: remote kerstin reading light
-  description: ''
-  trigger:
-  - device_id: 2a26e26d90254777adc162030833dd96
-    domain: deconz
-    platform: device
-    subtype: dim_up
-    type: remote_button_short_press
-  condition: []
-  action:
-  - scene: scene.kerstin_read
 - id: '1578771607733'
   alias: Storage fridge shut down
   description: Monitor voltage and power usage, notify if it goes down
   trigger:
-  - below: '200'
-    entity_id: sensor.storage_fridge_power_meter_voltage
-    for: 00:10:00
-    platform: numeric_state
   - below: '10'
     entity_id: sensor.storage_fridge_power_meter
     for: 02:00:00
@@ -892,50 +864,11 @@
       volume: 0.5
       message: Hej Hej Hej, diskmaskinen har körts klart och är redo för utplockning
       delay: 00:00:15
-- id: '1580067157762'
-  alias: remote kerstin study
-  description: ''
-  trigger:
-  - device_id: 2a26e26d90254777adc162030833dd96
-    domain: deconz
-    platform: device
-    subtype: right
-    type: remote_button_short_press
-  condition: []
-  action:
-  - scene: scene.kerstin_study
-- id: '1580067389718'
-  alias: remote kerstin all off
-  description: ''
-  trigger:
-  - device_id: 2a26e26d90254777adc162030833dd96
-    domain: deconz
-    platform: device
-    subtype: left
-    type: remote_button_short_press
-  condition: []
-  action:
-  - scene: scene.kerstin_all_off
-- id: '1580067458580'
-  alias: remote kerstin color
-  description: ''
-  trigger:
-  - device_id: 2a26e26d90254777adc162030833dd96
-    domain: deconz
-    platform: device
-    subtype: turn_on
-    type: remote_button_short_press
-  condition: []
-  action:
-  - device_id: c43f3615016443398ea032cddfa40ebf
-    domain: light
-    entity_id: light.kerstin_color_light
-    type: toggle
 - id: '1580071282451'
   alias: auto off speakers kids bedroom at night
   description: ''
   trigger:
-  - at: '22:00:00'
+  - at: '22:30:00'
     platform: time
   condition:
   - condition: or
@@ -952,3 +885,96 @@
     service: media_player.media_stop
   - entity_id: media_player.kerstins_rum
     service: media_player.media_stop
+- id: '1588334766825'
+  alias: remote bedroom switch night scene
+  description: ''
+  trigger:
+  - device_id: b4002c3e342c41b8982e11a41fbd21ac
+    domain: deconz
+    platform: device
+    subtype: turn_off
+    type: remote_button_long_press
+  condition: []
+  action:
+  - scene: scene.night
+- id: '1588334841392'
+  alias: remote bedroom switch light on
+  description: ''
+  trigger:
+  - device_id: b4002c3e342c41b8982e11a41fbd21ac
+    domain: deconz
+    platform: device
+    subtype: turn_on
+    type: remote_button_short_press
+  condition: []
+  action:
+  - device_id: b45be17c2c074b2f9948c5f46da52c6a
+    domain: light
+    entity_id: light.master_bedroom_bed_light
+    type: brightness_increase
+- id: '1588334975496'
+  alias: remote bedroom switch lights off
+  description: ''
+  trigger:
+  - device_id: b4002c3e342c41b8982e11a41fbd21ac
+    domain: deconz
+    platform: device
+    subtype: turn_off
+    type: remote_button_short_press
+  condition: []
+  action:
+  - device_id: b45be17c2c074b2f9948c5f46da52c6a
+    domain: light
+    entity_id: light.master_bedroom_bed_light
+    type: turn_off
+  - device_id: d116889195404b21b95c0b16f1a32ec4
+    domain: light
+    entity_id: light.master_bedroom_window_light
+    type: turn_off
+  - device_id: 2e0bc9a47636495eb730eec5a6b069d2
+    domain: switch
+    entity_id: switch.master_bedroom_window_light_2
+    type: turn_off
+- id: '1588340241890'
+  alias: 'Low battery smoke detectors '
+  description: ''
+  trigger:
+  - below: '70'
+    entity_id:
+    - sensor.storage_smoke_detector_battery_level
+    - sensor.kitchen_smoke_detector_battery_level
+    - sensor.family_room_smoke_detector_battery_level
+    - sensor.laundry_smoke_detector_battery_level
+    - sensor.kerstin_smoke_detector_battery_level
+    - sensor.ingrid_smoke_detector_battery_level
+    - sensor.master_bedroom_smoke_detector_battery_level
+    platform: numeric_state
+  action:
+  - data_template:
+      message: '{{ trigger.entity_id }} har låg batterinivå!'
+      title: Brandvarnare låg batterinivå!
+    service: notify.all_devices
+- id: '1599850553843'
+  alias: 'Turn on light when motion is detected carport '
+  description: ''
+  trigger:
+  - device_id: ff2e733bac234d60b1312f644e6eefdc
+    domain: binary_sensor
+    entity_id: binary_sensor.carport_motion_sensor
+    platform: device
+    type: motion
+  condition:
+  - condition: template
+    value_template: '{{ state_attr(''binary_sensor.carport_motion_sensor'', ''dark'')
+      }}'
+  action:
+  - device_id: b65dfd2081ea49bba55da2ec674a20f4
+    domain: light
+    entity_id: light.carport_ceiling_lights
+    type: turn_on
+  - delay: 00:10:00
+  - device_id: b65dfd2081ea49bba55da2ec674a20f4
+    domain: light
+    entity_id: light.carport_ceiling_lights
+    type: turn_off
+  mode: single
