@@ -6,7 +6,7 @@ from collections import OrderedDict
 from datetime import timedelta
 from typing import List, Set
 
-from homeassistant.components.climate import ENTITY_ID_FORMAT, ClimateDevice
+from homeassistant.components.climate import ENTITY_ID_FORMAT, ClimateEntity
 from homeassistant.components.climate.const import (
     ATTR_TARGET_TEMP_LOW,
     ATTR_TARGET_TEMP_HIGH,
@@ -106,7 +106,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(entities, True)
 
 
-class NibeClimate(NibeEntity, ClimateDevice):
+class NibeClimate(NibeEntity, ClimateEntity):
     """Base class for nibe climate entities."""
 
     def __init__(
@@ -209,7 +209,9 @@ class NibeClimate(NibeEntity, ClimateDevice):
 
     def parse_statuses(self, statuses: Set[str]):
         """Parse status list."""
-        if "Heating" in statuses:
+        if "Cooling (Passive)" in statuses:
+            self._hvac_action = CURRENT_HVAC_COOL
+        elif "Heating" in statuses:
             self._hvac_action = CURRENT_HVAC_HEAT
         elif "Cooling" in statuses:
             self._hvac_action = CURRENT_HVAC_COOL
@@ -469,7 +471,7 @@ class NibeClimateSupply(NibeClimate):
         return data
 
 
-class NibeThermostat(ClimateDevice, RestoreEntity):
+class NibeThermostat(ClimateEntity, RestoreEntity):
     """Nibe Smarthome Thermostat."""
 
     def __init__(
