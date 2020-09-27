@@ -955,27 +955,3 @@
       message: '{{ trigger.entity_id }} har låg batterinivå!'
       title: Brandvarnare låg batterinivå!
     service: notify.all_devices
-- id: '1599850553843'
-  alias: 'Turn on light when motion is detected carport '
-  description: ''
-  trigger:
-  - device_id: ff2e733bac234d60b1312f644e6eefdc
-    domain: binary_sensor
-    entity_id: binary_sensor.carport_motion_sensor
-    platform: device
-    type: motion
-  condition:
-  - condition: template
-    value_template: '{{ state_attr(''binary_sensor.carport_motion_sensor'', ''dark'')
-      }}'
-  action:
-  - device_id: b65dfd2081ea49bba55da2ec674a20f4
-    domain: light
-    entity_id: light.carport_ceiling_lights
-    type: turn_on
-  - delay: 00:10:00
-  - device_id: b65dfd2081ea49bba55da2ec674a20f4
-    domain: light
-    entity_id: light.carport_ceiling_lights
-    type: turn_off
-  mode: single
